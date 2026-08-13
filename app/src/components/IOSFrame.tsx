@@ -33,8 +33,9 @@ function IOSStatusBar({ time = '9:41' }: { time?: string }) {
 
 export function IOSDevice({ children, width = 390, height = 844 }: { children: ReactNode; width?: number; height?: number }) {
   const frame: CSSProperties = {
-    width,
-    height,
+    width: `min(${width}px, calc(100vw - 48px))`,
+    aspectRatio: `${width} / ${height}`,
+    height: 'auto',
     borderRadius: 48,
     overflow: 'hidden',
     position: 'relative',

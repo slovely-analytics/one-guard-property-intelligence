@@ -45,7 +45,7 @@ export default function Projects() {
   }
 
   return (
-    <main style={main}>
+    <main className="page-main" style={main}>
       <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
         <div>
           <Kicker>Vendor coordination</Kicker>

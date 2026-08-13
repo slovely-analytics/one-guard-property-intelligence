@@ -28,7 +28,7 @@ export default function Warranties() {
   }
 
   return (
-    <main style={main}>
+    <main className="page-main" style={main}>
       <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
         <div>
           <Kicker>Warranty management</Kicker>
@@ -40,28 +40,30 @@ export default function Warranties() {
         Every warranty in one place. We track expirations, store documents and file claims on your behalf.
       </p>
       <Rule style={{ margin: '24px 0' }} />
-      <table className="table">
-        <thead>
-          <tr><th>Item</th><th>Provider</th><th>Coverage</th><th>Expires</th><th>Status</th><th></th></tr>
-        </thead>
-        <tbody>
-          {warranties.map((w) => (
-            <tr key={w.id}>
-              <td><strong>{w.item}</strong></td>
-              <td className="text-muted">
-                {providerSupportUrl(w.provider)
-                  ? <ExtLink href={providerSupportUrl(w.provider)!}>{w.provider}</ExtLink>
-                  : w.provider}
-              </td>
-              <td className="text-muted">{w.coverage}</td>
-              <td>{w.expires}</td>
-              <td><span className={`tag ${warrantyTagClass(w.status)}`}>{w.status}</span></td>
-              <td>{actionFor(w)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, marginTop: 32 }}>
+      <div className="table-scroll">
+        <table className="table">
+          <thead>
+            <tr><th>Item</th><th>Provider</th><th>Coverage</th><th>Expires</th><th>Status</th><th></th></tr>
+          </thead>
+          <tbody>
+            {warranties.map((w) => (
+              <tr key={w.id}>
+                <td><strong>{w.item}</strong></td>
+                <td className="text-muted">
+                  {providerSupportUrl(w.provider)
+                    ? <ExtLink href={providerSupportUrl(w.provider)!}>{w.provider}</ExtLink>
+                    : w.provider}
+                </td>
+                <td className="text-muted">{w.coverage}</td>
+                <td>{w.expires}</td>
+                <td><span className={`tag ${warrantyTagClass(w.status)}`}>{w.status}</span></td>
+                <td>{actionFor(w)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="mobile-grid-1" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, marginTop: 32 }}>
         <div className="card">
           <span className="card-kicker">Expiring soon</span>
           <span className="card-title">Bosch dishwasher — Jun 2027</span>
@@ -86,7 +88,7 @@ export default function Warranties() {
               <label>Item</label>
               <input className="input" value={form.item} onChange={(e) => setForm({ ...form, item: e.target.value })} placeholder="e.g. Garage door opener — LiftMaster" autoFocus />
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+            <div className="mobile-grid-1" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
               <div className="field">
                 <label>Provider</label>
                 <input className="input" value={form.provider} onChange={(e) => setForm({ ...form, provider: e.target.value })} placeholder="Manufacturer or plan" />

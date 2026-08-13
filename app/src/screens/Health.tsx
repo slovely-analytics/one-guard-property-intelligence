@@ -13,9 +13,9 @@ export default function Health() {
   const { assessmentSlot } = useDemo()
   const [booking, setBooking] = useState(false)
   return (
-    <main style={main}>
+    <main className="page-main" style={main}>
       <Kicker>Annual Home Health Assessment</Kicker>
-      <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: 48, alignItems: 'end' }}>
+      <div className="mobile-grid-1" style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: 48, alignItems: 'end' }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 12 }}>
             <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: 120, lineHeight: 0.95 }}>82</span>
@@ -56,7 +56,7 @@ export default function Health() {
         </Modal>
       )}
       <Rule style={{ margin: '32px 0' }} />
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, alignItems: 'start' }}>
+      <div className="mobile-grid-1" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, alignItems: 'start' }}>
         <section>
           <h4 style={{ margin: '0 0 16px' }}>Score by category</h4>
           {categoryScores.map((sc) => (

@@ -16,7 +16,7 @@ export default function Onboarding() {
 
   return (
     <div>
-      <div style={{ maxWidth: 920, width: '100%', margin: '0 auto', padding: '40px 32px 24px' }}>
+      <div className="page-main" style={{ maxWidth: 920, width: '100%', margin: '0 auto', padding: '40px 32px 24px' }}>
         <div style={{ display: 'flex', gap: 0, borderBottom: '2px solid var(--color-divider)' }}>
           {stepLabels.map((label, i) => (
             <div key={label} style={{ flex: 1, padding: '0 16px 12px 0' }}>
@@ -30,12 +30,12 @@ export default function Onboarding() {
       </div>
 
       {step === 1 && (
-        <main style={main}>
+        <main className="page-main" style={main}>
           <h1 style={{ margin: '0 0 8px' }}>Choose your membership</h1>
           <p className="text-muted" style={{ maxWidth: 560, margin: '0 0 32px' }}>
             Every plan includes your Property Passport™, annual Home Health Assessment and a dedicated advisor. Cancel anytime.
           </p>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 24, alignItems: 'stretch' }}>
+          <div className="mobile-grid-1" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 24, alignItems: 'stretch' }}>
             {plans.map((p) => (
               <div
                 key={p.name}
@@ -69,12 +69,12 @@ export default function Onboarding() {
       )}
 
       {step === 2 && (
-        <main style={main}>
+        <main className="page-main" style={main}>
           <h1 style={{ margin: '0 0 8px' }}>Tell us about your property</h1>
           <p className="text-muted" style={{ maxWidth: 560, margin: '0 0 32px' }}>
             We pre-fill what we can from public records — check it and correct anything that's off.
           </p>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, alignItems: 'start' }}>
+          <div className="mobile-grid-1" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, alignItems: 'start' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div className="field"><label>Property address</label><input className="input" defaultValue="1847 Maple Grove Lane, Fort Worth, TX 76107" /></div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
@@ -116,14 +116,14 @@ export default function Onboarding() {
       )}
 
       {step === 3 && (
-        <main style={main}>
+        <main className="page-main" style={main}>
           <h1 style={{ margin: '0 0 8px' }}>Start your Property Passport™</h1>
           <p className="text-muted" style={{ maxWidth: 560, margin: '0 0 32px' }}>
             Tap what you know — skip the rest. Your first assessment fills in every gap, model numbers included.
           </p>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             {onboardingSystems.map((s) => (
-              <div key={s.name} style={{ display: 'grid', gridTemplateColumns: '1fr 220px 140px', gap: 24, alignItems: 'center', padding: '16px 0', borderBottom: '1px solid var(--color-divider)' }}>
+              <div key={s.name} className="mobile-grid-1" style={{ display: 'grid', gridTemplateColumns: '1fr 220px 140px', gap: 24, alignItems: 'center', padding: '16px 0', borderBottom: '1px solid var(--color-divider)' }}>
                 <div>
                   <strong style={{ fontSize: 14 }}>{s.name}</strong>
                   <p className="text-muted" style={{ fontSize: 13, margin: '2px 0 0' }}>{s.hint}</p>
@@ -147,8 +147,8 @@ export default function Onboarding() {
       )}
 
       {step === 4 && (
-        <main style={main}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, alignItems: 'start' }}>
+        <main className="page-main" style={main}>
+          <div className="mobile-grid-1" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, alignItems: 'start' }}>
             <div>
               <h6 style={{ color: 'var(--color-accent)' }}>Membership active</h6>
               <h1 style={{ margin: '0 0 8px' }}>Welcome, member.</h1>

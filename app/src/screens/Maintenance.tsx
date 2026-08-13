@@ -50,7 +50,7 @@ export default function Maintenance() {
   }
 
   return (
-    <main style={main}>
+    <main className="page-main" style={main}>
       <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
         <div>
           <Kicker>Maintenance plan</Kicker>
@@ -72,7 +72,7 @@ export default function Maintenance() {
         </p>
       )}
       {visible.map((t) => (
-        <div key={t.id} style={{ display: 'grid', gridTemplateColumns: '96px 1fr 160px 130px auto', gap: 16, alignItems: 'center', padding: '16px 0', borderBottom: '1px solid var(--color-divider)' }}>
+        <div key={t.id} className="mobile-grid-1" style={{ display: 'grid', gridTemplateColumns: '96px 1fr 160px 130px auto', gap: 16, alignItems: 'center', padding: '16px 0', borderBottom: '1px solid var(--color-divider)' }}>
           <div>
             <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: 18, lineHeight: 1.1 }}>{t.date}</div>
             <span className="text-muted" style={{ fontSize: 12 }}>{t.season}</span>
@@ -89,7 +89,7 @@ export default function Maintenance() {
           <button className="btn btn-secondary" style={{ fontSize: 13 }} onClick={() => act(t)}>{taskAction(t).label}</button>
         </div>
       ))}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, marginTop: 40 }}>
+      <div className="mobile-grid-1" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, marginTop: 40 }}>
         <div className="card">
           <span className="card-kicker">Vendor coordination</span>
           <span className="card-title">We handle the scheduling</span>

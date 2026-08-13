@@ -46,14 +46,14 @@ export default function Dashboard() {
   }
 
   return (
-    <main style={main}>
+    <main className="page-main" style={main}>
       <div style={{ display: 'flex', alignItems: 'baseline', gap: 16, flexWrap: 'wrap' }}>
         <h1 style={{ margin: 0 }}>{property.address}</h1>
         <span className="text-muted" style={{ fontSize: 14 }}>{property.summary}</span>
       </div>
       <Rule style={{ margin: '24px 0' }} />
       <Gallery slides={gallery} height={400} style={{ marginBottom: 32 }} />
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 0, borderBottom: '2px solid var(--color-divider)' }}>
+      <div className="mobile-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 0, borderBottom: '2px solid var(--color-divider)' }}>
         <div style={{ padding: '20px 24px 20px 0', borderRight: '1px solid var(--color-divider)' }}>
           <h6 style={{ marginBottom: 8 }}>Property score</h6>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
@@ -82,7 +82,7 @@ export default function Dashboard() {
           </p>
         </div>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 32, marginTop: 32, alignItems: 'start' }}>
+      <div className="mobile-grid-1" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 32, marginTop: 32, alignItems: 'start' }}>
         <section>
           <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
             <h4 style={{ margin: 0 }}>Needs attention</h4>

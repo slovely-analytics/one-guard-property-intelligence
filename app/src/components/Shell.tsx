@@ -16,8 +16,8 @@ export function Nav({ current }: { current: Route }) {
   return (
     <nav className="nav">
       <span className="nav-brand" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-        <span style={{ display: 'inline-block', width: 14, height: 14, background: 'var(--color-accent)' }} />
-        ONE GUARD <span style={{ fontWeight: 400, color: 'var(--color-neutral-600)' }}>Property Intelligence</span>
+        <span style={{ display: 'inline-block', width: 14, height: 14, background: 'var(--color-accent)', flex: 'none' }} />
+        ONE GUARD <span className="nav-brand-sub" style={{ fontWeight: 400, color: 'var(--color-neutral-600)' }}>Property Intelligence</span>
       </span>
       {navLinks.map((l) => (
         <a key={l.path} href={`#${l.path}`} aria-current={current === l.path ? 'page' : undefined}>
@@ -41,8 +41,8 @@ export function Nav({ current }: { current: Route }) {
 export function Footer() {
   return (
     <footer
-      className="text-muted"
-      style={{ borderTop: '2px solid var(--color-divider)', padding: '16px 32px', display: 'flex', gap: 24, fontSize: 12, marginTop: 'auto' }}
+      className="text-muted footer"
+      style={{ borderTop: '2px solid var(--color-divider)', padding: '16px 32px', display: 'flex', gap: '10px 24px', fontSize: 12, marginTop: 'auto', flexWrap: 'wrap' }}
     >
       <span>ONE GUARD Property Intelligence</span>
       <span>Demo — sample data</span>

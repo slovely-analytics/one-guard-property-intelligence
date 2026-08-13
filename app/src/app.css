@@ -255,6 +255,36 @@ tr.row-link:hover td { background: color-mix(in srgb, var(--color-text) 5%, tran
   .photo-grid { gap: 8px; }
 }
 
+/* ---------------------------------------------------------------------------
+   Mobile browser pass. The screens above lay out with fixed inline grid
+   templates and generous desktop padding; below this width the nav and a
+   few px-heavy grids no longer fit their content and force the whole page
+   wider than the viewport. These rules keep every scroll container local
+   (nav, tables) instead of letting overflow leak onto the page, and stack
+   the desktop grids that assume side-by-side space. */
+@media (max-width: 640px) {
+  .page-main { padding: 24px 16px 40px !important; }
+
+  .nav {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    gap: 20px;
+    padding: 10px 16px;
+  }
+  .nav-brand { flex: none; white-space: nowrap; }
+  .nav a { white-space: nowrap; }
+  .nav-brand-sub { display: none; }
+
+  .footer { padding: 14px 16px !important; }
+
+  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .table-scroll .table { min-width: 560px; }
+
+  .mobile-grid-1 { grid-template-columns: 1fr !important; }
+  .mobile-grid-2 { grid-template-columns: 1fr 1fr !important; }
+}
+
 /* Print (Passport "Export PDF") */
 @media print {
   .nav, footer, .btn, .toast-host, .chat-drawer, .detail-drawer, .overlay { display: none !important; }

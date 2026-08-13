@@ -137,7 +137,7 @@ function MobileRequest() {
 
 export default function Mobile() {
   return (
-    <main style={{ maxWidth: 1400, width: '100%', margin: '0 auto', padding: '40px 32px 64px' }}>
+    <main className="page-main" style={{ maxWidth: 1400, width: '100%', margin: '0 auto', padding: '40px 32px 64px' }}>
       <Kicker>One Guard Property Intelligence</Kicker>
       <h2 style={{ margin: '0 0 4px' }}>Mobile app</h2>
       <p className="text-muted" style={{ margin: '0 0 32px', maxWidth: 560 }}>

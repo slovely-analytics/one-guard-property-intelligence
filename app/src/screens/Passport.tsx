@@ -20,7 +20,7 @@ export default function Passport() {
   const [selected, setSelected] = useState<SystemRecord | null>(null)
   const detail = selected ? systemDetails[selected.name] : undefined
   return (
-    <main style={main}>
+    <main className="page-main" style={main}>
       <Kicker>Property Passport™</Kicker>
       <h1 style={{ margin: 0 }}>{property.address}</h1>
       <p className="text-muted" style={{ margin: '8px 0 0', maxWidth: 640 }}>
@@ -45,29 +45,31 @@ export default function Passport() {
       <p className="text-muted" style={{ fontSize: 13, margin: '8px 0 0' }}>
         Click any system to open its full record — model details, service brief and photos.
       </p>
-      <table className="table" style={{ marginTop: 12 }}>
-        <thead>
-          <tr><th>System</th><th>Make / model</th><th>Installed</th><th>Est. life left</th><th>Condition</th><th>Warranty</th></tr>
-        </thead>
-        <tbody>
-          {systems.map((s) => (
-            <tr key={s.name} className="row-link" onClick={() => setSelected(s)}>
-              <td>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <SysThumb name={s.name} />
-                  <strong>{s.name}</strong>
-                </div>
-              </td>
-              <td className="text-muted">{s.model}</td>
-              <td>{s.installed}</td>
-              <td>{s.life}</td>
-              <td><span className={`tag ${s.condClass}`}>{s.cond}</span></td>
-              <td className="text-muted">{s.warranty}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, marginTop: 40, alignItems: 'start' }}>
+      <div className="table-scroll">
+        <table className="table" style={{ marginTop: 12 }}>
+          <thead>
+            <tr><th>System</th><th>Make / model</th><th>Installed</th><th>Est. life left</th><th>Condition</th><th>Warranty</th></tr>
+          </thead>
+          <tbody>
+            {systems.map((s) => (
+              <tr key={s.name} className="row-link" onClick={() => setSelected(s)}>
+                <td>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <SysThumb name={s.name} />
+                    <strong>{s.name}</strong>
+                  </div>
+                </td>
+                <td className="text-muted">{s.model}</td>
+                <td>{s.installed}</td>
+                <td>{s.life}</td>
+                <td><span className={`tag ${s.condClass}`}>{s.cond}</span></td>
+                <td className="text-muted">{s.warranty}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="mobile-grid-1" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, marginTop: 40, alignItems: 'start' }}>
         <section>
           <h4 style={{ margin: 0 }}>Service history</h4>
           <Rule style={{ margin: '12px 0 0' }} />
