@@ -55,8 +55,156 @@ a:hover { color: var(--color-accent-600); }
   box-shadow: -8px 0 24px color-mix(in srgb, var(--color-text) 12%, transparent);
 }
 
+/* ---------------------------------------------------------------------------
+   Property gallery — crossfade + slow Ken Burns drift */
+.gallery {
+  position: relative; overflow: hidden;
+  height: var(--gallery-h, 380px);
+  background: var(--color-neutral-900);
+  border: 2px solid var(--color-text);
+}
+.gallery-img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover;
+  opacity: 0; transition: opacity 1400ms ease-in-out;
+  will-change: opacity, transform;
+}
+.gallery-img.is-active { opacity: 1; }
+.gallery-img.is-active.drift-a { animation: ken-a 22s ease-out both; }
+.gallery-img.is-active.drift-b { animation: ken-b 22s ease-out both; }
+.gallery-img.is-still { animation: none !important; }
+@keyframes ken-a {
+  from { transform: scale(1.02) translate3d(0, 0, 0); }
+  to   { transform: scale(1.11) translate3d(-1.5%, -1%, 0); }
+}
+@keyframes ken-b {
+  from { transform: scale(1.11) translate3d(1.5%, 1%, 0); }
+  to   { transform: scale(1.02) translate3d(0, 0, 0); }
+}
+/* Two layers: a bottom band that guarantees caption contrast on any photo, plus
+   a soft left wash so the text column reads as one plane. */
+.gallery-scrim {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    linear-gradient(
+      to top,
+      color-mix(in srgb, var(--color-neutral-900) 88%, transparent) 0%,
+      color-mix(in srgb, var(--color-neutral-900) 72%, transparent) 18%,
+      color-mix(in srgb, var(--color-neutral-900) 34%, transparent) 32%,
+      color-mix(in srgb, var(--color-neutral-900) 14%, transparent) 42%,
+      transparent 52%
+    ),
+    linear-gradient(
+      100deg,
+      color-mix(in srgb, var(--color-neutral-900) 42%, transparent) 0%,
+      color-mix(in srgb, var(--color-neutral-900) 10%, transparent) 34%,
+      transparent 58%
+    );
+}
+.gallery-caption {
+  position: absolute; left: 32px; bottom: 32px; max-width: 400px;
+  color: var(--color-bg);
+  /* Backstop for the scrim: keeps the kicker readable where a slide is bright
+     right where the text sits. */
+  text-shadow: 0 1px 3px color-mix(in srgb, var(--color-neutral-900) 70%, transparent);
+  animation: caption-in 620ms ease-out both;
+}
+@keyframes caption-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.gallery-kicker {
+  display: block; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+  font-weight: 700; color: var(--color-accent-300);
+}
+.gallery-title {
+  display: block; margin-top: 6px;
+  font-family: var(--font-heading); font-weight: 800; font-size: 30px; line-height: 1.1;
+}
+.gallery-note {
+  margin: 8px 0 0; font-size: 13px; line-height: 1.5;
+  color: color-mix(in srgb, var(--color-bg) 82%, transparent);
+}
+.gallery-controls {
+  position: absolute; right: 24px; bottom: 28px;
+  display: flex; align-items: center; gap: 12px;
+}
+.gallery-arrow {
+  width: 32px; height: 32px; padding: 0; line-height: 1;
+  background: transparent; color: var(--color-bg); font-size: 22px; cursor: pointer;
+  border: 1px solid color-mix(in srgb, var(--color-bg) 45%, transparent);
+}
+.gallery-arrow:hover { background: color-mix(in srgb, var(--color-bg) 18%, transparent); }
+.gallery-dots { display: flex; gap: 8px; }
+.gallery-dot {
+  width: 22px; height: 3px; padding: 0; border: 0; cursor: pointer;
+  background: color-mix(in srgb, var(--color-bg) 40%, transparent);
+  transition: background 200ms ease;
+}
+.gallery-dot.is-active { background: var(--color-accent); }
+.gallery-credit {
+  position: absolute; top: 12px; right: 12px;
+  padding: 4px 8px;
+  font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-bg) 78%, transparent);
+  background: color-mix(in srgb, var(--color-neutral-900) 55%, transparent);
+  text-decoration: none;
+}
+.gallery-credit:hover { color: var(--color-bg); background: color-mix(in srgb, var(--color-neutral-900) 80%, transparent); }
+@media (prefers-reduced-motion: reduce) {
+  .gallery-img { transition-duration: 1ms; animation: none !important; }
+  .gallery-caption { animation: none; }
+}
+
+/* Property photo strip (Passport header) */
+.photo-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.photo-strip img {
+  width: 100%; aspect-ratio: 4 / 3; object-fit: cover;
+  border: 1px solid var(--color-divider); display: block;
+}
+
+/* Portfolio row thumbnails */
+.prop-thumb {
+  width: 88px; height: 60px; flex: none;
+  border: 1px solid var(--color-divider);
+  background-repeat: no-repeat;
+}
+
+/* System row thumbnails (Passport table + mobile Passport list) */
+.sys-thumb {
+  width: 52px; height: 40px; flex: none; object-fit: cover; display: block;
+  border: 1px solid var(--color-divider);
+}
+.sys-thumb-empty {
+  display: grid; place-items: center; font-size: 15px;
+  background: var(--color-neutral-200); opacity: 0.7;
+}
+
+/* Phone-screen hero photo (Mobile app mockups) */
+.phone-hero { position: relative; margin: 16px 0 0; overflow: hidden; }
+.phone-hero img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; display: block; }
+.phone-hero figcaption {
+  position: absolute; left: 0; right: 0; bottom: 0; padding: 10px 12px;
+  display: flex; flex-direction: column; gap: 1px; color: var(--color-bg);
+  background: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--color-neutral-900) 88%, transparent),
+    transparent
+  );
+}
+.phone-hero-addr { font-family: var(--font-heading); font-weight: 800; font-size: 15px; }
+.phone-hero-sub { font-size: 11px; color: color-mix(in srgb, var(--color-bg) 78%, transparent); }
+
 /* Photo placeholder tiles */
 .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.photo-real {
+  aspect-ratio: 4 / 3; position: relative; overflow: hidden;
+  border: 1px solid var(--color-divider);
+}
+.photo-real img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.photo-real .cap {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: 5px 7px; font-size: 10px; letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--color-bg);
+  background: color-mix(in srgb, var(--color-neutral-900) 72%, transparent);
+}
 .photo-ph {
   aspect-ratio: 4 / 3; border: 2px dashed var(--color-neutral-400);
   background: var(--color-neutral-100);
@@ -74,6 +222,38 @@ a:hover { color: var(--color-accent-600); }
 /* Clickable table rows (Portfolio) */
 tr.row-link { cursor: pointer; }
 tr.row-link:hover td { background: color-mix(in srgb, var(--color-text) 5%, transparent); }
+
+/* ---------------------------------------------------------------------------
+   Narrow screens. The rest of this demo is a fixed desktop layout; these rules
+   only make the photo surfaces usable when the viewport gets small, rather
+   than preserving the desktop composition. Kept last so they win over the
+   base rules above. */
+@media (max-width: 880px) {
+  /* Photo-shaped box instead of the fixed desktop height, and a caption that
+     sits above the controls rather than beside them. */
+  .gallery { height: auto; aspect-ratio: 4 / 3; max-height: 68vh; }
+  .gallery-caption { left: 16px; right: 16px; bottom: 62px; max-width: none; }
+  .gallery-title { font-size: 20px; }
+  .gallery-note { font-size: 12px; }
+  .gallery-controls { left: 16px; right: 16px; bottom: 18px; justify-content: space-between; }
+  .gallery-credit { font-size: 9px; top: 8px; right: 8px; }
+  .gallery-scrim {
+    background: linear-gradient(
+      to top,
+      color-mix(in srgb, var(--color-neutral-900) 90%, transparent) 0%,
+      color-mix(in srgb, var(--color-neutral-900) 78%, transparent) 30%,
+      color-mix(in srgb, var(--color-neutral-900) 40%, transparent) 48%,
+      transparent 70%
+    );
+  }
+}
+@media (max-width: 620px) {
+  .photo-strip { grid-template-columns: 1fr 1fr; gap: 6px; }
+  .prop-thumb { width: 64px; height: 46px; }
+  .sys-thumb { width: 44px; height: 34px; }
+  .gallery-arrow { width: 40px; height: 40px; }
+  .photo-grid { gap: 8px; }
+}
 
 /* Print (Passport "Export PDF") */
 @media print {

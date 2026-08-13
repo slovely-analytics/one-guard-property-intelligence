@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react'
 import type { Route } from '../routing/useHashRoute'
+import { PHOTO_CREDIT, systemThumb } from '../photos'
 import { resetDemo } from '../store'
 
 const navLinks: Array<{ path: Route; label: string }> = [
@@ -46,6 +47,11 @@ export function Footer() {
       <span>ONE GUARD Property Intelligence</span>
       <span>Demo — sample data</span>
       <a href="#" onClick={(e) => { e.preventDefault(); resetDemo() }}>Reset demo data</a>
+      <span>
+        Photos:{' '}
+        <a href={PHOTO_CREDIT.sourceUrl} target="_blank" rel="noreferrer">{PHOTO_CREDIT.author}</a>,{' '}
+        <a href={PHOTO_CREDIT.licenseUrl} target="_blank" rel="noreferrer">{PHOTO_CREDIT.license}</a>
+      </span>
       <a href="#/mobile" style={{ marginLeft: 'auto' }}>Mobile app →</a>
       <a href="#/signup">Onboarding →</a>
     </footer>
@@ -57,6 +63,37 @@ export function ExtLink({ href, children, style }: { href: string; children: Rea
     <a href={href} target="_blank" rel="noreferrer" style={{ whiteSpace: 'nowrap', ...style }}>
       {children} ↗
     </a>
+  )
+}
+
+/** Small square-ish photo for a system row; falls back to a neutral tile. */
+export function SysThumb({ name }: { name: string }) {
+  const photo = systemThumb(name)
+  if (!photo?.src) return <span className="sys-thumb sys-thumb-empty" aria-hidden>📷</span>
+  if (photo.thumbZoom) {
+    return (
+      <span
+        className="sys-thumb"
+        role="img"
+        aria-label=""
+        style={{
+          backgroundImage: `url(${photo.src})`,
+          backgroundSize: photo.thumbZoom,
+          backgroundPosition: photo.focus ?? '50% 50%',
+          backgroundRepeat: 'no-repeat',
+        }}
+      />
+    )
+  }
+  return (
+    <img
+      className="sys-thumb"
+      src={photo.src}
+      alt=""
+      style={photo.focus ? { objectPosition: photo.focus } : undefined}
+      loading="lazy"
+      decoding="async"
+    />
   )
 }
 

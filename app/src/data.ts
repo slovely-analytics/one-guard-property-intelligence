@@ -141,7 +141,6 @@ export interface SystemDetail {
   specs: Array<{ label: string; value: string }>
   brief: Array<{ date: string; note: string }>
   outlook: string
-  photos: string[]
   manufacturer: string
   manualUrl: string
   siteUrl: string
@@ -163,7 +162,6 @@ export const systemDetails: Record<string, SystemDetail> = {
       { date: 'Oct 2025', note: 'Assessment flag: end of expected life; replacement budgeted in 2027 capital plan.' },
     ],
     outlook: 'Replacement project is active — quotes were sourced and the install is being coordinated by Dana. New unit should cut cooling costs ~22%.',
-    photos: ['Unit — east side yard', 'Data plate & serial'],
     manufacturer: 'Carrier',
     manualUrl: 'https://www.carrier.com/residential/en/us/products/air-conditioners/',
     siteUrl: 'https://www.carrier.com/residential/en/us/',
@@ -181,7 +179,6 @@ export const systemDetails: Record<string, SystemDetail> = {
       { date: 'Nov 2024', note: 'Flame sensor cleaned; blower balanced.' },
     ],
     outlook: 'On track. Heat-exchanger warranty runs through 2036; keep annual tune-ups to maintain coverage.',
-    photos: ['Furnace cabinet — attic', 'Data plate & serial'],
     manufacturer: 'Carrier',
     manualUrl: 'https://www.carrier.com/residential/en/us/products/furnaces/',
     siteUrl: 'https://www.carrier.com/residential/en/us/',
@@ -199,7 +196,6 @@ export const systemDetails: Record<string, SystemDetail> = {
       { date: 'Oct 2025', note: 'Assessment flag: reduced recovery rate from sediment buildup; annual flushing scheduled.' },
     ],
     outlook: '1–3 years of expected life left. 2028 capital plan budgets replacement — consider tankless at swap ($1,800–3,400).',
-    photos: ['Tank & expansion valve', 'Data plate & serial'],
     manufacturer: 'Rheem',
     manualUrl: 'https://www.rheem.com/support/',
     siteUrl: 'https://www.rheem.com/',
@@ -217,7 +213,6 @@ export const systemDetails: Record<string, SystemDetail> = {
       { date: 'Oct 2025', note: 'Assessment: shingles in good condition, no granule loss; flashing repair verified.' },
     ],
     outlook: '15+ years of life left. Inspection & gutter repair visit confirmed for Aug 21 keeps the manufacturer warranty documentation current.',
-    photos: ['South slope overview', 'Chimney flashing detail'],
     manufacturer: 'GAF',
     manualUrl: 'https://www.gaf.com/en-us/for-homeowners/warranties',
     siteUrl: 'https://www.gaf.com/en-us/roofing-materials/residential-roofing-materials/shingles/timberline-hdz-shingles',
@@ -235,7 +230,6 @@ export const systemDetails: Record<string, SystemDetail> = {
       { date: 'Oct 2024', note: 'Panel schedule re-labeled during assessment.' },
     ],
     outlook: 'Healthy. AFCI breakers for bedrooms recommended at next electrical work — noted for the 2027 plan.',
-    photos: ['Panel — cover on', 'Breaker schedule'],
     manufacturer: 'Square D (Schneider Electric)',
     manualUrl: 'https://www.se.com/us/en/product-range/755-square-d-qo/',
     siteUrl: 'https://www.se.com/us/en/',
@@ -252,7 +246,6 @@ export const systemDetails: Record<string, SystemDetail> = {
       { date: 'Mar 2023', note: 'Installed new; registered for GE parts & labor warranty through Mar 2028.' },
     ],
     outlook: 'New condition. Condenser coil cleaning recommended annually — bundled into your spring maintenance visit.',
-    photos: ['Unit — kitchen', 'Model tag inside door'],
     manufacturer: 'GE Appliances',
     manualUrl: 'https://www.geappliances.com/support/manuals/',
     siteUrl: 'https://www.geappliances.com/',
@@ -269,7 +262,6 @@ export const systemDetails: Record<string, SystemDetail> = {
       { date: 'Jun 2022', note: 'Installed new; Bosch parts & labor warranty registered.' },
     ],
     outlook: 'Good condition. Extended coverage through Bosch is available before the factory warranty lapses — tracked on the Warranties page.',
-    photos: ['Unit — kitchen', 'Model tag on door edge'],
     manufacturer: 'Bosch Home',
     manualUrl: 'https://www.bosch-home.com/us/service/get-support/manuals',
     siteUrl: 'https://www.bosch-home.com/us/',

@@ -1,6 +1,7 @@
 import type { CSSProperties, ReactNode } from 'react'
 import { IOSDevice } from '../components/IOSFrame'
-import { Kicker } from '../components/Shell'
+import { Kicker, SysThumb } from '../components/Shell'
+import { PHOTO_CREDIT, gallery } from '../photos'
 
 const screenPad: CSSProperties = {
   fontFamily: 'var(--font-body)',
@@ -30,8 +31,14 @@ function MobileHome() {
         </span>
         <span className="tag tag-accent">MEMBER</span>
       </div>
-      <p className="text-muted" style={{ fontSize: 12, margin: '16px 0 2px' }}>1847 Maple Grove Lane</p>
-      <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+      <figure className="phone-hero">
+        <img src={gallery[0].src} alt="1847 Maple Grove Lane — southeast elevation" loading="lazy" decoding="async" />
+        <figcaption>
+          <span className="phone-hero-addr">1847 Maple Grove Lane</span>
+          <span className="phone-hero-sub">Single-family · Built 1998</span>
+        </figcaption>
+      </figure>
+      <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginTop: 16 }}>
         <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: 72, lineHeight: 1 }}>82</span>
         <span className="text-muted" style={{ fontSize: 13 }}>/ 100 property score</span>
       </div>
@@ -76,8 +83,9 @@ function MobilePassport() {
       </div>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         {rows.map((r) => (
-          <div key={r.name} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 0', borderBottom: '1px solid var(--color-divider)' }}>
-            <div>
+          <div key={r.name} style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '12px 0', borderBottom: '1px solid var(--color-divider)' }}>
+            <SysThumb name={r.name} />
+            <div style={{ flex: 1, minWidth: 0 }}>
               <p style={{ fontSize: 14, fontWeight: 600, margin: 0 }}>{r.name}</p>
               <p className="text-muted" style={{ fontSize: 12, margin: 0 }}>{r.detail}</p>
             </div>
@@ -140,6 +148,12 @@ export default function Mobile() {
         <Phone caption="Property Passport — systems"><MobilePassport /></Phone>
         <Phone caption="Service request — one tap to your advisor"><MobileRequest /></Phone>
       </div>
+      <p className="text-muted" style={{ fontSize: 12, marginTop: 32 }}>
+        Property photos:{' '}
+        <a href={PHOTO_CREDIT.sourceUrl} target="_blank" rel="noreferrer">{PHOTO_CREDIT.author}</a>,{' '}
+        <a href={PHOTO_CREDIT.licenseUrl} target="_blank" rel="noreferrer">{PHOTO_CREDIT.license}</a>
+        {' '}· system photos credited on each record.
+      </p>
     </main>
   )
 }

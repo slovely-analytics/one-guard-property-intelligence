@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import type { CSSProperties } from 'react'
-import { ExtLink, Kicker, Rule } from '../components/Shell'
+import { ExtLink, Kicker, Rule, SysThumb } from '../components/Shell'
 import { SideDrawer } from '../components/Overlays'
 import { capital, history, property, systemDetails, systems } from '../data'
 import type { SystemRecord } from '../data'
+import { PHOTO_CREDIT, creditsFor, passportStrip, systemPhotos } from '../photos'
 import { openChat, toast, useDemo } from '../store'
 
 const main: CSSProperties = { maxWidth: 1120, width: '100%', margin: '0 auto', padding: '40px 32px 64px' }
@@ -26,7 +27,18 @@ export default function Passport() {
         A permanent record of every major system in your home — install dates, condition, warranties and full service history.
       </p>
       <Rule style={{ margin: '24px 0' }} />
-      <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
+      <h6 style={{ marginBottom: 8 }}>Property photos</h6>
+      <div className="photo-strip">
+        {passportStrip.map((s) => (
+          <img key={s.src} src={s.src} alt={`${s.title} — ${s.note}`} loading="lazy" decoding="async" />
+        ))}
+      </div>
+      <p className="text-muted" style={{ fontSize: 12, margin: '8px 0 0' }}>
+        Captured at the Oct 2025 Home Health Assessment · Photo:{' '}
+        <a href={PHOTO_CREDIT.sourceUrl} target="_blank" rel="noreferrer">{PHOTO_CREDIT.author}</a>,{' '}
+        <a href={PHOTO_CREDIT.licenseUrl} target="_blank" rel="noreferrer">{PHOTO_CREDIT.license}</a>
+      </p>
+      <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginTop: 40 }}>
         <h4 style={{ margin: 0 }}>Major systems</h4>
         <button className="btn btn-secondary" style={{ fontSize: 13 }} onClick={exportPdf}>Export PDF</button>
       </div>
@@ -40,7 +52,12 @@ export default function Passport() {
         <tbody>
           {systems.map((s) => (
             <tr key={s.name} className="row-link" onClick={() => setSelected(s)}>
-              <td><strong>{s.name}</strong></td>
+              <td>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <SysThumb name={s.name} />
+                  <strong>{s.name}</strong>
+                </div>
+              </td>
               <td className="text-muted">{s.model}</td>
               <td>{s.installed}</td>
               <td>{s.life}</td>
@@ -102,15 +119,46 @@ export default function Passport() {
           </div>
 
           <h6 style={{ marginBottom: 8 }}>Photos</h6>
-          <div className="photo-grid">
-            {(detail?.photos ?? ['Unit overview', 'Data plate']).map((cap) => (
-              <div key={cap} className="photo-ph">
-                <span className="glyph">📷</span>
-                <span className="cap">{cap}</span>
-                <span className="soon">Photo coming soon</span>
-              </div>
-            ))}
-          </div>
+          {(() => {
+            const photos = systemPhotos[selected.name] ?? [{ cap: 'Unit overview' }, { cap: 'Data plate' }]
+            const credits = creditsFor(photos)
+            return (
+              <>
+                <div className="photo-grid">
+                  {photos.map((p) =>
+                    p.src ? (
+                      <figure key={p.cap} className="photo-real" style={{ margin: 0 }}>
+                        <img
+                          src={p.src}
+                          alt={`${selected.name} — ${p.cap}`}
+                          style={p.focus ? { objectPosition: p.focus } : undefined}
+                          loading="lazy"
+                          decoding="async"
+                        />
+                        <figcaption className="cap">{p.cap}</figcaption>
+                      </figure>
+                    ) : (
+                      <div key={p.cap} className="photo-ph">
+                        <span className="glyph">📷</span>
+                        <span className="cap">{p.cap}</span>
+                        <span className="soon">Photo coming soon</span>
+                      </div>
+                    ),
+                  )}
+                </div>
+                {credits.length > 0 && (
+                  <p className="text-muted" style={{ fontSize: 11, margin: '6px 0 0' }}>
+                    {credits.map((c, i) => (
+                      <span key={c.author}>
+                        {i > 0 && ' · '}
+                        <a href={c.url} target="_blank" rel="noreferrer">{c.author}</a> ({c.license})
+                      </span>
+                    ))}
+                  </p>
+                )}
+              </>
+            )
+          })()}
 
           <h6 style={{ margin: '24px 0 4px' }}>Model details</h6>
           <table className="table" style={{ fontSize: 13 }}>

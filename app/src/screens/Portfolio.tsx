@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { CSSProperties } from 'react'
 import { Kicker, Rule } from '../components/Shell'
 import { Modal } from '../components/Overlays'
+import { portfolioThumbs } from '../photos'
 import { addProperty, toast, useDemo } from '../store'
 import type { PortfolioRow } from '../store'
 
@@ -61,7 +62,31 @@ export default function Portfolio() {
         <tbody>
           {portfolio.map((pp) => (
             <tr key={pp.addr} className="row-link" onClick={() => openRow(pp)}>
-              <td><strong>{pp.addr}</strong></td>
+              <td>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  {portfolioThumbs[pp.addr] ? (
+                    <span
+                      className="prop-thumb"
+                      role="img"
+                      aria-label={`${pp.addr} exterior`}
+                      style={{
+                        backgroundImage: `url(${portfolioThumbs[pp.addr].src})`,
+                        backgroundPosition: portfolioThumbs[pp.addr].focus,
+                        backgroundSize: portfolioThumbs[pp.addr].zoom,
+                      }}
+                    />
+                  ) : (
+                    <span
+                      className="prop-thumb"
+                      aria-hidden
+                      style={{ background: 'var(--color-neutral-200)', display: 'grid', placeItems: 'center', fontSize: 16 }}
+                    >
+                      🏠
+                    </span>
+                  )}
+                  <strong>{pp.addr}</strong>
+                </div>
+              </td>
               <td className="text-muted">{pp.type}</td>
               <td><span style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: 16 }}>{pp.score ?? '—'}</span></td>
               <td>{rowTasks(pp)}</td>

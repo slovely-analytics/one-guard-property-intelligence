@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import type { CSSProperties } from 'react'
+import Gallery from '../components/Gallery'
 import { ExtLink, Rule } from '../components/Shell'
 import { Modal, RequestServiceModal } from '../components/Overlays'
 import { property, taskGuides } from '../data'
+import { gallery } from '../photos'
 import {
   markTaskDone,
   openChat,
@@ -50,6 +52,7 @@ export default function Dashboard() {
         <span className="text-muted" style={{ fontSize: 14 }}>{property.summary}</span>
       </div>
       <Rule style={{ margin: '24px 0' }} />
+      <Gallery slides={gallery} height={400} style={{ marginBottom: 32 }} />
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 0, borderBottom: '2px solid var(--color-divider)' }}>
         <div style={{ padding: '20px 24px 20px 0', borderRight: '1px solid var(--color-divider)' }}>
           <h6 style={{ marginBottom: 8 }}>Property score</h6>
