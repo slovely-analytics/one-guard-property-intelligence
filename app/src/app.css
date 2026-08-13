@@ -265,6 +265,12 @@ tr.row-link:hover td { background: color-mix(in srgb, var(--color-text) 5%, tran
 @media (max-width: 640px) {
   .page-main { padding: 24px 16px 40px !important; }
 
+  /* Grid/flex items default to min-width:auto, which lets their intrinsic
+     content width (a long unwrapped link, a stat number) force the track
+     wider than the container instead of shrinking — the actual cause of
+     the page overflowing to the right. Reset it inside the page body. */
+  main * { min-width: 0; }
+
   .nav {
     flex-wrap: nowrap;
     overflow-x: auto;
