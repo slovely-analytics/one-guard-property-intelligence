@@ -1,3 +1,4 @@
+import { AdvisorChat, ToastHost } from './components/Overlays'
 import { Footer, Nav } from './components/Shell'
 import { useHashRoute } from './routing/useHashRoute'
 import Dashboard from './screens/Dashboard'
@@ -25,6 +26,8 @@ export default function App() {
       {route === '/mobile' && <Mobile />}
       {route === '/signup' && <Onboarding />}
       <Footer />
+      <AdvisorChat />
+      <ToastHost />
     </div>
   )
 }

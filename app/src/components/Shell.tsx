@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react'
 import type { Route } from '../routing/useHashRoute'
+import { resetDemo } from '../store'
 
 const navLinks: Array<{ path: Route; label: string }> = [
   { path: '/', label: 'Dashboard' },
@@ -44,9 +45,18 @@ export function Footer() {
     >
       <span>ONE GUARD Property Intelligence</span>
       <span>Demo — sample data</span>
+      <a href="#" onClick={(e) => { e.preventDefault(); resetDemo() }}>Reset demo data</a>
       <a href="#/mobile" style={{ marginLeft: 'auto' }}>Mobile app →</a>
       <a href="#/signup">Onboarding →</a>
     </footer>
+  )
+}
+
+export function ExtLink({ href, children, style }: { href: string; children: ReactNode; style?: CSSProperties }) {
+  return (
+    <a href={href} target="_blank" rel="noreferrer" style={{ whiteSpace: 'nowrap', ...style }}>
+      {children} ↗
+    </a>
   )
 }
 

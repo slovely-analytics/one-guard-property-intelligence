@@ -136,6 +136,169 @@ export const systems: SystemRecord[] = [
   { name: 'Dishwasher', model: 'Bosch 300 Series', installed: '2022', life: '7–9 yrs', cond: 'GOOD', condClass: 'tag-neutral', warranty: 'Bosch — Jun 2027' },
 ]
 
+export interface SystemDetail {
+  serial: string
+  specs: Array<{ label: string; value: string }>
+  brief: Array<{ date: string; note: string }>
+  outlook: string
+  photos: string[]
+  manufacturer: string
+  manualUrl: string
+  siteUrl: string
+}
+
+// Keyed by SystemRecord.name — drives the Passport system-record side window.
+export const systemDetails: Record<string, SystemDetail> = {
+  'HVAC — condenser': {
+    serial: 'CN-2008-4471K',
+    specs: [
+      { label: 'Capacity', value: '3 ton (36,000 BTU)' },
+      { label: 'Refrigerant', value: 'R-410A' },
+      { label: 'Efficiency', value: '13 SEER (as installed)' },
+      { label: 'Location', value: 'East side yard, concrete pad' },
+    ],
+    brief: [
+      { date: 'Jun 2026', note: 'A/C tune-up — compressor amp draw 12% above spec; refrigerant level OK. Comfort Air Mechanical.' },
+      { date: 'Jul 2025', note: 'Run capacitor replaced after intermittent hard starts. $210.' },
+      { date: 'Oct 2025', note: 'Assessment flag: end of expected life; replacement budgeted in 2027 capital plan.' },
+    ],
+    outlook: 'Replacement project is active — quotes were sourced and the install is being coordinated by Dana. New unit should cut cooling costs ~22%.',
+    photos: ['Unit — east side yard', 'Data plate & serial'],
+    manufacturer: 'Carrier',
+    manualUrl: 'https://www.carrier.com/residential/en/us/products/air-conditioners/',
+    siteUrl: 'https://www.carrier.com/residential/en/us/',
+  },
+  'HVAC — furnace': {
+    serial: 'FN-2016-88231',
+    specs: [
+      { label: 'Capacity', value: '80,000 BTU input' },
+      { label: 'Efficiency', value: '96.5% AFUE, two-stage' },
+      { label: 'Fuel', value: 'Natural gas' },
+      { label: 'Location', value: 'Attic, center platform' },
+    ],
+    brief: [
+      { date: 'Nov 2025', note: 'Pre-season inspection & filter service — heat exchanger clean, ignition normal. Comfort Air Mechanical. $149.' },
+      { date: 'Nov 2024', note: 'Flame sensor cleaned; blower balanced.' },
+    ],
+    outlook: 'On track. Heat-exchanger warranty runs through 2036; keep annual tune-ups to maintain coverage.',
+    photos: ['Furnace cabinet — attic', 'Data plate & serial'],
+    manufacturer: 'Carrier',
+    manualUrl: 'https://www.carrier.com/residential/en/us/products/furnaces/',
+    siteUrl: 'https://www.carrier.com/residential/en/us/',
+  },
+  'Water heater': {
+    serial: 'WH-2015-30157',
+    specs: [
+      { label: 'Capacity', value: '50 gallon tank' },
+      { label: 'Fuel', value: 'Natural gas, atmospheric vent' },
+      { label: 'Recovery', value: '40 gal/hr @ 90°F rise' },
+      { label: 'Location', value: 'Garage, drain pan installed' },
+    ],
+    brief: [
+      { date: 'Sep 2025', note: 'Annual sediment flush; anode rod inspected — ~40% depleted.' },
+      { date: 'Oct 2025', note: 'Assessment flag: reduced recovery rate from sediment buildup; annual flushing scheduled.' },
+    ],
+    outlook: '1–3 years of expected life left. 2028 capital plan budgets replacement — consider tankless at swap ($1,800–3,400).',
+    photos: ['Tank & expansion valve', 'Data plate & serial'],
+    manufacturer: 'Rheem',
+    manualUrl: 'https://www.rheem.com/support/',
+    siteUrl: 'https://www.rheem.com/',
+  },
+  'Roof': {
+    serial: 'Lot #GAF-TL-14-2207',
+    specs: [
+      { label: 'Material', value: 'GAF Timberline HDZ, 30-yr architectural shingle' },
+      { label: 'Pitch', value: '6:12, gable' },
+      { label: 'Underlayment', value: 'Synthetic, ice & water shield at valleys' },
+      { label: 'Penetrations', value: '2 vents, 1 chimney, 3 pipe boots' },
+    ],
+    brief: [
+      { date: 'Mar 2026', note: 'Chimney flashing leak repaired and sealed. Summit Roofing Co. $425.' },
+      { date: 'Oct 2025', note: 'Assessment: shingles in good condition, no granule loss; flashing repair verified.' },
+    ],
+    outlook: '15+ years of life left. Inspection & gutter repair visit confirmed for Aug 21 keeps the manufacturer warranty documentation current.',
+    photos: ['South slope overview', 'Chimney flashing detail'],
+    manufacturer: 'GAF',
+    manualUrl: 'https://www.gaf.com/en-us/for-homeowners/warranties',
+    siteUrl: 'https://www.gaf.com/en-us/roofing-materials/residential-roofing-materials/shingles/timberline-hdz-shingles',
+  },
+  'Electrical panel': {
+    serial: 'SQ-D-1998-QO140',
+    specs: [
+      { label: 'Rating', value: '200A service' },
+      { label: 'Spaces', value: '40 (6 open)' },
+      { label: 'Grounding', value: 'Rod + bonded water line' },
+      { label: 'Location', value: 'Garage, west wall' },
+    ],
+    brief: [
+      { date: 'Oct 2025', note: 'Thermal scan at annual assessment — no hot spots, all terminations tight.' },
+      { date: 'Oct 2024', note: 'Panel schedule re-labeled during assessment.' },
+    ],
+    outlook: 'Healthy. AFCI breakers for bedrooms recommended at next electrical work — noted for the 2027 plan.',
+    photos: ['Panel — cover on', 'Breaker schedule'],
+    manufacturer: 'Square D (Schneider Electric)',
+    manualUrl: 'https://www.se.com/us/en/product-range/755-square-d-qo/',
+    siteUrl: 'https://www.se.com/us/en/',
+  },
+  'Refrigerator': {
+    serial: 'GE-2023-PVD28-6642',
+    specs: [
+      { label: 'Capacity', value: '27.9 cu ft, French door' },
+      { label: 'Features', value: 'Dual ice maker, hands-free autofill' },
+      { label: 'Water filter', value: 'XWFE — replace every 6 months' },
+    ],
+    brief: [
+      { date: 'Mar 2026', note: 'Water filter replaced (DIY). Next due Sep 2026.' },
+      { date: 'Mar 2023', note: 'Installed new; registered for GE parts & labor warranty through Mar 2028.' },
+    ],
+    outlook: 'New condition. Condenser coil cleaning recommended annually — bundled into your spring maintenance visit.',
+    photos: ['Unit — kitchen', 'Model tag inside door'],
+    manufacturer: 'GE Appliances',
+    manualUrl: 'https://www.geappliances.com/support/manuals/',
+    siteUrl: 'https://www.geappliances.com/',
+  },
+  'Dishwasher': {
+    serial: 'BSH-2022-63W55-118',
+    specs: [
+      { label: 'Model', value: 'SHEM63W55N, 300 Series' },
+      { label: 'Noise', value: '44 dBA' },
+      { label: 'Racks', value: '3rd rack, adjustable middle' },
+    ],
+    brief: [
+      { date: 'Dec 2025', note: 'Drain filter cleaned (DIY); no repairs to date.' },
+      { date: 'Jun 2022', note: 'Installed new; Bosch parts & labor warranty registered.' },
+    ],
+    outlook: 'Good condition. Extended coverage through Bosch is available before the factory warranty lapses — tracked on the Warranties page.',
+    photos: ['Unit — kitchen', 'Model tag on door edge'],
+    manufacturer: 'Bosch Home',
+    manualUrl: 'https://www.bosch-home.com/us/service/get-support/manuals',
+    siteUrl: 'https://www.bosch-home.com/us/',
+  },
+}
+
+// Manufacturer support portals, matched by warranty-provider name at render time
+// (a lookup, not stored state — so persisted demo data needs no migration and
+// user-added warranties pick up links automatically when the provider matches).
+const providerSupport: Array<{ match: RegExp; url: string }> = [
+  { match: /\bGE\b/i, url: 'https://www.geappliances.com/support/' },
+  { match: /bosch/i, url: 'https://www.bosch-home.com/us/service' },
+  { match: /\bGAF\b/i, url: 'https://www.gaf.com/en-us/for-homeowners/warranties' },
+  { match: /\bLG\b/i, url: 'https://www.lg.com/us/support' },
+  { match: /carrier/i, url: 'https://www.carrier.com/residential/en/us/support/' },
+  { match: /rheem/i, url: 'https://www.rheem.com/support/' },
+]
+
+export function providerSupportUrl(provider: string): string | undefined {
+  return providerSupport.find((p) => p.match.test(provider))?.url
+}
+
+// Owner-manual / how-to links for DIY-able maintenance tasks, keyed by task id.
+export const taskGuides: Record<string, { label: string; url: string }> = {
+  filters: { label: 'Carrier filter guide', url: 'https://www.carrier.com/residential/en/us/products/furnaces/' },
+  'wh-flush': { label: 'Rheem maintenance guide', url: 'https://www.rheem.com/support/' },
+  furnace: { label: 'Carrier furnace care', url: 'https://www.carrier.com/residential/en/us/products/furnaces/' },
+}
+
 export const history: HistoryEntry[] = [
   { date: 'Jun 2026', what: 'A/C tune-up & refrigerant check', who: 'Comfort Air Mechanical', cost: '$189' },
   { date: 'Mar 2026', what: 'Roof flashing repair (chimney)', who: 'Summit Roofing Co.', cost: '$425' },

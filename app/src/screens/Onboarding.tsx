@@ -1,14 +1,18 @@
 import { useState } from 'react'
 import type { CSSProperties } from 'react'
 import { onboardingSystems, plans } from '../data'
+import { toast } from '../store'
 
 const main: CSSProperties = { maxWidth: 920, width: '100%', margin: '0 auto', padding: '8px 32px 64px' }
 const stepLabels = ['Plan', 'Property', 'Systems', 'Done']
 
 export default function Onboarding() {
   const [step, setStep] = useState(1)
+  const [planName, setPlanName] = useState('Guard')
+  const [booked, setBooked] = useState(false)
   const next = () => setStep((n) => Math.min(n + 1, 4))
   const back = () => setStep((n) => Math.max(n - 1, 1))
+  const plan = plans.find((p) => p.name === planName) ?? plans[1]
 
   return (
     <div>
@@ -37,7 +41,7 @@ export default function Onboarding() {
                 key={p.name}
                 className="card"
                 style={{ borderTop: `4px solid ${p.primary ? 'var(--color-accent)' : 'var(--color-neutral-400)'}`, cursor: 'pointer' }}
-                onClick={next}
+                onClick={() => { setPlanName(p.name); next() }}
               >
                 <span className="card-kicker">{p.kicker}</span>
                 <span className="card-title" style={{ fontSize: 22 }}>{p.name}</span>
@@ -167,13 +171,19 @@ export default function Onboarding() {
                 ))}
               </div>
               <div style={{ display: 'flex', gap: 12, marginTop: 32 }}>
-                <button className="btn btn-primary">Book assessment — Aug 26</button>
+                {booked ? (
+                  <span className="tag tag-accent" style={{ alignSelf: 'center' }}>ASSESSMENT BOOKED · AUG 26, 9:00 AM</span>
+                ) : (
+                  <button className="btn btn-primary" onClick={() => { setBooked(true); toast('Assessment booked for Aug 26, 9:00 AM. Calendar invite sent.') }}>
+                    Book assessment — Aug 26
+                  </button>
+                )}
                 <a className="btn btn-secondary" href="#/">Go to dashboard</a>
               </div>
             </div>
             <div className="card elev-md">
               <span className="card-kicker">Your membership</span>
-              <span className="card-title">Guard plan — $49/mo</span>
+              <span className="card-title">{plan.name} plan — {plan.price}/mo</span>
               <table className="table" style={{ fontSize: 13 }}>
                 <tbody>
                   <tr><td className="text-muted">Property</td><td>1847 Maple Grove Lane</td></tr>
