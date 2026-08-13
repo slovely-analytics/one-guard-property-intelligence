@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/modernist-9b5adedf-e3bd-466f-ae4c-ffdb37b63ecf/styles.css">
+  <script src="_ds/modernist-9b5adedf-e3bd-466f-ae4c-ffdb37b63ecf/_ds_bundle.js"></script>
+  <style>a{color:var(--color-accent)}a:hover{color:var(--color-accent-600)}</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column">
+  <nav class="nav">
+    <span class="nav-brand" style="display:flex;align-items:center;gap:10px"><span style="display:inline-block;width:14px;height:14px;background:var(--color-accent)"></span>ONE GUARD <span style="font-weight:400;color:var(--color-neutral-600)">Property Intelligence</span></span>
+    <span class="text-muted" style="font-size:13px">Already a member? <a href="One Guard Property Intelligence.dc.html">Sign in</a></span>
+  </nav>
+
+  <div style="max-width:920px;width:100%;margin:0 auto;padding:40px 32px 24px">
+    <div style="display:flex;gap:0;border-bottom:2px solid var(--color-divider)">
+      <sc-for list="{{ stepper }}" as="st" hint-placeholder-count="4">
+        <div style="flex:1;padding:0 16px 12px 0">
+          <div style="height:4px;background:{{ st.barColor }}"></div>
+          <div style="font-size:12px;margin-top:8px;color:{{ st.textColor }}"><span style="font-family:var(--font-heading);font-weight:800">{{ st.num }}</span> {{ st.label }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <sc-if value="{{ show1 }}" hint-placeholder-val="{{ true }}">
+  <main data-screen-label="Onboarding 1: Plan" style="max-width:920px;width:100%;margin:0 auto;padding:8px 32px 64px">
+    <h1 style="margin:0 0 8px">Choose your membership</h1>
+    <p class="text-muted" style="max-width:560px;margin:0 0 32px">Every plan includes your Property Passport™, annual Home Health Assessment and a dedicated advisor. Cancel anytime.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;align-items:stretch">
+      <sc-for list="{{ plans }}" as="p" hint-placeholder-count="3">
+        <div class="card" style="border-top:4px solid {{ p.topColor }};cursor:pointer" onClick="{{ p.pick }}">
+          <span class="card-kicker">{{ p.kicker }}</span>
+          <span class="card-title" style="font-size:22px">{{ p.name }}</span>
+          <div style="display:flex;align-items:baseline;gap:4px"><span style="font-family:var(--font-heading);font-weight:800;font-size:36px">{{ p.price }}</span><span class="text-muted" style="font-size:13px">/mo</span></div>
+          <p class="card-body" style="font-size:13px">{{ p.blurb }}</p>
+          <div style="display:flex;flex-direction:column;gap:6px;font-size:13px;margin:4px 0 8px">
+            <sc-for list="{{ p.features }}" as="f" hint-placeholder-count="4">
+              <div style="display:flex;gap:8px;align-items:baseline"><span style="color:var(--color-accent);font-weight:800">—</span><span>{{ f }}</span></div>
+            </sc-for>
+          </div>
+          <button class="btn {{ p.btnClass }} btn-block">{{ p.cta }}</button>
+        </div>
+      </sc-for>
+    </div>
+    <p class="text-muted" style="font-size:13px;margin-top:24px">Managing multiple properties? <a href="#" onClick="{{ noop }}">See portfolio pricing for property managers →</a></p>
+  </main>
+  </sc-if>
+
+  <sc-if value="{{ show2 }}" hint-placeholder-val="{{ false }}">
+  <main data-screen-label="Onboarding 2: Property" style="max-width:920px;width:100%;margin:0 auto;padding:8px 32px 64px">
+    <h1 style="margin:0 0 8px">Tell us about your property</h1>
+    <p class="text-muted" style="max-width:560px;margin:0 0 32px">We pre-fill what we can from public records — check it and correct anything that's off.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="field"><label>Property address</label><input class="input" defaultValue="1847 Maple Grove Lane, Fort Worth, TX 76107"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="field"><label>Year built</label><input class="input" defaultValue="1998"></div>
+          <div class="field"><label>Square feet</label><input class="input" defaultValue="2,340"></div>
+        </div>
+        <div class="field"><label>Property type</label>
+          <div class="seg" style="width:100%">
+            <label class="seg-opt" style="flex:1"><input type="radio" name="pt" defaultChecked="{{ true }}">Single-family</label>
+            <label class="seg-opt" style="flex:1"><input type="radio" name="pt">Townhome</label>
+            <label class="seg-opt" style="flex:1"><input type="radio" name="pt">Condo</label>
+            <label class="seg-opt" style="flex:1"><input type="radio" name="pt">Multi-unit</label>
+          </div>
+        </div>
+        <div class="field"><label>You are the…</label>
+          <div style="display:flex;gap:24px;padding:4px 0">
+            <label class="radio"><input type="radio" name="rl" defaultChecked="{{ true }}"><span class="dot"></span>Owner-occupant</label>
+            <label class="radio"><input type="radio" name="rl"><span class="dot"></span>Landlord</label>
+            <label class="radio"><input type="radio" name="rl"><span class="dot"></span>Property manager</label>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <span class="card-kicker">From public records</span>
+        <span class="card-title">1847 Maple Grove Lane</span>
+        <p class="card-body" style="font-size:13px">Built 1998 · 2,340 sq ft · 4 bed / 2.5 bath · Last sold 2019. We'll verify systems at your first assessment.</p>
+        <div class="card-meta"><span class="tag tag-neutral">TARRANT COUNTY</span><span>Parcel 04-118-2207</span></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:12px;margin-top:40px">
+      <button class="btn btn-secondary" onClick="{{ back }}">← Back</button>
+      <button class="btn btn-primary" onClick="{{ next }}">Continue</button>
+    </div>
+  </main>
+  </sc-if>
+
+  <sc-if value="{{ show3 }}" hint-placeholder-val="{{ false }}">
+  <main data-screen-label="Onboarding 3: Systems" style="max-width:920px;width:100%;margin:0 auto;padding:8px 32px 64px">
+    <h1 style="margin:0 0 8px">Start your Property Passport™</h1>
+    <p class="text-muted" style="max-width:560px;margin:0 0 32px">Tap what you know — skip the rest. Your first assessment fills in every gap, model numbers included.</p>
+    <div style="display:flex;flex-direction:column">
+      <sc-for list="{{ systems }}" as="s" hint-placeholder-count="5">
+        <div style="display:grid;grid-template-columns:1fr 220px 140px;gap:24px;align-items:center;padding:16px 0;border-bottom:1px solid var(--color-divider)">
+          <div><strong style="font-size:14px">{{ s.name }}</strong><p class="text-muted" style="font-size:13px;margin:2px 0 0">{{ s.hint }}</p></div>
+          <div class="field" style="margin:0"><input class="input" placeholder="Install year (approx.)" defaultValue="{{ s.year }}"></div>
+          <span class="tag {{ s.tagClass }}" style="justify-self:start">{{ s.status }}</span>
+        </div>
+      </sc-for>
+    </div>
+    <p class="text-muted" style="font-size:13px;margin-top:16px">Don't know a year? Leave it blank — our inspector reads it off the data plate.</p>
+    <div style="display:flex;gap:12px;margin-top:32px">
+      <button class="btn btn-secondary" onClick="{{ back }}">← Back</button>
+      <button class="btn btn-primary" onClick="{{ next }}">Continue</button>
+      <button class="btn btn-ghost" onClick="{{ next }}">Skip for now</button>
+    </div>
+  </main>
+  </sc-if>
+
+  <sc-if value="{{ show4 }}" hint-placeholder-val="{{ false }}">
+  <main data-screen-label="Onboarding 4: Done" style="max-width:920px;width:100%;margin:0 auto;padding:8px 32px 64px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start">
+      <div>
+        <h6 style="color:var(--color-accent)">Membership active</h6>
+        <h1 style="margin:0 0 8px">Welcome, member.</h1>
+        <p class="text-muted" style="max-width:440px">Your Property Passport is started with 5 systems. One thing left: book your first Home Health Assessment — it's included.</p>
+        <div style="display:flex;flex-direction:column;gap:0;margin-top:24px;border-top:2px solid var(--color-divider)">
+          <div style="display:grid;grid-template-columns:32px 1fr;gap:16px;padding:16px 0;border-bottom:1px solid var(--color-divider)">
+            <span style="font-family:var(--font-heading);font-weight:800;font-size:20px;color:var(--color-accent)">1</span>
+            <div><strong style="font-size:14px">Book your assessment</strong><p class="text-muted" style="font-size:13px;margin:2px 0 0">74 checkpoints, ~2 hours. First available: Aug 26.</p></div>
+          </div>
+          <div style="display:grid;grid-template-columns:32px 1fr;gap:16px;padding:16px 0;border-bottom:1px solid var(--color-divider)">
+            <span style="font-family:var(--font-heading);font-weight:800;font-size:20px">2</span>
+            <div><strong style="font-size:14px">Meet your advisor</strong><p class="text-muted" style="font-size:13px;margin:2px 0 0">Dana Whitfield reaches out within one business day.</p></div>
+          </div>
+          <div style="display:grid;grid-template-columns:32px 1fr;gap:16px;padding:16px 0;border-bottom:1px solid var(--color-divider)">
+            <span style="font-family:var(--font-heading);font-weight:800;font-size:20px">3</span>
+            <div><strong style="font-size:14px">Get your score & plan</strong><p class="text-muted" style="font-size:13px;margin:2px 0 0">Property score, findings and a maintenance calendar within 48 hours of the visit.</p></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:12px;margin-top:32px">
+          <button class="btn btn-primary">Book assessment — Aug 26</button>
+          <a class="btn btn-secondary" href="One Guard Property Intelligence.dc.html">Go to dashboard</a>
+        </div>
+      </div>
+      <div class="card elev-md">
+        <span class="card-kicker">Your membership</span>
+        <span class="card-title">Guard plan — $49/mo</span>
+        <table class="table" style="font-size:13px">
+          <tbody>
+            <tr><td class="text-muted">Property</td><td>1847 Maple Grove Lane</td></tr>
+            <tr><td class="text-muted">Annual assessment</td><td>Included</td></tr>
+            <tr><td class="text-muted">Advisor</td><td>Dana Whitfield</td></tr>
+            <tr><td class="text-muted">Systems on file</td><td>5 of ~14</td></tr>
+            <tr><td class="text-muted">First billing</td><td>Sep 12, 2026</td></tr>
+          </tbody>
+        </table>
+        <button class="btn btn-ghost" onClick="{{ restart }}" style="align-self:flex-start">Restart demo flow</button>
+      </div>
+    </div>
+  </main>
+  </sc-if>
+
+  <footer style="border-top:2px solid var(--color-divider);padding:16px 32px;display:flex;gap:24px;font-size:12px;margin-top:auto" class="text-muted">
+    <span>ONE GUARD Property Intelligence</span><span>Mockup — sample data</span><a href="One Guard Property Intelligence.dc.html" style="margin-left:auto">Web dashboard →</a><a href="One Guard Mobile.dc.html">Mobile app →</a>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { step: 1 };
+  renderVals() {
+    const step = this.state.step;
+    const go = (n) => (e) => { if (e && e.preventDefault) e.preventDefault(); this.setState({ step: n }); };
+    const labels = ['Plan', 'Property', 'Systems', 'Done'];
+    return {
+      show1: step === 1, show2: step === 2, show3: step === 3, show4: step === 4,
+      next: go(Math.min(step + 1, 4)), back: go(Math.max(step - 1, 1)), restart: go(1), noop: (e) => e.preventDefault(),
+      stepper: labels.map((label, i) => ({
+        num: String(i + 1).padStart(2, '0'), label,
+        barColor: i + 1 <= step ? 'var(--color-accent)' : 'var(--color-neutral-300)',
+        textColor: i + 1 <= step ? 'var(--color-text)' : 'var(--color-neutral-500)',
+      })),
+      plans: [
+        { name: 'Passport', kicker: 'Get organized', price: '$19', blurb: 'The digital record, self-serve.', btnClass: 'btn-secondary', cta: 'Choose Passport', topColor: 'var(--color-neutral-400)', pick: go(2),
+          features: ['Property Passport™', 'Maintenance reminders', 'Warranty tracking', 'Document vault'] },
+        { name: 'Guard', kicker: 'Most popular', price: '$49', blurb: 'Proactive management with a human advisor.', btnClass: 'btn-primary', cta: 'Choose Guard', topColor: 'var(--color-accent)', pick: go(2),
+          features: ['Everything in Passport', 'Annual Home Health Assessment', 'Property score & capital plan', 'Dedicated advisor', 'Vendor coordination'] },
+        { name: 'Guard+', kicker: 'Full service', price: '$99', blurb: 'For landlords and busy owners.', btnClass: 'btn-secondary', cta: 'Choose Guard+', topColor: 'var(--color-neutral-400)', pick: go(2),
+          features: ['Everything in Guard', 'Semi-annual assessments', 'Priority scheduling', 'Claims filed for you', 'Multi-property discount'] },
+      ],
+      systems: [
+        { name: 'HVAC', hint: 'Heating & cooling — condenser and furnace', year: '2008', status: 'ADDED', tagClass: 'tag-accent' },
+        { name: 'Water heater', hint: 'Tank or tankless', year: '2015', status: 'ADDED', tagClass: 'tag-accent' },
+        { name: 'Roof', hint: 'Material and last replacement', year: '2014', status: 'ADDED', tagClass: 'tag-accent' },
+        { name: 'Electrical panel', hint: 'Amperage if you know it', year: '1998', status: 'ADDED', tagClass: 'tag-accent' },
+        { name: 'Major appliances', hint: 'Fridge, dishwasher, washer/dryer', year: '', status: 'SKIPPED', tagClass: 'tag-neutral' },
+        { name: 'Plumbing', hint: 'Supply line material, known issues', year: '', status: 'SKIPPED', tagClass: 'tag-neutral' },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>

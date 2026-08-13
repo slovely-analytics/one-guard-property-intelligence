@@ -1,0 +1,9 @@
+/* App-level extras on top of the Modernist system (mirrors the mockup's helmet styles). */
+a { color: var(--color-accent); }
+a:hover { color: var(--color-accent-600); }
+
+.app-root { min-height: 100vh; display: flex; flex-direction: column; }
+
+/* Score bar used on Health, Mobile home */
+.meter { height: 6px; background: var(--color-neutral-300); }
+.meter > div { height: 6px; }

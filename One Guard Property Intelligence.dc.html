@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/modernist-9b5adedf-e3bd-466f-ae4c-ffdb37b63ecf/styles.css">
+  <script src="_ds/modernist-9b5adedf-e3bd-466f-ae4c-ffdb37b63ecf/_ds_bundle.js"></script>
+  <style>a{color:var(--color-accent)}a:hover{color:var(--color-accent-600)}</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column">
+  <nav class="nav" data-screen-label="Nav">
+    <span class="nav-brand" style="display:flex;align-items:center;gap:10px"><span style="display:inline-block;width:14px;height:14px;background:var(--color-accent)"></span>ONE GUARD <span style="font-weight:400;color:var(--color-neutral-600)">Property Intelligence</span></span>
+    <a href="#" onClick="{{ goDash }}" aria-current="{{ curDash }}">Dashboard</a>
+    <a href="#" onClick="{{ goPass }}" aria-current="{{ curPass }}">Property Passport</a>
+    <a href="#" onClick="{{ goHealth }}" aria-current="{{ curHealth }}">Health Assessment</a>
+    <a href="#" onClick="{{ goMaint }}" aria-current="{{ curMaint }}">Maintenance</a>
+    <a href="#" onClick="{{ goProj }}" aria-current="{{ curProj }}">Projects</a>
+    <a href="#" onClick="{{ goWarr }}" aria-current="{{ curWarr }}">Warranties</a>
+    <a href="#" onClick="{{ goPort }}" aria-current="{{ curPort }}" style="border-left:1px solid var(--color-divider);padding-left:16px">Portfolio ▸ PM view</a>
+    <a href="#" onClick="{{ goMob }}" aria-current="{{ curMob }}">Mobile app</a>
+    <a href="#" onClick="{{ goOnb }}" aria-current="{{ curOnb }}">Sign up</a>
+    <span class="tag tag-accent">MEMBER</span>
+  </nav>
+
+  <sc-if value="{{ showDash }}" hint-placeholder-val="{{ true }}">
+  <main data-screen-label="Dashboard" style="max-width:1120px;width:100%;margin:0 auto;padding:40px 32px 64px">
+    <div style="display:flex;align-items:baseline;gap:16px;flex-wrap:wrap">
+      <h1 style="margin:0">1847 Maple Grove Lane</h1>
+      <span class="text-muted" style="font-size:14px">Single-family · Built 1998 · 2,340 sq ft · Member since 2024</span>
+    </div>
+    <hr class="hr" style="margin:24px 0">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:0;border-bottom:2px solid var(--color-divider)">
+      <div style="padding:20px 24px 20px 0;border-right:1px solid var(--color-divider)">
+        <h6 style="margin-bottom:8px">Property score</h6>
+        <div style="display:flex;align-items:baseline;gap:8px"><span style="font-family:var(--font-heading);font-weight:800;font-size:56px;line-height:1">82</span><span class="text-muted" style="font-size:13px">/ 100</span></div>
+        <span class="tag tag-accent" style="margin-top:8px">GOOD · +3 SINCE 2025</span>
+      </div>
+      <div style="padding:20px 24px;border-right:1px solid var(--color-divider)">
+        <h6 style="margin-bottom:8px">Open tasks</h6>
+        <div style="font-family:var(--font-heading);font-weight:800;font-size:56px;line-height:1">4</div>
+        <p class="text-muted" style="font-size:13px;margin:8px 0 0">2 due this month</p>
+      </div>
+      <div style="padding:20px 24px;border-right:1px solid var(--color-divider)">
+        <h6 style="margin-bottom:8px">Systems tracked</h6>
+        <div style="font-family:var(--font-heading);font-weight:800;font-size:56px;line-height:1">14</div>
+        <p class="text-muted" style="font-size:13px;margin:8px 0 0">3 warranties active</p>
+      </div>
+      <div style="padding:20px 0 20px 24px">
+        <h6 style="margin-bottom:8px">Next assessment</h6>
+        <div style="font-family:var(--font-heading);font-weight:800;font-size:32px;line-height:1.1;margin-top:12px">Oct 14</div>
+        <p class="text-muted" style="font-size:13px;margin:8px 0 0">Annual Home Health Assessment</p>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:32px;margin-top:32px;align-items:start">
+      <section>
+        <div style="display:flex;align-items:baseline;justify-content:space-between"><h4 style="margin:0">Needs attention</h4><button class="btn btn-ghost" onClick="{{ goMaint }}">View all →</button></div>
+        <hr class="hr" style="margin:12px 0 0">
+        <sc-for list="{{ alerts }}" as="a" hint-placeholder-count="3">
+          <div style="display:grid;grid-template-columns:110px 1fr auto;gap:16px;align-items:center;padding:16px 0;border-bottom:1px solid var(--color-divider)">
+            <span class="tag {{ a.tagClass }}">{{ a.level }}</span>
+            <div><strong style="font-size:14px">{{ a.title }}</strong><p class="text-muted" style="font-size:13px;margin:2px 0 0">{{ a.detail }}</p></div>
+            <button class="btn btn-secondary" style="font-size:13px">{{ a.action }}</button>
+          </div>
+        </sc-for>
+      </section>
+      <aside style="display:flex;flex-direction:column;gap:16px">
+        <div class="card">
+          <span class="card-kicker">Active project</span>
+          <span class="card-title">Roof inspection & gutter repair</span>
+          <p class="card-body">Summit Roofing Co. — scheduled Aug 21, 8:00 AM. Your coordinator: Dana W.</p>
+          <div class="card-meta"><span class="tag tag-neutral">SCHEDULED</span><span>Est. $480</span></div>
+        </div>
+        <div class="card">
+          <span class="card-kicker">Your team</span>
+          <span class="card-title">Dana Whitfield</span>
+          <p class="card-body">Dedicated property advisor. Coordinates vendors, reviews quotes, tracks warranties.</p>
+          <button class="btn btn-primary btn-block">Message Dana</button>
+        </div>
+      </aside>
+    </div>
+  </main>
+  </sc-if>
+
+  <sc-if value="{{ showPass }}" hint-placeholder-val="{{ false }}">
+  <main data-screen-label="Property Passport" style="max-width:1120px;width:100%;margin:0 auto;padding:40px 32px 64px">
+    <h6 style="color:var(--color-accent)">Property Passport™</h6>
+    <h1 style="margin:0">1847 Maple Grove Lane</h1>
+    <p class="text-muted" style="margin:8px 0 0;max-width:640px">A permanent record of every major system in your home — install dates, condition, warranties and full service history.</p>
+    <hr class="hr" style="margin:24px 0">
+    <div style="display:flex;align-items:baseline;justify-content:space-between"><h4 style="margin:0">Major systems</h4><button class="btn btn-secondary" style="font-size:13px">Export PDF</button></div>
+    <table class="table" style="margin-top:12px">
+      <thead><tr><th>System</th><th>Make / model</th><th>Installed</th><th>Est. life left</th><th>Condition</th><th>Warranty</th></tr></thead>
+      <tbody>
+        <sc-for list="{{ systems }}" as="s" hint-placeholder-count="6">
+          <tr>
+            <td><strong>{{ s.name }}</strong></td>
+            <td class="text-muted">{{ s.model }}</td>
+            <td>{{ s.installed }}</td>
+            <td>{{ s.life }}</td>
+            <td><span class="tag {{ s.condClass }}">{{ s.cond }}</span></td>
+            <td class="text-muted">{{ s.warranty }}</td>
+          </tr>
+        </sc-for>
+      </tbody>
+    </table>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:40px;align-items:start">
+      <section>
+        <h4 style="margin:0">Service history</h4>
+        <hr class="hr" style="margin:12px 0 0">
+        <sc-for list="{{ history }}" as="h" hint-placeholder-count="4">
+          <div style="display:grid;grid-template-columns:84px 1fr auto;gap:16px;padding:14px 0;border-bottom:1px solid var(--color-divider);font-size:14px">
+            <span class="text-muted">{{ h.date }}</span>
+            <div><strong>{{ h.what }}</strong><p class="text-muted" style="font-size:13px;margin:2px 0 0">{{ h.who }}</p></div>
+            <span style="font-family:var(--font-heading);font-weight:800">{{ h.cost }}</span>
+          </div>
+        </sc-for>
+      </section>
+      <section>
+        <h4 style="margin:0">Capital plan</h4>
+        <hr class="hr" style="margin:12px 0 0">
+        <sc-for list="{{ capital }}" as="c" hint-placeholder-count="3">
+          <div style="display:grid;grid-template-columns:56px 1fr auto;gap:16px;padding:14px 0;border-bottom:1px solid var(--color-divider);font-size:14px;align-items:center">
+            <span style="font-family:var(--font-heading);font-weight:800;font-size:18px">{{ c.year }}</span>
+            <div><strong>{{ c.what }}</strong><p class="text-muted" style="font-size:13px;margin:2px 0 0">{{ c.why }}</p></div>
+            <span class="text-muted">{{ c.est }}</span>
+          </div>
+        </sc-for>
+        <p class="text-muted" style="font-size:13px;margin-top:12px">Estimates refreshed at each annual assessment. Plan ahead — no surprise expenses.</p>
+      </section>
+    </div>
+  </main>
+  </sc-if>
+
+  <sc-if value="{{ showHealth }}" hint-placeholder-val="{{ false }}">
+  <main data-screen-label="Health Assessment" style="max-width:1120px;width:100%;margin:0 auto;padding:40px 32px 64px">
+    <h6 style="color:var(--color-accent)">Annual Home Health Assessment</h6>
+    <div style="display:grid;grid-template-columns:auto 1fr;gap:48px;align-items:end">
+      <div>
+        <div style="display:flex;align-items:baseline;gap:12px"><span style="font-family:var(--font-heading);font-weight:800;font-size:120px;line-height:0.95">82</span><span class="text-muted" style="font-size:16px">/ 100</span></div>
+        <p class="text-muted" style="margin:8px 0 0;font-size:14px">Assessed Oct 2025 · Inspector: M. Torres · 74 checkpoints</p>
+      </div>
+      <div>
+        <p style="max-width:520px;margin:0 0 12px">Your home is in good condition. Two aging systems — the HVAC condenser and water heater — account for most of the gap to a top score.</p>
+        <button class="btn btn-primary">Schedule 2026 assessment</button>
+      </div>
+    </div>
+    <hr class="hr" style="margin:32px 0">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start">
+      <section>
+        <h4 style="margin:0 0 16px">Score by category</h4>
+        <sc-for list="{{ scores }}" as="sc" hint-placeholder-count="6">
+          <div style="padding:12px 0;border-bottom:1px solid var(--color-divider)">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">
+              <strong style="font-size:14px">{{ sc.cat }}</strong>
+              <span style="font-family:var(--font-heading);font-weight:800;font-size:18px">{{ sc.val }}</span>
+            </div>
+            <div style="height:6px;background:var(--color-neutral-300)"><div style="height:6px;background:{{ sc.barColor }};width:{{ sc.pct }}"></div></div>
+          </div>
+        </sc-for>
+      </section>
+      <section>
+        <h4 style="margin:0 0 4px">Key findings</h4>
+        <sc-for list="{{ findings }}" as="f" hint-placeholder-count="4">
+          <div style="display:grid;grid-template-columns:110px 1fr;gap:16px;padding:14px 0;border-bottom:1px solid var(--color-divider);align-items:start">
+            <span class="tag {{ f.tagClass }}">{{ f.level }}</span>
+            <div><strong style="font-size:14px">{{ f.title }}</strong><p class="text-muted" style="font-size:13px;margin:2px 0 0">{{ f.detail }}</p></div>
+          </div>
+        </sc-for>
+        <div class="card" style="margin-top:24px">
+          <span class="card-kicker">What changed since 2024</span>
+          <p class="card-body" style="font-size:14px">Score rose from 79 to 82. Roof flashing repair (+2) and new smoke/CO detectors (+1). Water heater aging offset −1.</p>
+        </div>
+      </section>
+    </div>
+  </main>
+  </sc-if>
+
+  <sc-if value="{{ showMaint }}" hint-placeholder-val="{{ false }}">
+  <main data-screen-label="Maintenance" style="max-width:1120px;width:100%;margin:0 auto;padding:40px 32px 64px">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:16px">
+      <div><h6 style="color:var(--color-accent)">Maintenance plan</h6><h1 style="margin:0">2026 schedule</h1></div>
+      <div class="seg">
+        <label class="seg-opt"><input type="radio" name="v" defaultChecked="{{ true }}">Upcoming</label>
+        <label class="seg-opt"><input type="radio" name="v">Completed</label>
+        <label class="seg-opt"><input type="radio" name="v">All</label>
+      </div>
+    </div>
+    <hr class="hr" style="margin:24px 0 0">
+    <sc-for list="{{ tasks }}" as="t" hint-placeholder-count="6">
+      <div style="display:grid;grid-template-columns:96px 1fr 140px 130px auto;gap:16px;align-items:center;padding:16px 0;border-bottom:1px solid var(--color-divider)">
+        <div><div style="font-family:var(--font-heading);font-weight:800;font-size:18px;line-height:1.1">{{ t.date }}</div><span class="text-muted" style="font-size:12px">{{ t.season }}</span></div>
+        <div><strong style="font-size:14px">{{ t.what }}</strong><p class="text-muted" style="font-size:13px;margin:2px 0 0">{{ t.detail }}</p></div>
+        <span class="text-muted" style="font-size:13px">{{ t.who }}</span>
+        <span class="tag {{ t.tagClass }}">{{ t.status }}</span>
+        <button class="btn btn-secondary" style="font-size:13px">{{ t.action }}</button>
+      </div>
+    </sc-for>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:40px">
+      <div class="card">
+        <span class="card-kicker">Vendor coordination</span>
+        <span class="card-title">We handle the scheduling</span>
+        <p class="card-body">Every task above can be routed to a vetted provider. Your advisor collects quotes, books the visit and verifies the work — you approve with one tap.</p>
+        <button class="btn btn-primary btn-block">Request a service</button>
+      </div>
+      <div class="card">
+        <span class="card-kicker">Reminders</span>
+        <span class="card-title">Never miss a filter again</span>
+        <p class="card-body">Reminders go out by email and text 10 days before each due date, tuned to your home's systems and local climate.</p>
+        <button class="btn btn-secondary btn-block">Notification settings</button>
+      </div>
+    </div>
+  </main>
+  </sc-if>
+
+  <sc-if value="{{ showProj }}" hint-placeholder-val="{{ false }}">
+  <main data-screen-label="Projects" style="max-width:1120px;width:100%;margin:0 auto;padding:40px 32px 64px">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:16px">
+      <div><h6 style="color:var(--color-accent)">Vendor coordination</h6><h1 style="margin:0">Projects</h1></div>
+      <button class="btn btn-primary">Request a service</button>
+    </div>
+    <p class="text-muted" style="margin:8px 0 0;max-width:640px">Your advisor collects quotes from vetted providers, books the work and verifies it. You approve each step.</p>
+    <hr class="hr" style="margin:24px 0 0">
+    <sc-for list="{{ projects }}" as="p" hint-placeholder-count="3">
+      <div style="padding:24px 0;border-bottom:1px solid var(--color-divider)">
+        <div style="display:grid;grid-template-columns:1fr auto auto;gap:16px;align-items:baseline">
+          <div><strong style="font-size:16px;font-family:var(--font-heading);font-weight:800">{{ p.title }}</strong><p class="text-muted" style="font-size:13px;margin:2px 0 0">{{ p.vendor }}</p></div>
+          <span class="tag {{ p.tagClass }}">{{ p.status }}</span>
+          <span style="font-family:var(--font-heading);font-weight:800">{{ p.cost }}</span>
+        </div>
+        <div style="display:flex;gap:0;margin-top:16px">
+          <sc-for list="{{ p.steps }}" as="st" hint-placeholder-count="4">
+            <div style="flex:1;padding:8px 12px 8px 0">
+              <div style="height:4px;background:{{ st.barColor }}"></div>
+              <div style="font-size:12px;margin-top:6px;color:{{ st.textColor }}">{{ st.label }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <p class="text-muted" style="font-size:13px;margin:10px 0 0">{{ p.note }}</p>
+      </div>
+    </sc-for>
+    <div class="card" style="margin-top:32px;max-width:520px">
+      <span class="card-kicker">How it works</span>
+      <p class="card-body" style="font-size:14px">Request → we source 2–3 quotes from vetted vendors → you approve → we schedule and verify the work → it lands in your Property Passport automatically.</p>
+    </div>
+  </main>
+  </sc-if>
+
+  <sc-if value="{{ showWarr }}" hint-placeholder-val="{{ false }}">
+  <main data-screen-label="Warranties" style="max-width:1120px;width:100%;margin:0 auto;padding:40px 32px 64px">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:16px">
+      <div><h6 style="color:var(--color-accent)">Warranty management</h6><h1 style="margin:0">Warranties</h1></div>
+      <button class="btn btn-secondary">Add a warranty</button>
+    </div>
+    <p class="text-muted" style="margin:8px 0 0;max-width:640px">Every warranty in one place. We track expirations, store documents and file claims on your behalf.</p>
+    <hr class="hr" style="margin:24px 0">
+    <table class="table">
+      <thead><tr><th>Item</th><th>Provider</th><th>Coverage</th><th>Expires</th><th>Status</th><th></th></tr></thead>
+      <tbody>
+        <sc-for list="{{ warranties }}" as="w" hint-placeholder-count="5">
+          <tr>
+            <td><strong>{{ w.item }}</strong></td>
+            <td class="text-muted">{{ w.provider }}</td>
+            <td class="text-muted">{{ w.coverage }}</td>
+            <td>{{ w.expires }}</td>
+            <td><span class="tag {{ w.tagClass }}">{{ w.status }}</span></td>
+            <td><button class="btn btn-ghost" style="font-size:13px">{{ w.action }}</button></td>
+          </tr>
+        </sc-for>
+      </tbody>
+    </table>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:32px">
+      <div class="card">
+        <span class="card-kicker">Expiring soon</span>
+        <span class="card-title">Bosch dishwasher — Jun 2027</span>
+        <p class="card-body">Extended coverage available through Bosch until May 2027. We'll remind you 60 days out with a recommendation.</p>
+      </div>
+      <div class="card">
+        <span class="card-kicker">Claims handled</span>
+        <span class="card-title">We file for you</span>
+        <p class="card-body">Send a photo and a sentence — your advisor handles the paperwork, calls and follow-up. 2 claims filed this year, $840 recovered.</p>
+      </div>
+    </div>
+  </main>
+  </sc-if>
+
+  <sc-if value="{{ showPort }}" hint-placeholder-val="{{ false }}">
+  <main data-screen-label="Portfolio (PM view)" style="max-width:1120px;width:100%;margin:0 auto;padding:40px 32px 64px">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:16px">
+      <div><h6 style="color:var(--color-accent)">Property manager view</h6><h1 style="margin:0">Northgate Residential — 12 properties</h1></div>
+      <button class="btn btn-primary">Add property</button>
+    </div>
+    <hr class="hr" style="margin:24px 0">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:0;border-bottom:2px solid var(--color-divider);margin-bottom:24px">
+      <div style="padding:16px 24px 16px 0;border-right:1px solid var(--color-divider)"><h6 style="margin-bottom:6px">Avg. score</h6><span style="font-family:var(--font-heading);font-weight:800;font-size:40px;line-height:1">79</span></div>
+      <div style="padding:16px 24px;border-right:1px solid var(--color-divider)"><h6 style="margin-bottom:6px">Open tasks</h6><span style="font-family:var(--font-heading);font-weight:800;font-size:40px;line-height:1">23</span></div>
+      <div style="padding:16px 24px;border-right:1px solid var(--color-divider)"><h6 style="margin-bottom:6px">Active projects</h6><span style="font-family:var(--font-heading);font-weight:800;font-size:40px;line-height:1">5</span></div>
+      <div style="padding:16px 0 16px 24px"><h6 style="margin-bottom:6px">2026 capital plan</h6><span style="font-family:var(--font-heading);font-weight:800;font-size:40px;line-height:1">$48K</span></div>
+    </div>
+    <table class="table">
+      <thead><tr><th>Property</th><th>Type</th><th>Score</th><th>Open tasks</th><th>Next assessment</th><th>Attention</th></tr></thead>
+      <tbody>
+        <sc-for list="{{ portfolio }}" as="pp" hint-placeholder-count="6">
+          <tr>
+            <td><strong>{{ pp.addr }}</strong></td>
+            <td class="text-muted">{{ pp.type }}</td>
+            <td><span style="font-family:var(--font-heading);font-weight:800;font-size:16px">{{ pp.score }}</span></td>
+            <td>{{ pp.tasks }}</td>
+            <td class="text-muted">{{ pp.next }}</td>
+            <td><span class="tag {{ pp.tagClass }}">{{ pp.flag }}</span></td>
+          </tr>
+        </sc-for>
+      </tbody>
+    </table>
+    <p class="text-muted" style="font-size:13px;margin-top:16px">Click any property to open its Passport, assessment history and maintenance plan.</p>
+  </main>
+  </sc-if>
+
+  <sc-if value="{{ showOnb }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Onboarding">
+  <div style="max-width:920px;width:100%;margin:0 auto;padding:40px 32px 24px">
+    <div style="display:flex;gap:0;border-bottom:2px solid var(--color-divider)">
+      <sc-for list="{{ stepper }}" as="st" hint-placeholder-count="4">
+        <div style="flex:1;padding:0 16px 12px 0">
+          <div style="height:4px;background:{{ st.barColor }}"></div>
+          <div style="font-size:12px;margin-top:8px;color:{{ st.textColor }}"><span style="font-family:var(--font-heading);font-weight:800">{{ st.num }}</span> {{ st.label }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  <sc-if value="{{ ob1 }}" hint-placeholder-val="{{ true }}">
+  <main data-screen-label="Onboarding 1: Plan" style="max-width:920px;width:100%;margin:0 auto;padding:8px 32px 64px">
+    <h1 style="margin:0 0 8px">Choose your membership</h1>
+    <p class="text-muted" style="max-width:560px;margin:0 0 32px">Every plan includes your Property Passport™, annual Home Health Assessment and a dedicated advisor. Cancel anytime.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;align-items:stretch">
+      <sc-for list="{{ obPlans }}" as="p" hint-placeholder-count="3">
+        <div class="card" style="border-top:4px solid {{ p.topColor }};cursor:pointer" onClick="{{ p.pick }}">
+          <span class="card-kicker">{{ p.kicker }}</span>
+          <span class="card-title" style="font-size:22px">{{ p.name }}</span>
+          <div style="display:flex;align-items:baseline;gap:4px"><span style="font-family:var(--font-heading);font-weight:800;font-size:36px">{{ p.price }}</span><span class="text-muted" style="font-size:13px">/mo</span></div>
+          <p class="card-body" style="font-size:13px">{{ p.blurb }}</p>
+          <div style="display:flex;flex-direction:column;gap:6px;font-size:13px;margin:4px 0 8px">
+            <sc-for list="{{ p.features }}" as="f" hint-placeholder-count="4">
+              <div style="display:flex;gap:8px;align-items:baseline"><span style="color:var(--color-accent);font-weight:800">—</span><span>{{ f }}</span></div>
+            </sc-for>
+          </div>
+          <button class="btn {{ p.btnClass }} btn-block">{{ p.cta }}</button>
+        </div>
+      </sc-for>
+    </div>
+  </main>
+  </sc-if>
+  <sc-if value="{{ ob2 }}" hint-placeholder-val="{{ false }}">
+  <main data-screen-label="Onboarding 2: Property" style="max-width:920px;width:100%;margin:0 auto;padding:8px 32px 64px">
+    <h1 style="margin:0 0 8px">Tell us about your property</h1>
+    <p class="text-muted" style="max-width:560px;margin:0 0 32px">We pre-fill what we can from public records — check it and correct anything that's off.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="field"><label>Property address</label><input class="input" defaultValue="1847 Maple Grove Lane, Fort Worth, TX 76107"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="field"><label>Year built</label><input class="input" defaultValue="1998"></div>
+          <div class="field"><label>Square feet</label><input class="input" defaultValue="2,340"></div>
+        </div>
+        <div class="field"><label>Property type</label>
+          <div class="seg" style="width:100%">
+            <label class="seg-opt" style="flex:1"><input type="radio" name="pt" defaultChecked="{{ true }}">Single-family</label>
+            <label class="seg-opt" style="flex:1"><input type="radio" name="pt">Townhome</label>
+            <label class="seg-opt" style="flex:1"><input type="radio" name="pt">Condo</label>
+            <label class="seg-opt" style="flex:1"><input type="radio" name="pt">Multi-unit</label>
+          </div>
+        </div>
+        <div class="field"><label>You are the…</label>
+          <div style="display:flex;gap:24px;padding:4px 0">
+            <label class="radio"><input type="radio" name="rl" defaultChecked="{{ true }}"><span class="dot"></span>Owner-occupant</label>
+            <label class="radio"><input type="radio" name="rl"><span class="dot"></span>Landlord</label>
+            <label class="radio"><input type="radio" name="rl"><span class="dot"></span>Property manager</label>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <span class="card-kicker">From public records</span>
+        <span class="card-title">1847 Maple Grove Lane</span>
+        <p class="card-body" style="font-size:13px">Built 1998 · 2,340 sq ft · 4 bed / 2.5 bath · Last sold 2019. We'll verify systems at your first assessment.</p>
+        <div class="card-meta"><span class="tag tag-neutral">TARRANT COUNTY</span><span>Parcel 04-118-2207</span></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:12px;margin-top:40px">
+      <button class="btn btn-secondary" onClick="{{ obBack }}">← Back</button>
+      <button class="btn btn-primary" onClick="{{ obNext }}">Continue</button>
+    </div>
+  </main>
+  </sc-if>
+  <sc-if value="{{ ob3 }}" hint-placeholder-val="{{ false }}">
+  <main data-screen-label="Onboarding 3: Systems" style="max-width:920px;width:100%;margin:0 auto;padding:8px 32px 64px">
+    <h1 style="margin:0 0 8px">Start your Property Passport™</h1>
+    <p class="text-muted" style="max-width:560px;margin:0 0 32px">Tap what you know — skip the rest. Your first assessment fills in every gap, model numbers included.</p>
+    <div style="display:flex;flex-direction:column">
+      <sc-for list="{{ obSystems }}" as="s" hint-placeholder-count="5">
+        <div style="display:grid;grid-template-columns:1fr 220px 140px;gap:24px;align-items:center;padding:16px 0;border-bottom:1px solid var(--color-divider)">
+          <div><strong style="font-size:14px">{{ s.name }}</strong><p class="text-muted" style="font-size:13px;margin:2px 0 0">{{ s.hint }}</p></div>
+          <div class="field" style="margin:0"><input class="input" placeholder="Install year (approx.)" defaultValue="{{ s.year }}"></div>
+          <span class="tag {{ s.tagClass }}" style="justify-self:start">{{ s.status }}</span>
+        </div>
+      </sc-for>
+    </div>
+    <p class="text-muted" style="font-size:13px;margin-top:16px">Don't know a year? Leave it blank — our inspector reads it off the data plate.</p>
+    <div style="display:flex;gap:12px;margin-top:32px">
+      <button class="btn btn-secondary" onClick="{{ obBack }}">← Back</button>
+      <button class="btn btn-primary" onClick="{{ obNext }}">Continue</button>
+      <button class="btn btn-ghost" onClick="{{ obNext }}">Skip for now</button>
+    </div>
+  </main>
+  </sc-if>
+  <sc-if value="{{ ob4 }}" hint-placeholder-val="{{ false }}">
+  <main data-screen-label="Onboarding 4: Done" style="max-width:920px;width:100%;margin:0 auto;padding:8px 32px 64px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start">
+      <div>
+        <h6 style="color:var(--color-accent)">Membership active</h6>
+        <h1 style="margin:0 0 8px">Welcome, member.</h1>
+        <p class="text-muted" style="max-width:440px">Your Property Passport is started with 5 systems. One thing left: book your first Home Health Assessment — it's included.</p>
+        <div style="display:flex;flex-direction:column;gap:0;margin-top:24px;border-top:2px solid var(--color-divider)">
+          <div style="display:grid;grid-template-columns:32px 1fr;gap:16px;padding:16px 0;border-bottom:1px solid var(--color-divider)">
+            <span style="font-family:var(--font-heading);font-weight:800;font-size:20px;color:var(--color-accent)">1</span>
+            <div><strong style="font-size:14px">Book your assessment</strong><p class="text-muted" style="font-size:13px;margin:2px 0 0">74 checkpoints, ~2 hours. First available: Aug 26.</p></div>
+          </div>
+          <div style="display:grid;grid-template-columns:32px 1fr;gap:16px;padding:16px 0;border-bottom:1px solid var(--color-divider)">
+            <span style="font-family:var(--font-heading);font-weight:800;font-size:20px">2</span>
+            <div><strong style="font-size:14px">Meet your advisor</strong><p class="text-muted" style="font-size:13px;margin:2px 0 0">Dana Whitfield reaches out within one business day.</p></div>
+          </div>
+          <div style="display:grid;grid-template-columns:32px 1fr;gap:16px;padding:16px 0;border-bottom:1px solid var(--color-divider)">
+            <span style="font-family:var(--font-heading);font-weight:800;font-size:20px">3</span>
+            <div><strong style="font-size:14px">Get your score & plan</strong><p class="text-muted" style="font-size:13px;margin:2px 0 0">Property score, findings and a maintenance calendar within 48 hours of the visit.</p></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:12px;margin-top:32px">
+          <button class="btn btn-primary">Book assessment — Aug 26</button>
+          <button class="btn btn-secondary" onClick="{{ goDash }}">Go to dashboard</button>
+        </div>
+      </div>
+      <div class="card elev-md">
+        <span class="card-kicker">Your membership</span>
+        <span class="card-title">Guard plan — $49/mo</span>
+        <table class="table" style="font-size:13px">
+          <tbody>
+            <tr><td class="text-muted">Property</td><td>1847 Maple Grove Lane</td></tr>
+            <tr><td class="text-muted">Annual assessment</td><td>Included</td></tr>
+            <tr><td class="text-muted">Advisor</td><td>Dana Whitfield</td></tr>
+            <tr><td class="text-muted">Systems on file</td><td>5 of ~14</td></tr>
+            <tr><td class="text-muted">First billing</td><td>Sep 12, 2026</td></tr>
+          </tbody>
+        </table>
+        <button class="btn btn-ghost" onClick="{{ obRestart }}" style="align-self:flex-start">Restart demo flow</button>
+      </div>
+    </div>
+  </main>
+  </sc-if>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ showMob }}" hint-placeholder-val="{{ false }}">
+  <main data-screen-label="Mobile app" style="max-width:1400px;width:100%;margin:0 auto;padding:40px 32px 64px">
+    <h6 style="color:var(--color-accent)">One Guard Property Intelligence</h6>
+    <h2 style="margin:0 0 4px">Mobile app</h2>
+    <p class="text-muted" style="margin:0 0 32px;max-width:560px">Homeowner companion — score at a glance, tasks, and one-tap service requests.</p>
+    <div style="display:flex;gap:48px;flex-wrap:wrap;align-items:flex-start">
+      <div data-screen-label="Mobile: Home">
+      <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" title="" hint-size="390px,844px">
+        <div style="font-family:var(--font-body);color:var(--color-text);background:var(--color-bg);min-height:100%;padding:12px 20px 32px">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0 16px;border-bottom:2px solid var(--color-divider)">
+            <span style="font-family:var(--font-heading);font-weight:800;font-size:16px;display:flex;align-items:center;gap:8px"><span style="display:inline-block;width:11px;height:11px;background:var(--color-accent)"></span>ONE GUARD</span>
+            <span class="tag tag-accent">MEMBER</span>
+          </div>
+          <p class="text-muted" style="font-size:12px;margin:16px 0 2px">1847 Maple Grove Lane</p>
+          <div style="display:flex;align-items:baseline;gap:8px"><span style="font-family:var(--font-heading);font-weight:800;font-size:72px;line-height:1">82</span><span class="text-muted" style="font-size:13px">/ 100 property score</span></div>
+          <div style="height:6px;background:var(--color-neutral-300);margin:12px 0 4px"><div style="height:6px;width:82%;background:var(--color-accent)"></div></div>
+          <p class="text-muted" style="font-size:12px;margin:0 0 20px">+3 since last assessment · Next: Oct 14</p>
+          <div style="display:flex;gap:8px;margin-bottom:24px">
+            <button class="btn btn-primary" style="flex:1;justify-content:flex-start">Request service</button>
+            <button class="btn btn-secondary" style="flex:1;justify-content:flex-start">Message Dana</button>
+          </div>
+          <h6 style="margin-bottom:0">Needs attention</h6>
+          <div style="display:flex;flex-direction:column">
+            <div style="padding:14px 0;border-bottom:1px solid var(--color-divider)">
+              <span class="tag tag-outline">PRIORITY</span>
+              <p style="font-size:14px;font-weight:600;margin:8px 0 2px">HVAC condenser at end of life</p>
+              <p class="text-muted" style="font-size:12px;margin:0">2 quotes in — review by Aug 15</p>
+            </div>
+            <div style="padding:14px 0;border-bottom:1px solid var(--color-divider)">
+              <span class="tag tag-accent">DUE AUG 20</span>
+              <p style="font-size:14px;font-weight:600;margin:8px 0 2px">Replace HVAC air filters</p>
+              <p class="text-muted" style="font-size:12px;margin:0">MERV 11, 20×25×1 — 2 units</p>
+            </div>
+            <div style="padding:14px 0;border-bottom:1px solid var(--color-divider)">
+              <span class="tag tag-neutral">AUG 21</span>
+              <p style="font-size:14px;font-weight:600;margin:8px 0 2px">Roof inspection — confirmed</p>
+              <p class="text-muted" style="font-size:12px;margin:0">Summit Roofing Co. · 8:00 AM</p>
+            </div>
+          </div>
+        </div>
+      </x-import>
+      <p class="text-muted" style="font-size:12px;margin-top:12px">Home — score & tasks</p>
+      </div>
+      <div data-screen-label="Mobile: Passport">
+      <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" title="" hint-size="390px,844px">
+        <div style="font-family:var(--font-body);color:var(--color-text);background:var(--color-bg);min-height:100%;padding:12px 20px 32px">
+          <div style="padding:8px 0 12px;border-bottom:2px solid var(--color-divider)">
+            <h6 style="color:var(--color-accent);margin:0 0 2px">Property Passport™</h6>
+            <span style="font-family:var(--font-heading);font-weight:800;font-size:18px">Major systems</span>
+          </div>
+          <div style="display:flex;flex-direction:column">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--color-divider)">
+              <div><p style="font-size:14px;font-weight:600;margin:0">HVAC — condenser</p><p class="text-muted" style="font-size:12px;margin:0">2008 · 0–2 yrs left</p></div>
+              <span class="tag tag-outline">AGING</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--color-divider)">
+              <div><p style="font-size:14px;font-weight:600;margin:0">Water heater</p><p class="text-muted" style="font-size:12px;margin:0">2015 · 1–3 yrs left</p></div>
+              <span class="tag tag-outline">AGING</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--color-divider)">
+              <div><p style="font-size:14px;font-weight:600;margin:0">Roof</p><p class="text-muted" style="font-size:12px;margin:0">2014 · 15+ yrs · Warranty 2044</p></div>
+              <span class="tag tag-neutral">GOOD</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--color-divider)">
+              <div><p style="font-size:14px;font-weight:600;margin:0">Electrical panel</p><p class="text-muted" style="font-size:12px;margin:0">1998 · 200A</p></div>
+              <span class="tag tag-neutral">GOOD</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--color-divider)">
+              <div><p style="font-size:14px;font-weight:600;margin:0">Refrigerator</p><p class="text-muted" style="font-size:12px;margin:0">2023 · Warranty Mar 2028</p></div>
+              <span class="tag tag-accent">NEW</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--color-divider)">
+              <div><p style="font-size:14px;font-weight:600;margin:0">Dishwasher</p><p class="text-muted" style="font-size:12px;margin:0">2022 · Warranty Jun 2027</p></div>
+              <span class="tag tag-neutral">GOOD</span>
+            </div>
+          </div>
+          <div class="card" style="margin-top:20px">
+            <span class="card-kicker">Capital plan</span>
+            <p class="card-body" style="font-size:13px">2027 — HVAC condenser, $6.2–7.8K · 2028 — Water heater, $1.8–3.4K</p>
+          </div>
+        </div>
+      </x-import>
+      <p class="text-muted" style="font-size:12px;margin-top:12px">Property Passport — systems</p>
+      </div>
+      <div data-screen-label="Mobile: Request">
+      <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" title="" hint-size="390px,844px">
+        <div style="font-family:var(--font-body);color:var(--color-text);background:var(--color-bg);min-height:100%;padding:12px 20px 32px">
+          <div style="padding:8px 0 12px;border-bottom:2px solid var(--color-divider)">
+            <h6 style="color:var(--color-accent);margin:0 0 2px">Request a service</h6>
+            <span style="font-family:var(--font-heading);font-weight:800;font-size:18px">We handle the rest</span>
+          </div>
+          <div class="field" style="margin-top:20px"><label>What needs attention?</label><input class="input" defaultValue="Water heater flush"></div>
+          <div class="field" style="margin-top:16px"><label>When works for you?</label>
+            <div class="seg" style="width:100%">
+              <label class="seg-opt" style="flex:1"><input type="radio" name="w" defaultChecked="{{ true }}">This week</label>
+              <label class="seg-opt" style="flex:1"><input type="radio" name="w">Next week</label>
+              <label class="seg-opt" style="flex:1"><input type="radio" name="w">Flexible</label>
+            </div>
+          </div>
+          <div class="field" style="margin-top:16px"><label>Notes for your advisor</label><textarea class="input" placeholder="Anything the crew should know?"></textarea></div>
+          <button class="btn btn-primary btn-block" style="margin-top:20px">Send to Dana</button>
+          <div class="card" style="margin-top:24px">
+            <span class="card-kicker">What happens next</span>
+            <p class="card-body" style="font-size:13px">Dana sources 2–3 quotes from vetted vendors. You approve one tap — we schedule, verify, and log it in your Passport.</p>
+          </div>
+        </div>
+      </x-import>
+      <p class="text-muted" style="font-size:12px;margin-top:12px">Service request — one tap to your advisor</p>
+      </div>
+    </div>
+  </main>
+  </sc-if>
+
+  <footer style="border-top:2px solid var(--color-divider);padding:16px 32px;display:flex;gap:24px;font-size:12px" class="text-muted">
+    <span>ONE GUARD Property Intelligence</span><span>Mockup — sample data</span><a href="#" onClick="{{ goMob }}" style="margin-left:auto">Mobile app →</a><a href="#" onClick="{{ goOnb }}">Onboarding →</a>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;initialScreen&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;default&quot;: &quot;dash&quot;, &quot;options&quot;: [&quot;dash&quot;, &quot;pass&quot;, &quot;health&quot;, &quot;maint&quot;], &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Demo&quot;}}">
+class Component extends DCLogic {
+  state = { screen: this.props.initialScreen ?? 'dash', obStep: 1 };
+  renderVals() {
+    const s = this.state.screen;
+    const go = (k) => (e) => { e.preventDefault(); this.setState({ screen: k }); };
+    const ob = this.state.obStep;
+    const goOb = (n) => (e) => { if (e && e.preventDefault) e.preventDefault(); this.setState({ obStep: n }); };
+    const cur = (k) => (s === k ? 'page' : undefined);
+    const mkSteps = (done, labels) => labels.map((label, i) => ({
+      label,
+      barColor: i <= done ? 'var(--color-accent)' : 'var(--color-neutral-300)',
+      textColor: i <= done ? 'var(--color-text)' : 'var(--color-neutral-500)',
+    }));
+    const scoreColor = (v) => v >= 85 ? 'var(--color-neutral-800)' : v >= 70 ? 'var(--color-accent-500)' : 'var(--color-accent-700)';
+    const scores = [
+      { cat: 'Structure & foundation', val: 92 }, { cat: 'Roofing & exterior', val: 88 },
+      { cat: 'Electrical', val: 90 }, { cat: 'Plumbing', val: 78 },
+      { cat: 'HVAC', val: 64 }, { cat: 'Appliances', val: 81 },
+    ].map(x => ({ ...x, pct: x.val + '%', barColor: scoreColor(x.val) }));
+    return {
+      goDash: go('dash'), goPass: go('pass'), goHealth: go('health'), goMaint: go('maint'), goProj: go('proj'), goWarr: go('warr'), goPort: go('port'), goMob: go('mob'), goOnb: go('onb'),
+      curDash: cur('dash'), curPass: cur('pass'), curHealth: cur('health'), curMaint: cur('maint'), curProj: cur('proj'), curWarr: cur('warr'), curPort: cur('port'), curMob: cur('mob'), curOnb: cur('onb'),
+      showDash: s === 'dash', showPass: s === 'pass', showHealth: s === 'health', showMaint: s === 'maint', showProj: s === 'proj', showWarr: s === 'warr', showPort: s === 'port', showMob: s === 'mob', showOnb: s === 'onb',
+      ob1: ob === 1, ob2: ob === 2, ob3: ob === 3, ob4: ob === 4,
+      obNext: goOb(Math.min(ob + 1, 4)), obBack: goOb(Math.max(ob - 1, 1)), obRestart: goOb(1),
+      stepper: ['Plan', 'Property', 'Systems', 'Done'].map((label, i) => ({
+        num: String(i + 1).padStart(2, '0'), label,
+        barColor: i + 1 <= ob ? 'var(--color-accent)' : 'var(--color-neutral-300)',
+        textColor: i + 1 <= ob ? 'var(--color-text)' : 'var(--color-neutral-500)',
+      })),
+      obPlans: [
+        { name: 'Passport', kicker: 'Get organized', price: '$19', blurb: 'The digital record, self-serve.', btnClass: 'btn-secondary', cta: 'Choose Passport', topColor: 'var(--color-neutral-400)', pick: goOb(2),
+          features: ['Property Passport™', 'Maintenance reminders', 'Warranty tracking', 'Document vault'] },
+        { name: 'Guard', kicker: 'Most popular', price: '$49', blurb: 'Proactive management with a human advisor.', btnClass: 'btn-primary', cta: 'Choose Guard', topColor: 'var(--color-accent)', pick: goOb(2),
+          features: ['Everything in Passport', 'Annual Home Health Assessment', 'Property score & capital plan', 'Dedicated advisor', 'Vendor coordination'] },
+        { name: 'Guard+', kicker: 'Full service', price: '$99', blurb: 'For landlords and busy owners.', btnClass: 'btn-secondary', cta: 'Choose Guard+', topColor: 'var(--color-neutral-400)', pick: goOb(2),
+          features: ['Everything in Guard', 'Semi-annual assessments', 'Priority scheduling', 'Claims filed for you', 'Multi-property discount'] },
+      ],
+      obSystems: [
+        { name: 'HVAC', hint: 'Heating & cooling — condenser and furnace', year: '2008', status: 'ADDED', tagClass: 'tag-accent' },
+        { name: 'Water heater', hint: 'Tank or tankless', year: '2015', status: 'ADDED', tagClass: 'tag-accent' },
+        { name: 'Roof', hint: 'Material and last replacement', year: '2014', status: 'ADDED', tagClass: 'tag-accent' },
+        { name: 'Electrical panel', hint: 'Amperage if you know it', year: '1998', status: 'ADDED', tagClass: 'tag-accent' },
+        { name: 'Major appliances', hint: 'Fridge, dishwasher, washer/dryer', year: '', status: 'SKIPPED', tagClass: 'tag-neutral' },
+        { name: 'Plumbing', hint: 'Supply line material, known issues', year: '', status: 'SKIPPED', tagClass: 'tag-neutral' },
+      ],
+      projects: [
+        { title: 'Roof inspection & gutter repair', vendor: 'Summit Roofing Co. · Coordinator: Dana W.', status: 'SCHEDULED', tagClass: 'tag-neutral', cost: 'Est. $480',
+          note: 'Confirmed for Aug 21, 8:00 AM. Access notes shared with the crew.',
+          steps: mkSteps(2, ['Requested', 'Quotes (3)', 'Approved', 'Scheduled', 'Verified']) },
+        { title: 'HVAC condenser replacement', vendor: 'Sourcing quotes · Coordinator: Dana W.', status: 'QUOTES IN', tagClass: 'tag-accent', cost: '$6,200–7,800',
+          note: '2 of 3 quotes received. Comparison ready for your review by Aug 15.',
+          steps: mkSteps(1, ['Requested', 'Quotes (2/3)', 'Approved', 'Scheduled', 'Verified']) },
+        { title: 'NE corner regrading', vendor: 'Awaiting your approval', status: 'ACTION NEEDED', tagClass: 'tag-outline', cost: '$1,150',
+          note: 'GreenScape Landworks quote recommended by Dana. Approve to schedule.',
+          steps: mkSteps(1, ['Requested', 'Quote ready', 'Approve', 'Scheduled', 'Verified']) },
+        { title: 'Chimney flashing repair', vendor: 'Summit Roofing Co.', status: 'COMPLETED', tagClass: 'tag-neutral', cost: '$425',
+          note: 'Completed Mar 2026. Verified at follow-up; added to Property Passport.',
+          steps: mkSteps(4, ['Requested', 'Quotes (3)', 'Approved', 'Scheduled', 'Verified']) },
+      ],
+      warranties: [
+        { item: 'Refrigerator — GE Profile', provider: 'GE Appliances', coverage: 'Parts & labor', expires: 'Mar 2028', status: 'ACTIVE', tagClass: 'tag-accent', action: 'View docs' },
+        { item: 'Dishwasher — Bosch 300', provider: 'Bosch', coverage: 'Parts & labor', expires: 'Jun 2027', status: 'EXPIRING', tagClass: 'tag-outline', action: 'Extend' },
+        { item: 'Roof — 30-yr shingle', provider: 'GAF (manufacturer)', coverage: 'Materials', expires: '2044', status: 'ACTIVE', tagClass: 'tag-accent', action: 'View docs' },
+        { item: 'Washer/dryer — LG', provider: 'LG + extended plan', coverage: 'Full replacement', expires: 'Sep 2026', status: 'EXPIRING', tagClass: 'tag-outline', action: 'Extend' },
+        { item: 'HVAC furnace — Carrier', provider: 'Carrier', coverage: 'Heat exchanger', expires: '2036', status: 'ACTIVE', tagClass: 'tag-accent', action: 'View docs' },
+        { item: 'Water heater — Rheem', provider: 'Rheem', coverage: '—', expires: 'Expired 2021', status: 'EXPIRED', tagClass: 'tag-neutral', action: 'Details' },
+      ],
+      portfolio: [
+        { addr: '1847 Maple Grove Ln', type: 'Single-family', score: 82, tasks: 4, next: 'Oct 14', flag: 'HVAC AGING', tagClass: 'tag-outline' },
+        { addr: '220 Birchwood Ct #A–D', type: '4-plex', score: 74, tasks: 7, next: 'Sep 02', flag: 'ROOF DUE', tagClass: 'tag-outline' },
+        { addr: '918 Calloway Dr', type: 'Single-family', score: 88, tasks: 1, next: 'Nov 20', flag: 'ON TRACK', tagClass: 'tag-neutral' },
+        { addr: '45 Fenwick Row', type: 'Townhome', score: 91, tasks: 0, next: 'Jan 08', flag: 'ON TRACK', tagClass: 'tag-neutral' },
+        { addr: '1302 Alder St', type: 'Duplex', score: 68, tasks: 6, next: 'Aug 28', flag: 'PLUMBING', tagClass: 'tag-accent' },
+        { addr: '77 Quarry Ridge Rd', type: 'Single-family', score: 79, tasks: 5, next: 'Oct 30', flag: 'WATER HEATER', tagClass: 'tag-accent' },
+      ],
+      alerts: [
+        { level: 'PRIORITY', tagClass: 'tag-outline', title: 'HVAC condenser at end of expected life', detail: '18 years old (typical life 15–20). Replacement recommended before summer 2027 — est. $6,200–7,800.', action: 'Get quotes' },
+        { level: 'DUE AUG 20', tagClass: 'tag-accent', title: 'Replace HVAC air filters', detail: 'MERV 11, 20×25×1 — 2 units. Last replaced May 12.', action: 'Mark done' },
+        { level: 'DUE SEP 05', tagClass: 'tag-accent', title: 'Flush water heater', detail: 'Annual sediment flush extends tank life. We can send a plumber.', action: 'Schedule' },
+        { level: 'UPCOMING', tagClass: 'tag-neutral', title: 'Gutter cleaning before fall', detail: 'Recommended by Oct 15 based on tree coverage.', action: 'Schedule' },
+      ],
+      systems: [
+        { name: 'HVAC — condenser', model: 'Carrier 24ACC636', installed: '2008', life: '0–2 yrs', cond: 'AGING', condClass: 'tag-outline', warranty: 'Expired' },
+        { name: 'HVAC — furnace', model: 'Carrier 59SC2B', installed: '2016', life: '8–10 yrs', cond: 'GOOD', condClass: 'tag-neutral', warranty: 'Expired' },
+        { name: 'Water heater', model: 'Rheem XG50 (50 gal)', installed: '2015', life: '1–3 yrs', cond: 'AGING', condClass: 'tag-outline', warranty: 'Expired' },
+        { name: 'Roof', model: 'Asphalt shingle, 30-yr', installed: '2014', life: '15+ yrs', cond: 'GOOD', condClass: 'tag-neutral', warranty: 'Mfr — 2044' },
+        { name: 'Electrical panel', model: 'Square D QO 200A', installed: '1998', life: '10+ yrs', cond: 'GOOD', condClass: 'tag-neutral', warranty: '—' },
+        { name: 'Refrigerator', model: 'GE Profile PVD28', installed: '2023', life: '10+ yrs', cond: 'NEW', condClass: 'tag-accent', warranty: 'GE — Mar 2028' },
+        { name: 'Dishwasher', model: 'Bosch 300 Series', installed: '2022', life: '7–9 yrs', cond: 'GOOD', condClass: 'tag-neutral', warranty: 'Bosch — Jun 2027' },
+      ],
+      history: [
+        { date: 'Jun 2026', what: 'A/C tune-up & refrigerant check', who: 'Comfort Air Mechanical', cost: '$189' },
+        { date: 'Mar 2026', what: 'Roof flashing repair (chimney)', who: 'Summit Roofing Co.', cost: '$425' },
+        { date: 'Nov 2025', what: 'Furnace inspection & filter service', who: 'Comfort Air Mechanical', cost: '$149' },
+        { date: 'Oct 2025', what: 'Annual Home Health Assessment', who: 'One Guard — M. Torres', cost: 'Included' },
+      ],
+      capital: [
+        { year: '2027', what: 'HVAC condenser replacement', why: 'End of service life; efficiency gain ~22%', est: '$6,200–7,800' },
+        { year: '2028', what: 'Water heater replacement', why: 'Tank units fail at 12–15 yrs; consider tankless', est: '$1,800–3,400' },
+        { year: '2031', what: 'Exterior repaint', why: 'South-facing trim showing UV wear', est: '$4,500–6,000' },
+      ],
+      scores,
+      findings: [
+        { level: 'PRIORITY', tagClass: 'tag-outline', title: 'HVAC condenser nearing failure risk', detail: 'Compressor amp draw 12% above spec. Budget for replacement in the 2027 capital plan.' },
+        { level: 'MODERATE', tagClass: 'tag-accent', title: 'Water heater sediment buildup', detail: 'Reduced recovery rate observed. Annual flushing scheduled.' },
+        { level: 'MODERATE', tagClass: 'tag-accent', title: 'Minor grading issue, NE corner', detail: 'Soil slopes toward foundation. Regrade recommended within 12 months.' },
+        { level: 'RESOLVED', tagClass: 'tag-neutral', title: 'Chimney flashing leak', detail: 'Repaired Mar 2026 by Summit Roofing. Verified at follow-up.' },
+      ],
+      tasks: [
+        { date: 'Aug 20', season: 'Summer', what: 'Replace HVAC air filters', detail: 'MERV 11, 20×25×1 — both units', who: 'DIY (guide included)', status: 'DUE SOON', tagClass: 'tag-accent', action: 'Mark done' },
+        { date: 'Aug 21', season: 'Summer', what: 'Roof inspection & gutter repair', detail: 'Summit Roofing Co. — confirmed 8:00 AM', who: 'Summit Roofing Co.', status: 'SCHEDULED', tagClass: 'tag-neutral', action: 'Details' },
+        { date: 'Sep 05', season: 'Fall', what: 'Flush water heater', detail: 'Annual sediment flush', who: 'Needs vendor', status: 'DUE SOON', tagClass: 'tag-accent', action: 'Schedule' },
+        { date: 'Oct 01', season: 'Fall', what: 'Gutter cleaning', detail: 'Before leaf drop; includes downspout check', who: 'Needs vendor', status: 'UPCOMING', tagClass: 'tag-neutral', action: 'Schedule' },
+        { date: 'Oct 14', season: 'Fall', what: 'Annual Home Health Assessment', detail: '74-point inspection with M. Torres', who: 'One Guard', status: 'SCHEDULED', tagClass: 'tag-neutral', action: 'Details' },
+        { date: 'Nov 10', season: 'Fall', what: 'Furnace tune-up', detail: 'Pre-season inspection & filter service', who: 'Comfort Air Mechanical', status: 'UPCOMING', tagClass: 'tag-neutral', action: 'Schedule' },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>
