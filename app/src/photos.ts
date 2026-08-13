@@ -5,6 +5,7 @@
 // suburban subdivision — the exterior/interior set is one house photographed on
 // a single walk-around, so the "property" reads as one consistent building
 // rather than a stock-photo pile-up. Files live in public/photos/.
+const P = (name: string) => `${import.meta.env.BASE_URL}photos/${name}`
 
 export interface Slide {
   src: string
@@ -23,43 +24,43 @@ export const PHOTO_CREDIT = {
 // Main-page gallery: a walk around the property, then inside.
 export const gallery: Slide[] = [
   {
-    src: '/photos/exterior-front.jpg',
+    src: P('exterior-front.jpg'),
     kicker: 'Exterior · front',
     title: 'Southeast elevation',
     note: 'Siding, trim and porch inspected at the Oct 2025 assessment — no defects logged.',
   },
   {
-    src: '/photos/exterior-side.jpg',
+    src: P('exterior-side.jpg'),
     kicker: 'Exterior · southwest',
     title: 'Garage & south wall',
     note: 'South-facing trim shows UV wear. Exterior repaint budgeted for 2031.',
   },
   {
-    src: '/photos/exterior-corner.jpg',
+    src: P('exterior-corner.jpg'),
     kicker: 'Exterior · northeast',
     title: 'East side yard',
     note: 'HVAC condenser sits on the concrete pad here — replacement project is active.',
   },
   {
-    src: '/photos/exterior-rear.jpg',
+    src: P('exterior-rear.jpg'),
     kicker: 'Exterior · rear',
     title: 'North elevation & grade',
     note: 'NE corner slopes toward the foundation. Regrading quote is awaiting your approval.',
   },
   {
-    src: '/photos/roof-view.jpg',
+    src: P('roof-view.jpg'),
     kicker: 'Roof',
     title: 'From the ridge, looking south',
     note: 'GAF Timberline HDZ, installed 2014 — 15+ years of expected life left.',
   },
   {
-    src: '/photos/living-dining.jpg',
+    src: P('living-dining.jpg'),
     kicker: 'Interior',
     title: 'Living & dining',
     note: '2,340 sq ft · built 1998 · under One Guard management since 2024.',
   },
   {
-    src: '/photos/kitchen.jpg',
+    src: P('kitchen.jpg'),
     kicker: 'Interior',
     title: 'Kitchen',
     note: 'GE Profile refrigerator and Bosch 300 dishwasher — both under active warranty.',
@@ -99,31 +100,31 @@ export interface SystemPhoto {
 // render as the existing "photo coming soon" placeholder tile.
 export const systemPhotos: Record<string, SystemPhoto[]> = {
   'HVAC — condenser': [
-    { src: '/photos/sys-condenser.jpg', cap: 'Condenser — east side pad', focus: '45% 66%', credit: CC('jeffcovey', 'CC BY-SA 2.0', 'https://www.flickr.com/photos/jeffcovey/6209852108') },
-    { src: '/photos/sys-condenser-service.jpg', cap: 'Coil rinse — Jun 2026 tune-up', credit: CC('Phyxter Home Services', 'CC BY 2.0', 'https://www.flickr.com/photos/193557723@N06/51327327962') },
+    { src: P('sys-condenser.jpg'), cap: 'Condenser — east side pad', focus: '45% 66%', credit: CC('jeffcovey', 'CC BY-SA 2.0', 'https://www.flickr.com/photos/jeffcovey/6209852108') },
+    { src: P('sys-condenser-service.jpg'), cap: 'Coil rinse — Jun 2026 tune-up', credit: CC('Phyxter Home Services', 'CC BY 2.0', 'https://www.flickr.com/photos/193557723@N06/51327327962') },
   ],
   'HVAC — furnace': [
-    { src: '/photos/sys-furnace.jpg', cap: 'Air handler — attic platform', credit: CC('engelcox', 'CC BY 2.0', 'https://www.flickr.com/photos/engelcox/457257238') },
-    { src: '/photos/sys-furnace-filter.jpg', cap: 'Filter service — Nov 2025 visit', credit: CC('Phyxter Home Services', 'CC BY 2.0', 'https://www.flickr.com/photos/193557723@N06/52109848092') },
+    { src: P('sys-furnace.jpg'), cap: 'Air handler — attic platform', credit: CC('engelcox', 'CC BY 2.0', 'https://www.flickr.com/photos/engelcox/457257238') },
+    { src: P('sys-furnace-filter.jpg'), cap: 'Filter service — Nov 2025 visit', credit: CC('Phyxter Home Services', 'CC BY 2.0', 'https://www.flickr.com/photos/193557723@N06/52109848092') },
   ],
   'Water heater': [
-    { src: '/photos/sys-water-heater.jpg', cap: 'Tank & supply lines', credit: FAMARTIN },
-    { src: '/photos/sys-wh-label.jpg', cap: 'EnergyGuide & data plate', credit: CC('Tony Webster', 'CC BY 2.0', 'https://www.flickr.com/photos/diversey/54273678438') },
+    { src: P('sys-water-heater.jpg'), cap: 'Tank & supply lines', credit: FAMARTIN },
+    { src: P('sys-wh-label.jpg'), cap: 'EnergyGuide & data plate', credit: CC('Tony Webster', 'CC BY 2.0', 'https://www.flickr.com/photos/diversey/54273678438') },
   ],
   Roof: [
-    { src: '/photos/roof-view.jpg', cap: 'South slope from the ridge', credit: FAMARTIN },
-    { src: '/photos/sys-chimney.jpg', cap: 'Chimney & flashing detail', credit: FAMARTIN },
+    { src: P('roof-view.jpg'), cap: 'South slope from the ridge', credit: FAMARTIN },
+    { src: P('sys-chimney.jpg'), cap: 'Chimney & flashing detail', credit: FAMARTIN },
   ],
   'Electrical panel': [
-    { src: '/photos/sys-panel-open.jpg', cap: 'Breakers & schedule, cover off', credit: CC('davef3138', 'CC BY 2.0', 'https://www.flickr.com/photos/davef3138/3573729611') },
-    { src: '/photos/sys-garage.jpg', cap: 'Location — garage, west wall', focus: '15% 42%', credit: FAMARTIN },
+    { src: P('sys-panel-open.jpg'), cap: 'Breakers & schedule, cover off', credit: CC('davef3138', 'CC BY 2.0', 'https://www.flickr.com/photos/davef3138/3573729611') },
+    { src: P('sys-garage.jpg'), cap: 'Location — garage, west wall', focus: '15% 42%', credit: FAMARTIN },
   ],
   Refrigerator: [
-    { src: '/photos/kitchen.jpg', cap: 'Unit — kitchen', focus: '0% 50%', thumbZoom: '480%', credit: FAMARTIN },
+    { src: P('kitchen.jpg'), cap: 'Unit — kitchen', focus: '0% 50%', thumbZoom: '480%', credit: FAMARTIN },
     { cap: 'Model tag inside door' },
   ],
   Dishwasher: [
-    { src: '/photos/sys-dishwasher.jpg', cap: 'Unit — kitchen, racks out', credit: CC('Editor B', 'CC BY 2.0', 'https://www.flickr.com/photos/editor/2083900935') },
+    { src: P('sys-dishwasher.jpg'), cap: 'Unit — kitchen, racks out', credit: CC('Editor B', 'CC BY 2.0', 'https://www.flickr.com/photos/editor/2083900935') },
     { cap: 'Model tag on door edge' },
   ],
 }
@@ -155,10 +156,10 @@ export interface Thumb {
 }
 
 export const portfolioThumbs: Record<string, Thumb> = {
-  '1847 Maple Grove Ln': { src: '/photos/exterior-front.jpg', focus: '52% 46%', zoom: '150%' },
-  '220 Birchwood Ct #A–D': { src: '/photos/prop-birchwood.jpg', focus: '65% 47%', zoom: '300%' },
-  '918 Calloway Dr': { src: '/photos/prop-calloway.jpg', focus: '100% 32%', zoom: '500%' },
-  '45 Fenwick Row': { src: '/photos/prop-fenwick.jpg', focus: '21% 36%', zoom: '275%' },
-  '1302 Alder St': { src: '/photos/prop-alder.jpg', focus: '13% 42%', zoom: '250%' },
-  '77 Quarry Ridge Rd': { src: '/photos/prop-quarry.jpg', focus: '69% 40%', zoom: '270%' },
+  '1847 Maple Grove Ln': { src: P('exterior-front.jpg'), focus: '52% 46%', zoom: '150%' },
+  '220 Birchwood Ct #A–D': { src: P('prop-birchwood.jpg'), focus: '65% 47%', zoom: '300%' },
+  '918 Calloway Dr': { src: P('prop-calloway.jpg'), focus: '100% 32%', zoom: '500%' },
+  '45 Fenwick Row': { src: P('prop-fenwick.jpg'), focus: '21% 36%', zoom: '275%' },
+  '1302 Alder St': { src: P('prop-alder.jpg'), focus: '13% 42%', zoom: '250%' },
+  '77 Quarry Ridge Rd': { src: P('prop-quarry.jpg'), focus: '69% 40%', zoom: '270%' },
 }
