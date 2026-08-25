@@ -2,6 +2,7 @@
 // Persists to localStorage so the demo survives refresh; "Reset demo" in the footer clears it.
 import { useSyncExternalStore } from 'react'
 import type { TagClass } from './data'
+import type { Role } from './roles'
 
 export type TaskStatus = 'DUE SOON' | 'UPCOMING' | 'SCHEDULED' | 'REQUESTED' | 'DONE'
 export type ProjectStatus = 'REQUESTED' | 'QUOTES IN' | 'ACTION NEEDED' | 'SCHEDULED' | 'COMPLETED'
@@ -76,6 +77,8 @@ export interface NotifPrefs {
 }
 
 export interface DemoState {
+  /** Which door we came through. null = show the entry screen. */
+  role: Role | null
   tasks: TaskState[]
   projects: ProjectState[]
   warranties: WarrantyState[]
@@ -91,6 +94,7 @@ export interface DemoState {
 
 function seed(): DemoState {
   return {
+    role: null,
     tasks: [
       { id: 'filters', date: 'Aug 20', season: 'Summer', what: 'Replace HVAC air filters', detail: 'MERV 11, 20×25×1 — both units', who: 'DIY (guide included)', diy: true, status: 'DUE SOON' },
       { id: 'roof-visit', date: 'Aug 21', season: 'Summer', what: 'Roof inspection & gutter repair', detail: 'Summit Roofing Co. — confirmed 8:00 AM', who: 'Summit Roofing Co.', diy: false, status: 'SCHEDULED' },
@@ -198,6 +202,15 @@ export function resetDemo() {
   state = seed()
   listeners.forEach((l) => l())
   toast('Demo data reset.')
+}
+
+// ---------------------------------------------------------------------------
+// Role
+
+/** Enter (or leave) a door. Routing to the role's home is the caller's job —
+ *  App's guard will redirect anyway if the current route isn't reachable. */
+export function setRole(role: Role | null) {
+  set({ role })
 }
 
 // ---------------------------------------------------------------------------

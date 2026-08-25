@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 export const routes = [
+  '/enter',
   '/',
   '/passport',
   '/health',
@@ -8,6 +9,7 @@ export const routes = [
   '/projects',
   '/warranties',
   '/portfolio',
+  '/pro',
   '/mobile',
   '/signup',
 ] as const

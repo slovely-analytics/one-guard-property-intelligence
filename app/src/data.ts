@@ -383,3 +383,73 @@ export const onboardingSystems: OnboardingSystem[] = [
   { name: 'Major appliances', hint: 'Fridge, dishwasher, washer/dryer', year: '', status: 'SKIPPED', tagClass: 'tag-neutral' },
   { name: 'Plumbing', hint: 'Supply line material, known issues', year: '', status: 'SKIPPED', tagClass: 'tag-neutral' },
 ]
+
+// ---------------------------------------------------------------------------
+// Service Pro — today's route.
+//
+// `access` is the whole trust model in one field: standing access for the
+// property's primary provider, an owner-granted grant that expires with the
+// job, and a request still waiting on the owner. The record is withheld until
+// a grant exists — that withholding is the point, not a missing state.
+
+export type AccessState = 'STANDING' | 'GRANTED' | 'PENDING'
+
+export interface ProJob {
+  id: string
+  time: string
+  addr: string
+  city: string
+  job: string
+  detail: string
+  access: AccessState
+  accessNote: string
+  /** What the record opens up to, once access is in place. */
+  onFile: string
+  /** Key into portfolioThumbs. */
+  thumbKey: string
+}
+
+export const proJobs: ProJob[] = [
+  {
+    id: 'wh-flush',
+    time: '8:00 AM',
+    addr: '1847 Maple Grove Ln',
+    city: 'Fort Worth, TX',
+    job: 'Water heater — annual flush & inspection',
+    detail: 'A+ Comfort Club visit. Owner asked about noise on start-up.',
+    access: 'STANDING',
+    accessNote: 'Standing access — Comfort Professor is the primary provider',
+    onFile: 'Rheem 50-gal · installed 2011 · 6 visits on file, last Aug 2025',
+    thumbKey: '1847 Maple Grove Ln',
+  },
+  {
+    id: 'toilet',
+    time: '10:30 AM',
+    addr: '1302 Alder St',
+    city: 'Fort Worth, TX',
+    job: 'Toilet replacement — second floor',
+    detail: 'Owner supplying the fixture. Shut-off is behind the vanity panel.',
+    access: 'GRANTED',
+    accessNote: 'Granted by owner Aug 19 · expires 7 days after completion',
+    onFile: 'Fixtures & plumbing · 2 entries on file, incl. supply-line photos',
+    thumbKey: '1302 Alder St',
+  },
+  {
+    id: 'no-hot-water',
+    time: '1:15 PM',
+    addr: '77 Quarry Ridge Rd',
+    city: 'Fort Worth, TX',
+    job: 'No hot water — diagnostic',
+    detail: 'New customer, referred by the Alder St owner.',
+    access: 'PENDING',
+    accessNote: 'Access requested Aug 20 · waiting on the owner',
+    onFile: 'Record withheld until the owner grants access',
+    thumbKey: '77 Quarry Ridge Rd',
+  },
+]
+
+export function accessTagClass(access: AccessState): TagClass {
+  if (access === 'GRANTED') return 'tag-accent'
+  if (access === 'PENDING') return 'tag-outline'
+  return 'tag-neutral'
+}

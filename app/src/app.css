@@ -4,6 +4,121 @@ a:hover { color: var(--color-accent-600); }
 
 .app-root { min-height: 100vh; display: flex; flex-direction: column; }
 
+/* ---------------------------------------------------------------------------
+   Entry screen — the three doors. Not a login: no credentials, and the role
+   is switchable from the top bar afterwards. */
+.entry { min-height: 100vh; display: flex; flex-direction: column; background: var(--color-bg); }
+.entry-head {
+  display: flex; align-items: center; gap: 12px;
+  padding: 18px 32px; border-bottom: 2px solid var(--color-divider);
+}
+.entry-hero { width: 100%; max-width: 1180px; margin: 0 auto; padding: 52px 32px 36px; }
+.entry-foot {
+  display: flex; gap: 10px 24px; flex-wrap: wrap; align-items: center;
+  padding: 16px 32px; font-size: 12px;
+  border-top: 2px solid var(--color-divider);
+}
+
+.doors {
+  flex: 1; display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 2px; background: var(--color-divider);
+  border-top: 2px solid var(--color-divider);
+}
+.door {
+  position: relative; overflow: hidden; min-height: 46vh;
+  display: block; padding: 0; border: 0; margin: 0;
+  background: var(--color-neutral-900); color: var(--color-bg);
+  font: inherit; text-align: left; cursor: pointer;
+}
+.door-img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  /* The system's imagery is grayscale; colour arriving on hover is the whole
+     hover state, so the door feels like it opens. */
+  filter: grayscale(1) contrast(1.08);
+  transition: filter 420ms ease, transform 640ms ease;
+}
+.door:hover .door-img, .door:focus-visible .door-img {
+  filter: grayscale(0.1) contrast(1.04); transform: scale(1.045);
+}
+.door-scrim {
+  position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--color-neutral-900) 92%, transparent) 0%,
+    color-mix(in srgb, var(--color-neutral-900) 74%, transparent) 34%,
+    color-mix(in srgb, var(--color-neutral-900) 40%, transparent) 62%,
+    color-mix(in srgb, var(--color-neutral-900) 22%, transparent) 100%
+  );
+}
+.door-bar {
+  position: absolute; left: 0; right: 0; top: 0; height: 4px;
+  background: var(--color-accent);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 320ms ease;
+}
+.door:hover .door-bar, .door:focus-visible .door-bar { transform: none; }
+.door-body {
+  position: relative; height: 100%;
+  display: flex; flex-direction: column; justify-content: flex-end; gap: 7px;
+  padding: 28px;
+}
+.door-num {
+  font-family: var(--font-heading); font-weight: 800; font-size: 12px;
+  letter-spacing: 0.14em; color: var(--color-accent-300);
+}
+.door-label { font-family: var(--font-heading); font-weight: 800; font-size: 30px; line-height: 1.05; }
+.door-tagline { font-size: 13px; color: color-mix(in srgb, var(--color-bg) 86%, transparent); }
+.door-blurb {
+  margin: 2px 0 0; font-size: 13px; line-height: 1.5; max-width: 34ch;
+  color: color-mix(in srgb, var(--color-bg) 66%, transparent);
+}
+.door-enter {
+  margin-top: 8px; display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-heading); font-weight: 800; font-size: 12px;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  transition: color 200ms ease;
+}
+.door:hover .door-enter, .door:focus-visible .door-enter { color: var(--color-accent-400); }
+.door:focus-visible { outline: 2px solid var(--color-accent); outline-offset: -4px; }
+@media (prefers-reduced-motion: reduce) {
+  .door-img { transition: none; }
+  .door:hover .door-img { transform: none; }
+}
+
+/* ---------------------------------------------------------------------------
+   Top-bar role switcher */
+.nav-right { display: flex; align-items: center; gap: var(--space-4); margin-left: auto; }
+.role-switch { position: relative; display: inline-flex; }
+.role-switch-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  font: inherit; font-size: 13px; color: inherit; cursor: pointer;
+  background: transparent; border: 1px solid var(--color-divider);
+  padding: 5px 10px; white-space: nowrap;
+}
+.role-switch-btn:hover { border-color: var(--color-accent); color: var(--color-accent); }
+.role-dot { width: 8px; height: 8px; flex: none; background: var(--color-accent); }
+.role-backdrop { position: fixed; inset: 0; z-index: 85; }
+.role-menu {
+  position: absolute; right: 0; top: calc(100% + 8px); z-index: 90;
+  width: 272px; display: flex; flex-direction: column;
+  background: var(--color-bg); border: 2px solid var(--color-text);
+  box-shadow: var(--shadow-lg);
+}
+.role-menu-head {
+  padding: 10px 14px; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-text) 60%, transparent);
+  border-bottom: 1px solid var(--color-divider);
+}
+.role-menu-item {
+  display: block; width: 100%; text-align: left; cursor: pointer;
+  font: inherit; color: inherit; background: transparent;
+  border: 0; border-bottom: 1px solid var(--color-divider);
+  border-left: 3px solid transparent; padding: 10px 14px;
+}
+.role-menu-item:hover { background: color-mix(in srgb, var(--color-text) 6%, transparent); }
+.role-menu-item[aria-current='true'] { border-left-color: var(--color-accent); }
+.role-menu-foot { padding: 10px 14px; font-size: 13px; }
+
 /* Score bar used on Health, Mobile home */
 .meter { height: 6px; background: var(--color-neutral-300); }
 .meter > div { height: 6px; }
@@ -262,8 +377,25 @@ tr.row-link:hover td { background: color-mix(in srgb, var(--color-text) 5%, tran
    wider than the viewport. These rules keep every scroll container local
    (nav, tables) instead of letting overflow leak onto the page, and stack
    the desktop grids that assume side-by-side space. */
+@media (max-width: 880px) {
+  .doors { grid-template-columns: 1fr; }
+  .door { min-height: 240px; }
+  .entry-hero { padding: 32px 20px 24px; }
+  .door-label { font-size: 24px; }
+}
+
 @media (max-width: 640px) {
   .page-main { padding: 24px 16px 40px !important; }
+  .entry-head, .entry-foot { padding-inline: 16px; }
+  .nav-right { gap: 14px; }
+
+  /* The nav scrolls horizontally down here, which gives it overflow-y:auto and
+     clips an absolutely-positioned dropdown. Pin the menu to the viewport
+     instead so it escapes the scroll container. */
+  .role-menu {
+    position: fixed; top: 58px; right: 8px; left: auto;
+    width: min(272px, calc(100vw - 16px));
+  }
 
   /* Grid/flex items default to min-width:auto, which lets their intrinsic
      content width (a long unwrapped link, a stat number) force the track

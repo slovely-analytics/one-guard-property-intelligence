@@ -1,40 +1,102 @@
+import { useEffect, useState } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
 import type { Route } from '../routing/useHashRoute'
 import { PHOTO_CREDIT, systemThumb } from '../photos'
-import { resetDemo } from '../store'
-
-const navLinks: Array<{ path: Route; label: string }> = [
-  { path: '/', label: 'Dashboard' },
-  { path: '/passport', label: 'Property Passport' },
-  { path: '/health', label: 'Health Assessment' },
-  { path: '/maintenance', label: 'Maintenance' },
-  { path: '/projects', label: 'Projects' },
-  { path: '/warranties', label: 'Warranties' },
-]
+import { roleDef, roles } from '../roles'
+import type { Role } from '../roles'
+import { resetDemo, setRole, useDemo } from '../store'
 
 export function Nav({ current }: { current: Route }) {
+  const { role } = useDemo()
+  if (!role) return null
+  const def = roleDef(role)
+
   return (
     <nav className="nav">
-      <span className="nav-brand" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+      <a
+        href="#/enter"
+        className="nav-brand"
+        style={{ display: 'flex', alignItems: 'center', gap: 10, marginRight: 0, color: 'inherit', textDecoration: 'none' }}
+        title="Back to the entry screen"
+      >
         <span style={{ display: 'inline-block', width: 14, height: 14, background: 'var(--color-accent)', flex: 'none' }} />
-        ONE GUARD <span className="nav-brand-sub" style={{ fontWeight: 400, color: 'var(--color-neutral-600)' }}>Property Intelligence</span>
-      </span>
-      {navLinks.map((l) => (
+        ONE GUARD <span className="nav-brand-sub" style={{ fontWeight: 400, color: 'var(--color-neutral-600)' }}>{def.label}</span>
+      </a>
+
+      {def.nav.map((l) => (
         <a key={l.path} href={`#${l.path}`} aria-current={current === l.path ? 'page' : undefined}>
           {l.label}
         </a>
       ))}
-      <a
-        href="#/portfolio"
-        aria-current={current === '/portfolio' ? 'page' : undefined}
-        style={{ borderLeft: '1px solid var(--color-divider)', paddingLeft: 16 }}
-      >
-        Portfolio ▸ PM view
-      </a>
-      <a href="#/mobile" aria-current={current === '/mobile' ? 'page' : undefined}>Mobile app</a>
-      <a href="#/signup" aria-current={current === '/signup' ? 'page' : undefined}>Sign up</a>
-      <span className="tag tag-accent">MEMBER</span>
+
+      <span className="nav-right">
+        <a href="#/mobile" aria-current={current === '/mobile' ? 'page' : undefined}>Mobile app</a>
+        <a href="#/signup" aria-current={current === '/signup' ? 'page' : undefined}>Sign up</a>
+        <RoleSwitcher current={role} />
+      </span>
     </nav>
+  )
+}
+
+/** Hop between doors without going back through the entry screen — the
+ *  continuity story plays all three roles inside a minute. */
+function RoleSwitcher({ current }: { current: Role }) {
+  const [open, setOpen] = useState(false)
+  const def = roleDef(current)
+
+  useEffect(() => {
+    if (!open) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [open])
+
+  const pick = (id: Role) => {
+    setOpen(false)
+    if (id === current) return
+    setRole(id)
+    window.location.hash = `#${roleDef(id).home}`
+  }
+
+  return (
+    <span className="role-switch">
+      {open && <span className="role-backdrop" onClick={() => setOpen(false)} />}
+      <button
+        className="role-switch-btn"
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+        aria-haspopup="menu"
+        aria-label={`Viewing as ${def.label} — switch door`}
+      >
+        <span className="role-dot" aria-hidden />
+        <span>Viewing as <strong style={{ fontWeight: 800 }}>{def.label}</strong></span>
+        <span aria-hidden style={{ fontSize: 10 }}>▾</span>
+      </button>
+
+      {open && (
+        <span className="role-menu" role="menu">
+          <span className="role-menu-head">Switch door</span>
+          {roles.map((r) => (
+            <button
+              key={r.id}
+              className="role-menu-item"
+              role="menuitem"
+              aria-label={`${r.label} — ${r.persona.name}`}
+              aria-current={r.id === current}
+              onClick={() => pick(r.id)}
+            >
+              <strong style={{ display: 'block', fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: 14 }}>{r.label}</strong>
+              <span className="text-muted" style={{ fontSize: 12 }}>{r.persona.name} · {r.persona.sub}</span>
+            </button>
+          ))}
+          <span className="role-menu-foot">
+            <a href="#/enter" onClick={() => { setOpen(false); setRole(null) }}>Back to the entry screen →</a>
+          </span>
+        </span>
+      )}
+    </span>
   )
 }
 
@@ -52,8 +114,7 @@ export function Footer() {
         <a href={PHOTO_CREDIT.sourceUrl} target="_blank" rel="noreferrer">{PHOTO_CREDIT.author}</a>,{' '}
         <a href={PHOTO_CREDIT.licenseUrl} target="_blank" rel="noreferrer">{PHOTO_CREDIT.license}</a>
       </span>
-      <a href="#/mobile" style={{ marginLeft: 'auto' }}>Mobile app →</a>
-      <a href="#/signup">Onboarding →</a>
+      <a href="#/enter" style={{ marginLeft: 'auto' }} onClick={() => setRole(null)}>Change door →</a>
     </footer>
   )
 }
