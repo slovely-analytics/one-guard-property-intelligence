@@ -24,7 +24,6 @@ export default function Entry() {
 
       <div className="entry-hero">
         <h6 style={{ color: 'var(--color-accent)' }}>The record belongs to the property</h6>
-        <h1 style={{ margin: '0 0 10px', maxWidth: 760 }}>One service record. Three ways in.</h1>
         <p className="text-muted" style={{ maxWidth: 620, margin: 0, fontSize: 15 }}>
           Every visit a pro makes writes to the property&rsquo;s record — not to a filing cabinet
           in one contractor&rsquo;s back office. The owner decides who sees it, for how long.
