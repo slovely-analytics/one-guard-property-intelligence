@@ -12,7 +12,10 @@ import Mobile from './screens/Mobile'
 import Onboarding from './screens/Onboarding'
 import Passport from './screens/Passport'
 import Portfolio from './screens/Portfolio'
+import ProJob from './screens/ProJob'
+import ProReview from './screens/ProReview'
 import ProToday from './screens/ProToday'
+import ProUpdate from './screens/ProUpdate'
 import Projects from './screens/Projects'
 import Warranties from './screens/Warranties'
 
@@ -43,6 +46,9 @@ export default function App() {
       {shown === '/warranties' && <Warranties />}
       {shown === '/portfolio' && <Portfolio />}
       {shown === '/pro' && <ProToday />}
+      {shown === '/pro/job' && <ProJob />}
+      {shown === '/pro/update' && <ProUpdate />}
+      {shown === '/pro/review' && <ProReview />}
       {shown === '/mobile' && <Mobile />}
       {shown === '/signup' && <Onboarding />}
       <Footer />

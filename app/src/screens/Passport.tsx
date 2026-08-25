@@ -15,8 +15,9 @@ function exportPdf() {
 }
 
 export default function Passport() {
-  const { tasks } = useDemo()
+  const { tasks, passportUpdates } = useDemo()
   const completed = tasks.filter((t) => t.status === 'DONE')
+  const proUpdates = passportUpdates.filter((update) => update.status === 'PUBLISHED' && update.propertyAddr.startsWith('1847 Maple Grove'))
   const [selected, setSelected] = useState<SystemRecord | null>(null)
   const detail = selected ? systemDetails[selected.name] : undefined
   return (
@@ -73,6 +74,18 @@ export default function Passport() {
         <section>
           <h4 style={{ margin: 0 }}>Service history</h4>
           <Rule style={{ margin: '12px 0 0' }} />
+          {proUpdates.map((update) => (
+            <article key={update.id} className="passport-service-receipt">
+              <div><span className="tag tag-accent">NEW SERVICE RECORD</span><span>{update.reviewedOn}</span></div>
+              <h5>{update.systemName} — {update.performed}</h5>
+              <p>{update.observation}</p>
+              <dl>
+                <div><dt>Service Pro</dt><dd>{update.submittedBy} · Comfort Professor</dd></div>
+                <div><dt>Next step</dt><dd>{update.recommendation}</dd></div>
+                <div><dt>Evidence</dt><dd>{update.evidence.join(' · ')}</dd></div>
+              </dl>
+            </article>
+          ))}
           {completed.map((t) => (
             <div key={t.id} style={{ display: 'grid', gridTemplateColumns: '84px 1fr auto', gap: 16, padding: '14px 0', borderBottom: '1px solid var(--color-divider)', fontSize: 14 }}>
               <span className="text-muted">{t.completedOn} 2026</span>

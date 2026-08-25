@@ -1,122 +1,108 @@
-// Service Pro home — the route for the day.
-//
-// The list is deliberately access-first: what a pro can see about a property is
-// a property of the grant, not of the job. The withheld third stop is the
-// argument for the whole permission layer, sitting on the first screen.
-import type { CSSProperties } from 'react'
-import { Kicker, Rule } from '../components/Shell'
+import { useState } from 'react'
+import { ProLensSwitch } from '../components/ProControls'
+import type { ProJob } from '../data'
 import { accessTagClass, proJobs } from '../data'
 import { portfolioThumbs } from '../photos'
-import { roleDef } from '../roles'
-import { toast } from '../store'
+import { selectProJob, toast, useDemo } from '../store'
+import type { PassportUpdateState } from '../store'
 
-const main: CSSProperties = { maxWidth: 1120, width: '100%', margin: '0 auto', padding: '40px 32px 64px' }
-const statCell: CSSProperties = { padding: '16px 24px', borderRight: '1px solid var(--color-divider)' }
-const statNum: CSSProperties = { fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: 40, lineHeight: 1 }
+type Horizon = 'TODAY' | 'WEEK' | 'MONTH'
+
+const horizons: Array<{ id: Horizon; label: string }> = [
+  { id: 'TODAY', label: 'Today' },
+  { id: 'WEEK', label: 'Next 7 days' },
+  { id: 'MONTH', label: 'Next 30 days' },
+]
+
+function isInHorizon(job: ProJob, horizon: Horizon) {
+  if (horizon === 'MONTH') return true
+  if (horizon === 'WEEK') return job.horizon !== 'MONTH'
+  return job.horizon === 'TODAY'
+}
+
+function latestUpdate(jobId: string, updates: PassportUpdateState[]) {
+  return updates.find((update) => update.jobId === jobId)
+}
+
+function workState(job: ProJob, updates: PassportUpdateState[]) {
+  const update = latestUpdate(job.id, updates)
+  if (update?.status === 'PUBLISHED') return { label: 'PASSPORT UPDATED', className: 'tag-neutral' }
+  if (update?.status === 'IN_REVIEW') return { label: 'IN REVIEW', className: 'tag-accent' }
+  if (update?.status === 'RETURNED') return { label: 'ACTION NEEDED', className: 'tag-outline' }
+  if (job.access === 'PENDING') return { label: 'ACCESS BLOCKED', className: 'tag-outline' }
+  if (job.stage === 'PLANNED') return { label: 'PLANNED', className: 'tag-neutral' }
+  return { label: 'READY', className: 'tag-accent' }
+}
 
 export default function ProToday() {
-  const pro = roleDef('pro')
-  const readable = proJobs.filter((j) => j.access !== 'PENDING').length
-  const waiting = proJobs.length - readable
+  const { proLens, passportUpdates } = useDemo()
+  const [horizon, setHorizon] = useState<Horizon>('TODAY')
+  const visible = proJobs.filter((job) => isInHorizon(job, horizon) && (proLens === 'MANAGEMENT' || job.assignee === 'Marcus Reyes'))
+  const blocked = visible.filter((job) => job.access === 'PENDING').length
+  const review = visible.filter((job) => latestUpdate(job.id, passportUpdates)?.status === 'IN_REVIEW').length
+
+  const openJob = (job: ProJob) => {
+    selectProJob(job.id)
+    window.location.hash = '#/pro/job'
+  }
 
   return (
-    <main className="page-main" style={main}>
-      <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
+    <main className="page-main pro-page">
+      <header className="pro-page-head">
         <div>
-          <Kicker>Service Pro · {pro.persona.sub}</Kicker>
-          <h1 style={{ margin: 0 }}>Today&rsquo;s route — Thu, Aug 21</h1>
+          <h1>Service work</h1>
+          <p>{proLens === 'TECHNICIAN' ? 'Your property-ready work for Thu, Aug 21.' : 'Current work, upcoming commitments, and decisions across the team.'}</p>
         </div>
-        <span className="tag tag-neutral">LICENSE &amp; INSURANCE VERIFIED</span>
-      </div>
-      <Rule style={{ margin: '24px 0' }} />
+        <ProLensSwitch />
+      </header>
 
-      <div
-        className="mobile-grid-2"
-        style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 0, borderBottom: '2px solid var(--color-divider)', marginBottom: 24 }}
-      >
-        <div style={{ ...statCell, padding: '16px 24px 16px 0' }}>
-          <h6 style={{ marginBottom: 6 }}>Stops</h6><span style={statNum}>{proJobs.length}</span>
+      <div className="pro-ledger-toolbar">
+        <div className="pro-horizon" aria-label="Work horizon">
+          {horizons.map((option) => (
+            <button key={option.id} type="button" aria-pressed={horizon === option.id} onClick={() => setHorizon(option.id)}>
+              {option.label}
+            </button>
+          ))}
         </div>
-        <div style={statCell}>
-          <h6 style={{ marginBottom: 6 }}>Records available</h6><span style={statNum}>{readable}</span>
-        </div>
-        <div style={{ padding: '16px 0 16px 24px' }}>
-          <h6 style={{ marginBottom: 6 }}>Awaiting access</h6>
-          <span style={{ ...statNum, color: waiting ? 'var(--color-accent)' : undefined }}>{waiting}</span>
-        </div>
+        <p aria-live="polite"><strong>{visible.length} work items</strong><span>{blocked} access blocked</span><span>{review} awaiting review</span></p>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
-        {proJobs.map((j) => {
-          const thumb = portfolioThumbs[j.thumbKey]
-          const withheld = j.access === 'PENDING'
+      <div className="pro-ledger" role="list" aria-label="Service work">
+        <div className="pro-ledger-head" aria-hidden>
+          <span>When</span><span>Property</span><span>Work and context</span><span>Owner</span><span>State and action</span>
+        </div>
+        {visible.map((job) => {
+          const state = workState(job, passportUpdates)
+          const photo = portfolioThumbs[job.thumbKey]
           return (
-            <div
-              key={j.id}
-              className="mobile-grid-1"
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '76px 88px 1fr 300px',
-                gap: 20,
-                alignItems: 'start',
-                padding: '20px 0',
-                borderBottom: '1px solid var(--color-divider)',
-              }}
-            >
-              <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: 17, paddingTop: 2 }}>{j.time}</span>
-
-              <span
-                className="prop-thumb"
-                aria-hidden
-                style={{ backgroundImage: `url(${thumb.src})`, backgroundPosition: thumb.focus, backgroundSize: thumb.zoom }}
-              />
-
-              <div>
-                <strong style={{ fontSize: 15 }}>{j.job}</strong>
-                <p style={{ margin: '3px 0 0', fontSize: 13 }}>
-                  {j.addr} <span className="text-muted">· {j.city}</span>
-                </p>
-                <p className="text-muted" style={{ margin: '4px 0 0', fontSize: 13 }}>{j.detail}</p>
+            <article className="pro-ledger-row" key={job.id} role="listitem">
+              <div className="pro-ledger-when"><strong>{job.time}</strong><span>{job.dateLabel}</span></div>
+              <div className="pro-ledger-property">
+                <span className="prop-thumb" role="img" aria-label={`${job.addr} exterior`} style={{ backgroundImage: `url(${photo.src})`, backgroundPosition: photo.focus, backgroundSize: photo.zoom }} />
+                <div><strong>{job.addr}</strong><span>{job.city}</span></div>
               </div>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-start' }}>
-                <span className={`tag ${accessTagClass(j.access)}`}>{j.access === 'STANDING' ? 'STANDING ACCESS' : j.access === 'GRANTED' ? 'ACCESS GRANTED' : 'AWAITING ACCESS'}</span>
-                <p className="text-muted" style={{ margin: 0, fontSize: 12 }}>{j.accessNote}</p>
-                <p
-                  style={{
-                    margin: 0,
-                    fontSize: 13,
-                    padding: '8px 10px',
-                    width: '100%',
-                    background: withheld ? 'transparent' : 'var(--color-neutral-100)',
-                    border: withheld ? '1px dashed var(--color-neutral-400)' : '1px solid var(--color-divider)',
-                    color: withheld ? 'var(--color-neutral-600)' : undefined,
-                  }}
-                >
-                  {j.onFile}
-                </p>
-                <button
-                  className={`btn ${withheld ? 'btn-secondary' : 'btn-primary'}`}
-                  onClick={() =>
-                    toast(
-                      withheld
-                        ? `Reminder sent to the owner at ${j.addr}. You'll get the record the moment they approve.`
-                        : `Opening the property record for ${j.addr} — job view lands in the next build.`,
-                    )
-                  }
-                >
-                  {withheld ? 'Nudge the owner' : 'Open property record'}
-                </button>
+              <div className="pro-ledger-work">
+                <strong>{job.job}</strong><span>{job.onFile}</span>
+                {proLens === 'MANAGEMENT' && <small>Decision: {job.managementDecision}</small>}
               </div>
-            </div>
+              <div className="pro-ledger-owner">
+                <strong>{job.assignee}</strong>
+                <span className={`tag ${accessTagClass(job.access)}`}>{job.access === 'PENDING' ? 'ACCESS PENDING' : job.access === 'GRANTED' ? 'JOB ACCESS' : 'STANDING ACCESS'}</span>
+              </div>
+              <div className="pro-ledger-action">
+                <span className={`tag ${state.className}`}>{state.label}</span>
+                {job.access === 'PENDING' ? (
+                  <button className="btn btn-secondary" onClick={() => toast(`Reminder sent to the owner at ${job.addr}.`)}>Nudge owner</button>
+                ) : (
+                  <button className="btn btn-primary" onClick={() => openJob(job)}>Open work</button>
+                )}
+              </div>
+            </article>
           )
         })}
       </div>
 
-      <p className="text-muted" style={{ fontSize: 13, marginTop: 20, maxWidth: 640 }}>
-        Access is granted by the property owner, scoped to what the job needs, and expires on its own.
-        Anything you log stays with the property under your name — no other company can edit it.
-      </p>
+      {visible.length === 0 && <div className="pro-empty"><h3>No work in this view</h3><p>Change the time horizon or switch to management to see team work.</p></div>}
     </main>
   )
 }

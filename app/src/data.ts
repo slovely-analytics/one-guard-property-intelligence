@@ -396,15 +396,32 @@ export type AccessState = 'STANDING' | 'GRANTED' | 'PENDING'
 
 export interface ProJob {
   id: string
+  horizon: 'TODAY' | 'WEEK' | 'MONTH'
+  dateLabel: string
   time: string
   addr: string
   city: string
   job: string
   detail: string
+  assignee: string
+  trade: string
+  stage: 'READY' | 'BLOCKED' | 'PLANNED'
   access: AccessState
   accessNote: string
+  accessScope: string
   /** What the record opens up to, once access is in place. */
   onFile: string
+  system: {
+    name: string
+    model: string
+    serial: string
+    installed: string
+    location: string
+  }
+  ownerNote: string
+  priorVisits: Array<{ date: string; note: string; source: string }>
+  unknowns: string[]
+  managementDecision: string
   /** Key into portfolioThumbs. */
   thumbKey: string
 }
@@ -412,39 +429,121 @@ export interface ProJob {
 export const proJobs: ProJob[] = [
   {
     id: 'wh-flush',
+    horizon: 'TODAY',
+    dateLabel: 'Thu, Aug 21',
     time: '8:00 AM',
     addr: '1847 Maple Grove Ln',
     city: 'Fort Worth, TX',
     job: 'Water heater — annual flush & inspection',
     detail: 'A+ Comfort Club visit. Owner asked about noise on start-up.',
+    assignee: 'Marcus Reyes',
+    trade: 'Plumbing',
+    stage: 'READY',
     access: 'STANDING',
     accessNote: 'Standing access — Comfort Professor is the primary provider',
-    onFile: 'Rheem 50-gal · installed 2011 · 6 visits on file, last Aug 2025',
+    accessScope: 'Water heater record, related plumbing history, and this visit',
+    onFile: 'Rheem 50-gal · installed 2015 · 6 visits on file, last Sep 2025',
+    system: { name: 'Water heater', model: 'Rheem XG50 · 50 gallon', serial: 'WH-2015-30157', installed: '2015', location: 'Garage · drain pan installed' },
+    ownerNote: 'A low knocking sound happens for about 20 seconds on start-up. Please tell us whether it changes the replacement timing.',
+    priorVisits: [
+      { date: 'Sep 2025', note: 'Annual sediment flush; anode rod inspected at roughly 40% depleted.', source: 'Comfort Air Mechanical' },
+      { date: 'Oct 2025', note: 'Assessment noted reduced recovery from sediment buildup.', source: 'One Guard assessment' },
+    ],
+    unknowns: ['Current anode depletion', 'Whether start-up noise remains after flushing'],
+    managementDecision: 'Confirm whether the existing 2028 replacement horizon should move forward.',
     thumbKey: '1847 Maple Grove Ln',
   },
   {
     id: 'toilet',
+    horizon: 'TODAY',
+    dateLabel: 'Thu, Aug 21',
     time: '10:30 AM',
     addr: '1302 Alder St',
     city: 'Fort Worth, TX',
     job: 'Toilet replacement — second floor',
     detail: 'Owner supplying the fixture. Shut-off is behind the vanity panel.',
+    assignee: 'Marcus Reyes',
+    trade: 'Plumbing',
+    stage: 'READY',
     access: 'GRANTED',
     accessNote: 'Granted by owner Aug 19 · expires 7 days after completion',
+    accessScope: 'Second-floor fixtures, supply-line evidence, and this visit',
     onFile: 'Fixtures & plumbing · 2 entries on file, incl. supply-line photos',
+    system: { name: 'Second-floor toilet', model: 'Owner-supplied fixture', serial: 'Not recorded', installed: 'To be installed', location: 'Second-floor hall bath' },
+    ownerNote: 'Fixture is in the garage. Preserve the existing bidet seat if it is compatible.',
+    priorVisits: [{ date: 'Mar 2024', note: 'Supply valve replaced; braided line condition photographed.', source: 'Northline Plumbing' }],
+    unknowns: ['Fixture model and serial', 'Bidet-seat compatibility'],
+    managementDecision: 'No decision expected unless hidden damage is found.',
     thumbKey: '1302 Alder St',
   },
   {
     id: 'no-hot-water',
+    horizon: 'TODAY',
+    dateLabel: 'Thu, Aug 21',
     time: '1:15 PM',
     addr: '77 Quarry Ridge Rd',
     city: 'Fort Worth, TX',
     job: 'No hot water — diagnostic',
     detail: 'New customer, referred by the Alder St owner.',
+    assignee: 'Priya Shah',
+    trade: 'Plumbing',
+    stage: 'BLOCKED',
     access: 'PENDING',
     accessNote: 'Access requested Aug 20 · waiting on the owner',
+    accessScope: 'Requested: water-heater record and related service history',
     onFile: 'Record withheld until the owner grants access',
+    system: { name: 'Water heater', model: 'Withheld until access is granted', serial: 'Withheld', installed: 'Unknown', location: 'Unknown' },
+    ownerNote: 'No owner note is visible until access is granted.',
+    priorVisits: [],
+    unknowns: ['Equipment identity', 'Prior failure history', 'Access location'],
+    managementDecision: 'Resolve access before dispatch or proceed as a context-free diagnostic.',
     thumbKey: '77 Quarry Ridge Rd',
+  },
+  {
+    id: 'furnace-tune',
+    horizon: 'WEEK',
+    dateLabel: 'Mon, Aug 25',
+    time: '9:00 AM',
+    addr: '220 Birchwood Ct #A–D',
+    city: 'Fort Worth, TX',
+    job: 'Furnace tune-ups — units A–D',
+    detail: 'Four-unit preventive visit. Unit C had an ignition delay last winter.',
+    assignee: 'Priya Shah',
+    trade: 'HVAC',
+    stage: 'PLANNED',
+    access: 'GRANTED',
+    accessNote: 'Granted by Northgate Residential · expires Aug 29',
+    accessScope: 'HVAC systems and mechanical-room records for units A–D',
+    onFile: '4 furnaces · 11 service entries · unit C needs follow-up evidence',
+    system: { name: 'Furnaces A–D', model: 'Mixed Carrier 59SC2 series', serial: 'Four records on file', installed: '2016–2019', location: 'Unit closets and shared mechanical room' },
+    ownerNote: 'Coordinate entry with the onsite manager. Begin with unit C.',
+    priorVisits: [{ date: 'Nov 2025', note: 'Unit C flame sensor cleaned after intermittent ignition delay.', source: 'Comfort Professor' }],
+    unknowns: ['Whether unit C ignition delay returned', 'Filter sizes for units B and D'],
+    managementDecision: 'Decide whether unit C needs a separate diagnostic appointment.',
+    thumbKey: '220 Birchwood Ct #A–D',
+  },
+  {
+    id: 'condenser-plan',
+    horizon: 'MONTH',
+    dateLabel: 'Tue, Sep 9',
+    time: '11:00 AM',
+    addr: '918 Calloway Dr',
+    city: 'Fort Worth, TX',
+    job: 'Condenser replacement planning visit',
+    detail: 'Confirm electrical, pad, and line-set conditions before final proposal.',
+    assignee: 'Marcus Reyes',
+    trade: 'HVAC',
+    stage: 'PLANNED',
+    access: 'STANDING',
+    accessNote: 'Standing access — Comfort Professor is the primary provider',
+    accessScope: 'HVAC, electrical-service summary, and exterior equipment evidence',
+    onFile: 'Carrier condenser · 14 years old · replacement recommendation on file',
+    system: { name: 'HVAC condenser', model: 'Carrier 24ACC636', serial: 'CN-2012-1184P', installed: '2012', location: 'East side yard' },
+    ownerNote: 'Owner prefers the quietest viable replacement and wants the pad moved six inches from the fence.',
+    priorVisits: [{ date: 'Jun 2026', note: 'Compressor amp draw above specification; replacement planning recommended.', source: 'Comfort Professor' }],
+    unknowns: ['Existing line-set reuse', 'Clearance after proposed pad move'],
+    managementDecision: 'Validate project scope before an estimate is prepared in ServiceTitan.',
+    thumbKey: '918 Calloway Dr',
   },
 ]
 

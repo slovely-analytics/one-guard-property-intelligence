@@ -10,6 +10,9 @@ export const routes = [
   '/warranties',
   '/portfolio',
   '/pro',
+  '/pro/job',
+  '/pro/update',
+  '/pro/review',
   '/mobile',
   '/signup',
 ] as const

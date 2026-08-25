@@ -64,7 +64,10 @@ export const roles: RoleDef[] = [
     blurb: 'Your route for the day, and the property record for each stop — model, serial, age and what the last tech found. Log what you did once, and it stays with the property.',
     photo: P('sys-condenser-service.jpg'),
     home: '/pro',
-    nav: [{ path: '/pro', label: "Today's route" }],
+    nav: [
+      { path: '/pro', label: 'Work' },
+      { path: '/pro/review', label: 'Review' },
+    ],
     persona: { name: 'Marcus Reyes', sub: 'Comfort Professor · HVAC & plumbing' },
   },
 ]
@@ -75,7 +78,8 @@ export function roleDef(id: Role): RoleDef {
 
 /** Routes any role can reach — demo extras that hang off the top bar. */
 export const sharedRoutes: Route[] = ['/enter', '/mobile', '/signup']
+const proWorkflowRoutes: Route[] = ['/pro/job', '/pro/update']
 
 export function canVisit(id: Role, route: Route): boolean {
-  return sharedRoutes.includes(route) || roleDef(id).nav.some((l) => l.path === route)
+  return sharedRoutes.includes(route) || roleDef(id).nav.some((l) => l.path === route) || (id === 'pro' && proWorkflowRoutes.includes(route))
 }

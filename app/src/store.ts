@@ -76,6 +76,28 @@ export interface NotifPrefs {
   leadDays: number
 }
 
+export type ProLens = 'TECHNICIAN' | 'MANAGEMENT'
+export type PassportUpdateStatus = 'IN_REVIEW' | 'RETURNED' | 'PUBLISHED'
+
+export interface PassportUpdateState {
+  id: string
+  jobId: string
+  propertyAddr: string
+  systemName: string
+  performed: string
+  observation: string
+  materials: string
+  recommendation: string
+  confidence: 'CONFIRMED' | 'PROVISIONAL'
+  evidence: string[]
+  submittedBy: string
+  submittedOn: string
+  status: PassportUpdateStatus
+  reviewedBy?: string
+  reviewedOn?: string
+  reviewNote?: string
+}
+
 export interface DemoState {
   /** Which door we came through. null = show the entry screen. */
   role: Role | null
@@ -89,6 +111,9 @@ export interface DemoState {
   assessmentSlot: string | null
   notif: NotifPrefs
   highlightProject: string | null
+  proLens: ProLens
+  selectedProJobId: string
+  passportUpdates: PassportUpdateState[]
   toasts: ToastItem[]
 }
 
@@ -145,6 +170,25 @@ function seed(): DemoState {
     assessmentSlot: null,
     notif: { email: true, text: true, leadDays: 10 },
     highlightProject: null,
+    proLens: 'TECHNICIAN',
+    selectedProJobId: 'wh-flush',
+    passportUpdates: [
+      {
+        id: 'update-toilet-demo',
+        jobId: 'toilet',
+        propertyAddr: '1302 Alder St',
+        systemName: 'Second-floor toilet',
+        performed: 'Removed the failed fixture and prepared the flange for the owner-supplied replacement.',
+        observation: 'The flange sits slightly below the finished floor but is sound. No visible subfloor moisture.',
+        materials: 'Reinforced wax ring and stainless closet bolts',
+        recommendation: 'Publish the installed fixture model after the box label is photographed at completion.',
+        confidence: 'CONFIRMED',
+        evidence: ['Flange condition before installation', 'Supply valve and braided line'],
+        submittedBy: 'Marcus Reyes',
+        submittedOn: 'Aug 21, 10:52 AM',
+        status: 'IN_REVIEW',
+      },
+    ],
     toasts: [],
   }
 }
@@ -211,6 +255,55 @@ export function resetDemo() {
  *  App's guard will redirect anyway if the current route isn't reachable. */
 export function setRole(role: Role | null) {
   set({ role })
+}
+
+// ---------------------------------------------------------------------------
+// Service Pro work and Passport review
+
+export function setProLens(proLens: ProLens) {
+  set({ proLens })
+}
+
+export function selectProJob(id: string) {
+  set({ selectedProJobId: id })
+}
+
+export function submitPassportUpdate(fields: Omit<PassportUpdateState, 'id' | 'submittedOn' | 'status'>) {
+  const existing = state.passportUpdates.find((u) => u.jobId === fields.jobId && u.status !== 'PUBLISHED')
+  const update: PassportUpdateState = {
+    ...fields,
+    id: existing?.id ?? `pro-update-${Date.now()}`,
+    submittedOn: 'Aug 21, 9:06 AM',
+    status: 'IN_REVIEW',
+  }
+  set({
+    passportUpdates: existing
+      ? state.passportUpdates.map((u) => (u.id === existing.id ? update : u))
+      : [update, ...state.passportUpdates],
+  })
+  toast('Passport update sent for management review.')
+}
+
+export function approvePassportUpdate(id: string) {
+  set({
+    passportUpdates: state.passportUpdates.map((u) =>
+      u.id === id
+        ? { ...u, status: 'PUBLISHED' as PassportUpdateStatus, reviewedBy: 'Elena Brooks', reviewedOn: 'Aug 21, 9:14 AM', reviewNote: 'Approved for the property record and owner handoff.' }
+        : u,
+    ),
+  })
+  toast('Approved — the update is now part of the Property Passport.')
+}
+
+export function returnPassportUpdate(id: string, reviewNote: string) {
+  set({
+    passportUpdates: state.passportUpdates.map((u) =>
+      u.id === id
+        ? { ...u, status: 'RETURNED' as PassportUpdateStatus, reviewedBy: 'Elena Brooks', reviewedOn: 'Aug 21, 9:14 AM', reviewNote }
+        : u,
+    ),
+  })
+  toast('Returned to the technician with a review note.')
 }
 
 // ---------------------------------------------------------------------------
