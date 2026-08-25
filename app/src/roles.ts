@@ -66,6 +66,7 @@ export const roles: RoleDef[] = [
     home: '/pro',
     nav: [
       { path: '/pro', label: 'Work' },
+      { path: '/pro/calendar', label: 'Calendar' },
       { path: '/pro/review', label: 'Review' },
     ],
     persona: { name: 'Marcus Reyes', sub: 'Comfort Professor · HVAC & plumbing' },

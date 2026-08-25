@@ -2,7 +2,7 @@
 
 ## Scope and mode
 
-Operate mode across `app/src/screens/ProToday.tsx`, `ProJob.tsx`, `ProUpdate.tsx`, and `ProReview.tsx`.
+Operate mode across `app/src/screens/ProToday.tsx`, `ProCalendar.tsx`, `ProJob.tsx`, `ProUpdate.tsx`, and `ProReview.tsx`.
 
 ## Audience and job
 
@@ -10,11 +10,11 @@ Field technicians need to arrive with relevant property context and capture dura
 
 ## Task and proof
 
-The demonstrable loop is work ledger -> scoped property context -> structured Passport update -> management decision -> published owner receipt. Proof is the same attributed update persisting across technician, management, and homeowner views.
+The demonstrable loop is work ledger or role-aware calendar -> scoped property context -> structured Passport update -> management decision -> published owner receipt. Proof is the same attributed update persisting across technician, management, and homeowner views.
 
 ## Direction and memorable moment
 
-Use a Shared Work Ledger inside the incumbent One Guard modernist system. Technicians default to their work today; management sees team work and longer horizons using the same records. The memorable moment is approving a technician's evidence and immediately switching to the homeowner Passport to see the permanent service record.
+Use a Shared Work Ledger and Service Time Map inside the incumbent One Guard modernist system. Technicians read the selected day as a route sequence; management reads the same records as team lanes with access and decision exceptions. A 35-day view makes future commitments visible without turning One Guard into the system of dispatch. The memorable moment is moving from a calendar block into the property-ready job, then seeing approved evidence become the homeowner's permanent service record.
 
 ## Constraints
 
@@ -25,4 +25,4 @@ Use a Shared Work Ledger inside the incumbent One Guard modernist system. Techni
 
 ## Unresolved later surfaces
 
-Connected-property search, forward planning across properties, and a dedicated access-resolution center remain later Service Pro surfaces. Live ServiceTitan scopes, synchronization, and audited write-back require separate verification.
+Connected-property search and a dedicated access-resolution center remain later Service Pro surfaces. Live ServiceTitan scopes, calendar synchronization, and audited write-back require separate verification.

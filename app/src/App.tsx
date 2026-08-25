@@ -12,6 +12,7 @@ import Mobile from './screens/Mobile'
 import Onboarding from './screens/Onboarding'
 import Passport from './screens/Passport'
 import Portfolio from './screens/Portfolio'
+import ProCalendar from './screens/ProCalendar'
 import ProJob from './screens/ProJob'
 import ProReview from './screens/ProReview'
 import ProToday from './screens/ProToday'
@@ -46,6 +47,7 @@ export default function App() {
       {shown === '/warranties' && <Warranties />}
       {shown === '/portfolio' && <Portfolio />}
       {shown === '/pro' && <ProToday />}
+      {shown === '/pro/calendar' && <ProCalendar />}
       {shown === '/pro/job' && <ProJob />}
       {shown === '/pro/update' && <ProUpdate />}
       {shown === '/pro/review' && <ProReview />}
