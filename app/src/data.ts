@@ -122,7 +122,7 @@ export const property = {
 export const alerts: Alert[] = [
   { level: 'PRIORITY', tagClass: 'tag-outline', title: 'HVAC condenser at end of expected life', detail: '18 years old (typical life 15–20). Replacement recommended before summer 2027 — est. $6,200–7,800.', action: 'Get quotes' },
   { level: 'DUE AUG 20', tagClass: 'tag-accent', title: 'Replace HVAC air filters', detail: 'MERV 11, 20×25×1 — 2 units. Last replaced May 12.', action: 'Mark done' },
-  { level: 'DUE SEP 05', tagClass: 'tag-accent', title: 'Flush water heater', detail: 'Annual sediment flush extends tank life. We can send a plumber.', action: 'Schedule' },
+  { level: 'AUG 21', tagClass: 'tag-neutral', title: 'Flush water heater', detail: 'Scheduled — Comfort Professor, Marcus Reyes at 8:00 AM.', action: 'Details' },
   { level: 'UPCOMING', tagClass: 'tag-neutral', title: 'Gutter cleaning before fall', detail: 'Recommended by Oct 15 based on tree coverage.', action: 'Schedule' },
 ]
 
@@ -326,8 +326,8 @@ export const findings: Finding[] = [
 
 export const tasks: MaintenanceTask[] = [
   { date: 'Aug 20', season: 'Summer', what: 'Replace HVAC air filters', detail: 'MERV 11, 20×25×1 — both units', who: 'DIY (guide included)', status: 'DUE SOON', tagClass: 'tag-accent', action: 'Mark done' },
-  { date: 'Aug 21', season: 'Summer', what: 'Roof inspection & gutter repair', detail: 'Summit Roofing Co. — confirmed 8:00 AM', who: 'Summit Roofing Co.', status: 'SCHEDULED', tagClass: 'tag-neutral', action: 'Details' },
-  { date: 'Sep 05', season: 'Fall', what: 'Flush water heater', detail: 'Annual sediment flush', who: 'Needs vendor', status: 'DUE SOON', tagClass: 'tag-accent', action: 'Schedule' },
+  { date: 'Aug 21', season: 'Summer', what: 'Flush water heater', detail: 'Comfort Professor — Marcus Reyes, confirmed 8:00 AM', who: 'Comfort Professor', status: 'SCHEDULED', tagClass: 'tag-neutral', action: 'Details' },
+  { date: 'Aug 21', season: 'Summer', what: 'Roof inspection & gutter repair', detail: 'Summit Roofing Co. — confirmed 9:30 AM', who: 'Summit Roofing Co.', status: 'SCHEDULED', tagClass: 'tag-neutral', action: 'Details' },
   { date: 'Oct 01', season: 'Fall', what: 'Gutter cleaning', detail: 'Before leaf drop; includes downspout check', who: 'Needs vendor', status: 'UPCOMING', tagClass: 'tag-neutral', action: 'Schedule' },
   { date: 'Oct 14', season: 'Fall', what: 'Annual Home Health Assessment', detail: '74-point inspection with M. Torres', who: 'One Guard', status: 'SCHEDULED', tagClass: 'tag-neutral', action: 'Details' },
   { date: 'Nov 10', season: 'Fall', what: 'Furnace tune-up', detail: 'Pre-season inspection & filter service', who: 'Comfort Air Mechanical', status: 'UPCOMING', tagClass: 'tag-neutral', action: 'Schedule' },
@@ -335,7 +335,7 @@ export const tasks: MaintenanceTask[] = [
 
 export const projects: Project[] = [
   { title: 'Roof inspection & gutter repair', vendor: 'Summit Roofing Co. · Coordinator: Dana W.', status: 'SCHEDULED', tagClass: 'tag-neutral', cost: 'Est. $480',
-    note: 'Confirmed for Aug 21, 8:00 AM. Access notes shared with the crew.',
+    note: 'Confirmed for Aug 21, 9:30 AM. Access notes shared with the crew.',
     stepsDone: 2, stepLabels: ['Requested', 'Quotes (3)', 'Approved', 'Scheduled', 'Verified'] },
   { title: 'HVAC condenser replacement', vendor: 'Sourcing quotes · Coordinator: Dana W.', status: 'QUOTES IN', tagClass: 'tag-accent', cost: '$6,200–7,800',
     note: '2 of 3 quotes received. Comparison ready for your review by Aug 15.',

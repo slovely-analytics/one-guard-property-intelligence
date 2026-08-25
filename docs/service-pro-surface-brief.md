@@ -25,4 +25,4 @@ Use a Shared Work Ledger and Service Time Map inside the incumbent One Guard mod
 
 ## Unresolved later surfaces
 
-Connected-property search and a dedicated access-resolution center remain later Service Pro surfaces. Live ServiceTitan scopes, calendar synchronization, and audited write-back require separate verification.
+Connected-property search and a pro-side access-resolution center remain later Service Pro surfaces. (The owner side of access resolution now exists — the homeowner Access screen grants, scopes, and revokes, and the pro views react live.) Live ServiceTitan scopes, calendar synchronization, and audited write-back require separate verification.

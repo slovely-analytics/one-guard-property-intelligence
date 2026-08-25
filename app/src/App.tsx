@@ -4,6 +4,7 @@ import { Footer, Nav } from './components/Shell'
 import { canVisit, roleDef } from './roles'
 import { useHashRoute } from './routing/useHashRoute'
 import { useDemo } from './store'
+import Access from './screens/Access'
 import Dashboard from './screens/Dashboard'
 import Entry from './screens/Entry'
 import Health from './screens/Health'
@@ -41,6 +42,7 @@ export default function App() {
       <Nav current={shown} />
       {shown === '/' && <Dashboard />}
       {shown === '/passport' && <Passport />}
+      {shown === '/access' && <Access />}
       {shown === '/health' && <Health />}
       {shown === '/maintenance' && <Maintenance />}
       {shown === '/projects' && <Projects />}

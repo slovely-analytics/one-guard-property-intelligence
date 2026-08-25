@@ -50,6 +50,7 @@ The service record belongs to the property rather than a single contractor or tr
 - `docs/2026-08-19-client-call-notes.md` contains the revised client direction, three-role thesis, permission model, phasing, and unresolved business questions.
 - `docs/next-meeting-discovery.md` contains the prioritized discovery agenda for the operating workflow and ServiceTitan boundary.
 - `app/src/screens/ProToday.tsx`, `app/src/roles.ts`, and `app/src/data.ts` demonstrate the current Service Pro route, technician persona, sample jobs, and access states.
+- `app/src/screens/Access.tsx` and the grant state in `app/src/store.ts` demonstrate the owner side of the permission model: pending requests approved with scope and duration, revocable grants, and an access log. The Comfort Professor grant is live-wired to the Service Pro door, so revoking it withholds the water-heater job's record until access is restored.
 - The repository contains demo property, system, work-history, maintenance, project, and warranty data. All examples remain illustrative unless replaced with validated pilot data.
 
 ## Product Principles

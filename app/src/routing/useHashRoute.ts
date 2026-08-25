@@ -4,6 +4,7 @@ export const routes = [
   '/enter',
   '/',
   '/passport',
+  '/access',
   '/health',
   '/maintenance',
   '/projects',

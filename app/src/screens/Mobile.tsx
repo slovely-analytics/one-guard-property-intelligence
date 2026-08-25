@@ -53,7 +53,7 @@ function MobileHome() {
         {[
           { tag: 'tag-outline', label: 'PRIORITY', title: 'HVAC condenser at end of life', detail: '2 quotes in — review by Aug 15' },
           { tag: 'tag-accent', label: 'DUE AUG 20', title: 'Replace HVAC air filters', detail: 'MERV 11, 20×25×1 — 2 units' },
-          { tag: 'tag-neutral', label: 'AUG 21', title: 'Roof inspection — confirmed', detail: 'Summit Roofing Co. · 8:00 AM' },
+          { tag: 'tag-neutral', label: 'AUG 21', title: 'Roof inspection — confirmed', detail: 'Summit Roofing Co. · 9:30 AM' },
         ].map((row) => (
           <div key={row.title} style={{ padding: '14px 0', borderBottom: '1px solid var(--color-divider)' }}>
             <span className={`tag ${row.tag}`}>{row.label}</span>
@@ -110,7 +110,7 @@ function MobileRequest() {
       </div>
       <div className="field" style={{ marginTop: 20 }}>
         <label>What needs attention?</label>
-        <input className="input" defaultValue="Water heater flush" />
+        <input className="input" defaultValue="Gutter cleaning" />
       </div>
       <div className="field" style={{ marginTop: 16 }}>
         <label>When works for you?</label>

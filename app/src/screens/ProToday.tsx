@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { ProLensSwitch } from '../components/ProControls'
-import type { ProJob } from '../data'
+import type { AccessState, ProJob } from '../data'
 import { accessTagClass, proJobs } from '../data'
 import { portfolioThumbs } from '../photos'
-import { selectProJob, toast, useDemo } from '../store'
+import { effectiveJobAccess, selectProJob, toast, useDemo } from '../store'
 import type { PassportUpdateState } from '../store'
 
 type Horizon = 'TODAY' | 'WEEK' | 'MONTH'
@@ -24,21 +24,21 @@ function latestUpdate(jobId: string, updates: PassportUpdateState[]) {
   return updates.find((update) => update.jobId === jobId)
 }
 
-function workState(job: ProJob, updates: PassportUpdateState[]) {
+function workState(job: ProJob, updates: PassportUpdateState[], access: AccessState) {
   const update = latestUpdate(job.id, updates)
   if (update?.status === 'PUBLISHED') return { label: 'PASSPORT UPDATED', className: 'tag-neutral' }
   if (update?.status === 'IN_REVIEW') return { label: 'IN REVIEW', className: 'tag-accent' }
   if (update?.status === 'RETURNED') return { label: 'ACTION NEEDED', className: 'tag-outline' }
-  if (job.access === 'PENDING') return { label: 'ACCESS BLOCKED', className: 'tag-outline' }
+  if (access === 'PENDING') return { label: 'ACCESS BLOCKED', className: 'tag-outline' }
   if (job.stage === 'PLANNED') return { label: 'PLANNED', className: 'tag-neutral' }
   return { label: 'READY', className: 'tag-accent' }
 }
 
 export default function ProToday() {
-  const { proLens, passportUpdates } = useDemo()
+  const { proLens, passportUpdates, grants } = useDemo()
   const [horizon, setHorizon] = useState<Horizon>('TODAY')
   const visible = proJobs.filter((job) => isInHorizon(job, horizon) && (proLens === 'MANAGEMENT' || job.assignee === 'Marcus Reyes'))
-  const blocked = visible.filter((job) => job.access === 'PENDING').length
+  const blocked = visible.filter((job) => effectiveJobAccess(job, grants).access === 'PENDING').length
   const review = visible.filter((job) => latestUpdate(job.id, passportUpdates)?.status === 'IN_REVIEW').length
 
   const openJob = (job: ProJob) => {
@@ -72,7 +72,8 @@ export default function ProToday() {
           <span>When</span><span>Property</span><span>Work and context</span><span>Owner</span><span>State and action</span>
         </div>
         {visible.map((job) => {
-          const state = workState(job, passportUpdates)
+          const acc = effectiveJobAccess(job, grants)
+          const state = workState(job, passportUpdates, acc.access)
           const photo = portfolioThumbs[job.thumbKey]
           return (
             <article className="pro-ledger-row" key={job.id} role="listitem">
@@ -82,16 +83,16 @@ export default function ProToday() {
                 <div><strong>{job.addr}</strong><span>{job.city}</span></div>
               </div>
               <div className="pro-ledger-work">
-                <strong>{job.job}</strong><span>{job.onFile}</span>
+                <strong>{job.job}</strong><span>{acc.access === 'PENDING' ? acc.scope : job.onFile}</span>
                 {proLens === 'MANAGEMENT' && <small>Decision: {job.managementDecision}</small>}
               </div>
               <div className="pro-ledger-owner">
                 <strong>{job.assignee}</strong>
-                <span className={`tag ${accessTagClass(job.access)}`}>{job.access === 'PENDING' ? 'ACCESS PENDING' : job.access === 'GRANTED' ? 'JOB ACCESS' : 'STANDING ACCESS'}</span>
+                <span className={`tag ${accessTagClass(acc.access)}`}>{acc.access === 'PENDING' ? 'ACCESS PENDING' : acc.access === 'GRANTED' ? 'JOB ACCESS' : 'STANDING ACCESS'}</span>
               </div>
               <div className="pro-ledger-action">
                 <span className={`tag ${state.className}`}>{state.label}</span>
-                {job.access === 'PENDING' ? (
+                {acc.access === 'PENDING' ? (
                   <button className="btn btn-secondary" onClick={() => toast(`Reminder sent to the owner at ${job.addr}.`)}>Nudge owner</button>
                 ) : (
                   <button className="btn btn-primary" onClick={() => openJob(job)}>Open work</button>

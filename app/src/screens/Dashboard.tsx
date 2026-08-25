@@ -12,12 +12,36 @@ import {
   taskTagClass,
   useDemo,
 } from '../store'
-import type { TaskState } from '../store'
+import type { AccessGrantState, TaskState } from '../store'
+
+/** Access at a glance — leads with whatever is waiting on the owner. */
+function AccessCard({ grants }: { grants: AccessGrantState[] }) {
+  const pending = grants.filter((g) => g.status === 'PENDING')
+  const active = grants.filter((g) => g.status === 'ACTIVE')
+  if (pending.length > 0) {
+    return (
+      <div className="card" style={{ borderTop: '3px solid var(--color-accent)' }}>
+        <span className="card-kicker">Property access</span>
+        <span className="card-title">{pending[0].company} is asking</span>
+        <p className="card-body">{pending[0].note}</p>
+        <a className="btn btn-primary btn-block" href="#/access">Review request</a>
+      </div>
+    )
+  }
+  return (
+    <div className="card">
+      <span className="card-kicker">Property access</span>
+      <span className="card-title">{active.length === 1 ? '1 company can' : `${active.length} companies can`} see this record</span>
+      <p className="card-body">Every grant is scoped and time-boxed, and every view is logged. Nothing is waiting on you.</p>
+      <a className="btn btn-secondary btn-block" href="#/access">Manage access</a>
+    </div>
+  )
+}
 
 const main: CSSProperties = { maxWidth: 1120, width: '100%', margin: '0 auto', padding: '40px 32px 64px' }
 
 export default function Dashboard() {
-  const { tasks, projects, assessmentSlot } = useDemo()
+  const { tasks, projects, assessmentSlot, grants } = useDemo()
   const [scheduling, setScheduling] = useState<TaskState | null>(null)
   const [details, setDetails] = useState<TaskState | null>(null)
 
@@ -123,6 +147,7 @@ export default function Dashboard() {
           )}
         </section>
         <aside style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <AccessCard grants={grants} />
           <div className="card">
             <span className="card-kicker">Active project</span>
             <span className="card-title">{activeProject.title}</span>

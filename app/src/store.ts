@@ -1,7 +1,7 @@
 // Reactive demo store — single source of truth shared by every screen.
 // Persists to localStorage so the demo survives refresh; "Reset demo" in the footer clears it.
 import { useSyncExternalStore } from 'react'
-import type { TagClass } from './data'
+import type { AccessState, ProJob, TagClass } from './data'
 import type { Role } from './roles'
 
 export type TaskStatus = 'DUE SOON' | 'UPCOMING' | 'SCHEDULED' | 'REQUESTED' | 'DONE'
@@ -98,6 +98,32 @@ export interface PassportUpdateState {
   reviewNote?: string
 }
 
+export type GrantStatus = 'ACTIVE' | 'PENDING' | 'REVOKED' | 'DECLINED'
+export type GrantKind = 'STANDING' | 'JOB'
+
+export interface AccessGrantState {
+  id: string
+  company: string
+  trade: string
+  kind: GrantKind
+  /** What the grant opens up — named systems, never the whole record. */
+  scope: string
+  /** The time bound, in owner language — "Since Mar 2024" or "Expires Aug 28". */
+  window: string
+  /** Why this company has (or wants) access. */
+  note: string
+  status: GrantStatus
+  decidedOn?: string
+  /** Service Pro door jobs that ride on this grant. */
+  jobIds: string[]
+}
+
+export interface AccessLogEntry {
+  on: string
+  who: string
+  what: string
+}
+
 export interface DemoState {
   /** Which door we came through. null = show the entry screen. */
   role: Role | null
@@ -114,6 +140,8 @@ export interface DemoState {
   proLens: ProLens
   selectedProJobId: string
   passportUpdates: PassportUpdateState[]
+  grants: AccessGrantState[]
+  accessLog: AccessLogEntry[]
   toasts: ToastItem[]
 }
 
@@ -122,15 +150,17 @@ function seed(): DemoState {
     role: null,
     tasks: [
       { id: 'filters', date: 'Aug 20', season: 'Summer', what: 'Replace HVAC air filters', detail: 'MERV 11, 20×25×1 — both units', who: 'DIY (guide included)', diy: true, status: 'DUE SOON' },
-      { id: 'roof-visit', date: 'Aug 21', season: 'Summer', what: 'Roof inspection & gutter repair', detail: 'Summit Roofing Co. — confirmed 8:00 AM', who: 'Summit Roofing Co.', diy: false, status: 'SCHEDULED' },
-      { id: 'wh-flush', date: 'Sep 05', season: 'Fall', what: 'Flush water heater', detail: 'Annual sediment flush', who: 'Needs vendor', diy: false, status: 'DUE SOON' },
+      // The same visit the Service Pro door shows as Marcus's 8:00 AM stop —
+      // one record, two coordinated sides, so the two doors must agree.
+      { id: 'wh-flush', date: 'Aug 21', season: 'Summer', what: 'Flush water heater', detail: 'Comfort Professor — Marcus Reyes, confirmed 8:00 AM', who: 'Comfort Professor', diy: false, status: 'SCHEDULED' },
+      { id: 'roof-visit', date: 'Aug 21', season: 'Summer', what: 'Roof inspection & gutter repair', detail: 'Summit Roofing Co. — confirmed 9:30 AM', who: 'Summit Roofing Co.', diy: false, status: 'SCHEDULED' },
       { id: 'gutters', date: 'Oct 01', season: 'Fall', what: 'Gutter cleaning', detail: 'Before leaf drop; includes downspout check', who: 'Needs vendor', diy: false, status: 'UPCOMING' },
       { id: 'assessment', date: 'Oct 14', season: 'Fall', what: 'Annual Home Health Assessment', detail: '74-point inspection with M. Torres', who: 'One Guard', diy: false, status: 'SCHEDULED' },
       { id: 'furnace', date: 'Nov 10', season: 'Fall', what: 'Furnace tune-up', detail: 'Pre-season inspection & filter service', who: 'Comfort Air Mechanical', diy: false, status: 'UPCOMING' },
     ],
     projects: [
       { id: 'roof', title: 'Roof inspection & gutter repair', vendor: 'Summit Roofing Co. · Coordinator: Dana W.', status: 'SCHEDULED', cost: 'Est. $480',
-        note: 'Confirmed for Aug 21, 8:00 AM. Access notes shared with the crew.',
+        note: 'Confirmed for Aug 21, 9:30 AM. Access notes shared with the crew.',
         stepsDone: 3, stepLabels: ['Requested', 'Quotes (3)', 'Approved', 'Scheduled', 'Verified'] },
       { id: 'hvac', title: 'HVAC condenser replacement', vendor: 'Sourcing quotes · Coordinator: Dana W.', status: 'QUOTES IN', cost: '$6,200–7,800',
         note: '2 of 3 quotes received. Comparison ready for your review.',
@@ -189,6 +219,50 @@ function seed(): DemoState {
         status: 'IN_REVIEW',
       },
     ],
+    // Access to 1847 Maple Grove Ln, as the owner sees it. The Comfort
+    // Professor grant is the one wired to the Service Pro door — revoking it
+    // makes Marcus's water-heater job go dark over there.
+    grants: [
+      {
+        id: 'cp',
+        company: 'Comfort Professor',
+        trade: 'HVAC & plumbing',
+        kind: 'STANDING',
+        scope: 'Mechanical systems — HVAC, water heater, and their service history',
+        window: 'Since Mar 2024 · reviewed yearly',
+        note: 'Your primary service provider. Standing access keeps every visit’s context ready without a new request each time.',
+        status: 'ACTIVE',
+        jobIds: ['wh-flush'],
+      },
+      {
+        id: 'summit',
+        company: 'Summit Roofing Co.',
+        trade: 'Roofing',
+        kind: 'JOB',
+        scope: 'Roof & gutter record, exterior photos, chimney repair history',
+        window: 'Expires Aug 28 — 7 days after the job completes',
+        note: 'Granted for the Aug 21 roof inspection & gutter repair.',
+        status: 'ACTIVE',
+        jobIds: [],
+      },
+      {
+        id: 'apex',
+        company: 'Apex Climate Systems',
+        trade: 'HVAC',
+        kind: 'JOB',
+        scope: 'HVAC condenser record, electrical-service summary, and install constraints',
+        window: 'Requested Aug 20',
+        note: 'Quoted your condenser replacement at $7,100. Wants to verify the line set and electrical service before the install window.',
+        status: 'PENDING',
+        jobIds: [],
+      },
+    ],
+    accessLog: [
+      { on: 'Aug 21, 7:42 AM', who: 'Marcus Reyes · Comfort Professor', what: 'Viewed the water heater record before today’s visit' },
+      { on: 'Aug 20, 4:10 PM', who: 'Apex Climate Systems', what: 'Requested access to the HVAC condenser record' },
+      { on: 'Aug 19, 2:26 PM', who: 'Summit Roofing Co.', what: 'Viewed the roof record ahead of the Aug 21 visit' },
+      { on: 'Mar 2024', who: 'You', what: 'Granted Comfort Professor standing access' },
+    ],
     toasts: [],
   }
 }
@@ -196,7 +270,8 @@ function seed(): DemoState {
 // ---------------------------------------------------------------------------
 // Store plumbing
 
-const STORAGE_KEY = 'oneguard-demo-v1'
+// v2: seeds gained access grants and the reconciled Aug 21 visit schedule.
+const STORAGE_KEY = 'oneguard-demo-v2'
 const EPHEMERAL: Array<keyof DemoState> = ['toasts', 'chatOpen', 'highlightProject']
 
 function load(): DemoState {
@@ -255,6 +330,64 @@ export function resetDemo() {
  *  App's guard will redirect anyway if the current route isn't reachable. */
 export function setRole(role: Role | null) {
   set({ role })
+}
+
+// ---------------------------------------------------------------------------
+// Property access — the permission model, owner side.
+
+function logAccess(what: string, who = 'You') {
+  set({ accessLog: [{ on: `Aug 21, ${nowTime()}`, who, what }, ...state.accessLog] })
+}
+
+export function approveAccessRequest(id: string, kind: GrantKind, windowLabel: string) {
+  const grant = state.grants.find((g) => g.id === id)
+  if (!grant) return
+  set({
+    grants: state.grants.map((g) =>
+      g.id === id ? { ...g, status: 'ACTIVE' as GrantStatus, kind, window: windowLabel, decidedOn: 'Aug 21' } : g,
+    ),
+  })
+  logAccess(`Granted ${grant.company} scoped access — ${windowLabel.charAt(0).toLowerCase()}${windowLabel.slice(1)}`)
+  toast(`Access granted — ${grant.company} can now see the scoped record.`)
+}
+
+export function declineAccessRequest(id: string) {
+  const grant = state.grants.find((g) => g.id === id)
+  if (!grant) return
+  set({ grants: state.grants.map((g) => (g.id === id ? { ...g, status: 'DECLINED' as GrantStatus, decidedOn: 'Aug 21' } : g)) })
+  logAccess(`Declined ${grant.company}'s request`)
+  toast(`Request declined — ${grant.company} cannot see the record.`)
+}
+
+export function revokeAccess(id: string) {
+  const grant = state.grants.find((g) => g.id === id)
+  if (!grant) return
+  set({ grants: state.grants.map((g) => (g.id === id ? { ...g, status: 'REVOKED' as GrantStatus, decidedOn: 'Aug 21' } : g)) })
+  logAccess(`Revoked ${grant.company}'s access`)
+  toast(`Access revoked — the record is hidden from ${grant.company} immediately.`)
+}
+
+export function restoreAccess(id: string) {
+  const grant = state.grants.find((g) => g.id === id)
+  if (!grant) return
+  set({ grants: state.grants.map((g) => (g.id === id ? { ...g, status: 'ACTIVE' as GrantStatus, decidedOn: 'Aug 21' } : g)) })
+  logAccess(`Restored ${grant.company}'s access`)
+  toast(`Access restored — ${grant.company} can see the scoped record again.`)
+}
+
+/** What a Service Pro job can actually see right now: the static demo state,
+ *  overridden live by whatever the owner has done on the Access screen. */
+export function effectiveJobAccess(
+  job: ProJob,
+  grants: AccessGrantState[],
+): { access: AccessState; note: string; scope: string } {
+  const grant = grants.find((g) => g.jobIds.includes(job.id))
+  if (!grant || grant.status === 'ACTIVE') return { access: job.access, note: job.accessNote, scope: job.accessScope }
+  return {
+    access: 'PENDING',
+    note: `Access revoked by the owner${grant.decidedOn ? ` ${grant.decidedOn}` : ''} — ask for a new grant`,
+    scope: 'Record withheld until the owner restores access',
+  }
 }
 
 // ---------------------------------------------------------------------------

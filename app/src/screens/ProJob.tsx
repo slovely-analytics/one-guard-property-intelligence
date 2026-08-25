@@ -1,14 +1,15 @@
 import { ProLensSwitch } from '../components/ProControls'
 import { accessTagClass, proJobs } from '../data'
 import { portfolioThumbs } from '../photos'
-import { toast, useDemo } from '../store'
+import { effectiveJobAccess, toast, useDemo } from '../store'
 
 export default function ProJob() {
-  const { selectedProJobId, passportUpdates, proLens } = useDemo()
+  const { selectedProJobId, passportUpdates, proLens, grants } = useDemo()
   const job = proJobs.find((item) => item.id === selectedProJobId) ?? proJobs[0]
   const update = passportUpdates.find((item) => item.jobId === job.id)
   const photo = portfolioThumbs[job.thumbKey]
-  const withheld = job.access === 'PENDING'
+  const acc = effectiveJobAccess(job, grants)
+  const withheld = acc.access === 'PENDING'
 
   return (
     <main className="page-main pro-page">
@@ -22,19 +23,19 @@ export default function ProJob() {
           <strong>{job.addr} · {job.city}</strong>
         </div>
         <div className="pro-job-head-action">
-          <span className={`tag ${accessTagClass(job.access)}`}>{job.access === 'PENDING' ? 'ACCESS PENDING' : job.access === 'GRANTED' ? 'JOB ACCESS' : 'STANDING ACCESS'}</span>
+          <span className={`tag ${accessTagClass(acc.access)}`}>{acc.access === 'PENDING' ? 'ACCESS PENDING' : acc.access === 'GRANTED' ? 'JOB ACCESS' : 'STANDING ACCESS'}</span>
           {update && <span className={`tag ${update.status === 'PUBLISHED' ? 'tag-neutral' : update.status === 'RETURNED' ? 'tag-outline' : 'tag-accent'}`}>{update.status.replace('_', ' ')}</span>}
         </div>
       </header>
 
       <section className={`pro-access-band ${withheld ? 'is-withheld' : ''}`}>
-        <div><strong>{job.accessNote}</strong><span>{job.accessScope}</span></div>
+        <div><strong>{acc.note}</strong><span>{acc.scope}</span></div>
         <span>{withheld ? 'Property detail remains withheld.' : 'Access is visible, scoped, and owner-controlled.'}</span>
       </section>
 
       {withheld ? (
         <section className="pro-withheld">
-          <div><h2>The property record is not available yet</h2><p>Equipment identity, prior work, and owner instructions stay hidden until the requested grant is approved.</p></div>
+          <div><h2>The property record is not available</h2><p>Equipment identity, prior work, and owner instructions stay hidden until the owner grants access.</p></div>
           <button className="btn btn-primary" onClick={() => toast(`Access reminder sent for ${job.addr}.`)}>Send access reminder</button>
         </section>
       ) : (

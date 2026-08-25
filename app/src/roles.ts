@@ -36,6 +36,7 @@ export const roles: RoleDef[] = [
     nav: [
       { path: '/', label: 'Dashboard' },
       { path: '/passport', label: 'Property Passport' },
+      { path: '/access', label: 'Access' },
       { path: '/health', label: 'Health Assessment' },
       { path: '/maintenance', label: 'Maintenance' },
       { path: '/projects', label: 'Projects' },
