@@ -62,7 +62,7 @@ export const roles: RoleDef[] = [
     label: 'Service Pro',
     tagline: 'Know the job before you open the truck.',
     blurb: 'Your route for the day, and the property record for each stop — model, serial, age and what the last tech found. Log what you did once, and it stays with the property.',
-    photo: P('sys-condenser-service.jpg'),
+    photo: P('sys-condenser.jpg'),
     home: '/pro',
     nav: [
       { path: '/pro', label: 'Work' },
