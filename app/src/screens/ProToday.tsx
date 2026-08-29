@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { ProLensSwitch } from '../components/ProControls'
+import { StatusTag } from '../components/StatusTag'
+import type { StatusKind } from '../components/StatusTag'
 import type { AccessState, ProJob } from '../data'
-import { accessTagClass, proJobs } from '../data'
+import { accessLabel, accessStatusKind, proJobs } from '../data'
 import { portfolioThumbs } from '../photos'
 import { effectiveJobAccess, selectProJob, toast, useDemo } from '../store'
 import type { PassportUpdateState } from '../store'
@@ -24,14 +26,14 @@ function latestUpdate(jobId: string, updates: PassportUpdateState[]) {
   return updates.find((update) => update.jobId === jobId)
 }
 
-function workState(job: ProJob, updates: PassportUpdateState[], access: AccessState) {
+function workState(job: ProJob, updates: PassportUpdateState[], access: AccessState): { label: string; kind: StatusKind } {
   const update = latestUpdate(job.id, updates)
-  if (update?.status === 'PUBLISHED') return { label: 'PASSPORT UPDATED', className: 'tag-neutral' }
-  if (update?.status === 'IN_REVIEW') return { label: 'IN REVIEW', className: 'tag-accent' }
-  if (update?.status === 'RETURNED') return { label: 'ACTION NEEDED', className: 'tag-outline' }
-  if (access === 'PENDING') return { label: 'ACCESS BLOCKED', className: 'tag-outline' }
-  if (job.stage === 'PLANNED') return { label: 'PLANNED', className: 'tag-neutral' }
-  return { label: 'READY', className: 'tag-accent' }
+  if (update?.status === 'PUBLISHED') return { label: 'PASSPORT UPDATED', kind: 'published' }
+  if (update?.status === 'IN_REVIEW') return { label: 'IN REVIEW', kind: 'review' }
+  if (update?.status === 'RETURNED') return { label: 'ACTION NEEDED', kind: 'progress' }
+  if (access === 'PENDING') return { label: 'ACCESS BLOCKED', kind: 'blocked' }
+  if (job.stage === 'PLANNED') return { label: 'PLANNED', kind: 'planned' }
+  return { label: 'READY', kind: 'ready' }
 }
 
 export default function ProToday() {
@@ -88,10 +90,10 @@ export default function ProToday() {
               </div>
               <div className="pro-ledger-owner">
                 <strong>{job.assignee}</strong>
-                <span className={`tag ${accessTagClass(acc.access)}`}>{acc.access === 'PENDING' ? 'ACCESS PENDING' : acc.access === 'GRANTED' ? 'JOB ACCESS' : 'STANDING ACCESS'}</span>
+                <StatusTag kind={accessStatusKind(acc.access)} family="access">{accessLabel(acc.access)}</StatusTag>
               </div>
               <div className="pro-ledger-action">
-                <span className={`tag ${state.className}`}>{state.label}</span>
+                <StatusTag kind={state.kind}>{state.label}</StatusTag>
                 {acc.access === 'PENDING' ? (
                   <button className="btn btn-secondary" onClick={() => toast(`Reminder sent to the owner at ${job.addr}.`)}>Nudge owner</button>
                 ) : (

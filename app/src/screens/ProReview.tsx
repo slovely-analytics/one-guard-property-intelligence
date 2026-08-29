@@ -1,7 +1,16 @@
 import { useMemo, useState } from 'react'
 import { ProLensSwitch } from '../components/ProControls'
+import { StatusTag } from '../components/StatusTag'
+import type { StatusKind } from '../components/StatusTag'
 import { proJobs } from '../data'
+import type { PassportUpdateStatus } from '../store'
 import { approvePassportUpdate, returnPassportUpdate, setRole, useDemo } from '../store'
+
+const updateStatusKind: Record<PassportUpdateStatus, StatusKind> = {
+  IN_REVIEW: 'review',
+  RETURNED: 'progress',
+  PUBLISHED: 'published',
+}
 
 export default function ProReview() {
   const { passportUpdates, proLens } = useDemo()
@@ -36,7 +45,7 @@ export default function ProReview() {
           <div className="pro-review-list" role="list" aria-label="Passport updates">
             {ordered.map((update) => (
               <button key={update.id} type="button" className="pro-review-list-item" aria-pressed={selected?.id === update.id} onClick={() => { setSelectedId(update.id); setReturnNote('') }}>
-                <span className={`tag ${update.status === 'PUBLISHED' ? 'tag-neutral' : update.status === 'RETURNED' ? 'tag-outline' : 'tag-accent'}`}>{update.status.replace('_', ' ')}</span>
+                <StatusTag kind={updateStatusKind[update.status]}>{update.status.replace('_', ' ')}</StatusTag>
                 <strong>{update.systemName}</strong><span>{update.propertyAddr}</span><small>{update.submittedBy} · {update.submittedOn}</small>
               </button>
             ))}
@@ -44,7 +53,7 @@ export default function ProReview() {
 
           {selected && job && (
             <article className="pro-review-detail" aria-live="polite">
-              <header><div><p>{selected.propertyAddr}</p><h2>{selected.systemName} update</h2></div><span className={`tag ${selected.confidence === 'CONFIRMED' ? 'tag-accent' : 'tag-outline'}`}>{selected.confidence}</span></header>
+              <header><div><p>{selected.propertyAddr}</p><h2>{selected.systemName} update</h2></div><StatusTag kind={selected.confidence === 'CONFIRMED' ? 'ready' : 'planned'}>{selected.confidence}</StatusTag></header>
 
               <div className="pro-review-compare">
                 <section><span>Record before this visit</span><h3>{job.onFile}</h3><p>{job.priorVisits[0]?.note ?? 'No prior service evidence in scope.'}</p><small>{job.priorVisits[0]?.source ?? 'No source available'}</small></section>

@@ -434,9 +434,9 @@ tr.row-link:hover td { background: color-mix(in srgb, var(--color-text) 5%, tran
   align-items: start; padding: 20px 18px 20px 14px; color: inherit; background: transparent;
   border: 0; border-bottom: 1px solid var(--color-divider); cursor: pointer; text-align: left; font: inherit;
 }
-.pro-calendar-agenda-event::before { content: ''; position: absolute; top: 0; right: 0; left: 0; height: 3px; background: var(--color-neutral-500); }
-.pro-calendar-agenda-event.is-ready::before { background: var(--color-text); }
-.pro-calendar-agenda-event.is-blocked::before { background: var(--color-accent); }
+.pro-calendar-agenda-event::before { content: ''; position: absolute; top: 0; right: 0; left: 0; height: 3px; background: var(--status-planned-fg); }
+.pro-calendar-agenda-event.is-ready::before { background: var(--status-ready-fg); }
+.pro-calendar-agenda-event.is-blocked::before { background: var(--status-blocked-fg); }
 .pro-calendar-agenda-event:hover { background: color-mix(in srgb, var(--color-text) 3%, transparent); }
 .pro-calendar-agenda-event[aria-pressed='true'] { background: var(--color-neutral-100); box-shadow: inset 0 0 0 1px var(--color-text); }
 .pro-calendar-agenda-event time { font-family: var(--font-heading); font-size: 16px; }
@@ -444,8 +444,9 @@ tr.row-link:hover td { background: color-mix(in srgb, var(--color-text) 5%, tran
 .pro-calendar-agenda-event strong, .pro-calendar-agenda-event small { display: block; }
 .pro-calendar-agenda-event strong { font-family: var(--font-heading); font-size: 14px; line-height: 1.35; }
 .pro-calendar-agenda-event small { margin-top: 4px; color: var(--color-neutral-700); font-size: 11px; line-height: 1.45; }
-.pro-calendar-agenda-event em { display: inline-block; margin-top: 9px; padding: 3px 6px; color: var(--color-text); background: var(--color-neutral-200); font-size: 9px; font-style: normal; letter-spacing: .07em; text-transform: uppercase; }
-.pro-calendar-agenda-event.is-blocked em { color: var(--color-bg); background: var(--color-accent); }
+.pro-calendar-agenda-event em { display: inline-block; margin-top: 9px; padding: 3px 6px; color: var(--status-planned-fg); background: var(--status-planned-bg); font-size: 9px; font-style: normal; letter-spacing: .07em; text-transform: uppercase; }
+.pro-calendar-agenda-event.is-ready em { color: var(--status-ready-fg); background: var(--status-ready-bg); }
+.pro-calendar-agenda-event.is-blocked em { color: var(--status-blocked-fg); background: var(--status-blocked-bg); }
 .pro-calendar-open-day { max-width: 520px; padding: 48px 0; }
 .pro-calendar-open-day p { color: var(--color-neutral-700); }
 
@@ -464,10 +465,10 @@ tr.row-link:hover td { background: color-mix(in srgb, var(--color-text) 5%, tran
 .pro-calendar-team-row > div:first-child strong { font-family: var(--font-heading); font-size: 13px; }
 .pro-calendar-team-row > div:first-child span { margin-top: 4px; color: var(--color-neutral-700); font-size: 10px; }
 .pro-calendar-team-row > .is-selected-day { background: var(--color-neutral-100); }
-.pro-calendar-team-event { display: block; width: 100%; padding: 9px; color: inherit; background: var(--color-neutral-200); border: 0; border-top: 3px solid var(--color-neutral-600); cursor: pointer; text-align: left; font: inherit; }
+.pro-calendar-team-event { display: block; width: 100%; padding: 9px; color: inherit; background: var(--color-neutral-200); border: 0; border-top: 3px solid var(--status-planned-fg); cursor: pointer; text-align: left; font: inherit; }
 .pro-calendar-team-event + .pro-calendar-team-event { margin-top: 7px; }
-.pro-calendar-team-event.is-ready { border-top-color: var(--color-text); }
-.pro-calendar-team-event.is-blocked { border-top-color: var(--color-accent); background: var(--color-accent-100); }
+.pro-calendar-team-event.is-ready { border-top-color: var(--status-ready-fg); background: var(--status-ready-bg); }
+.pro-calendar-team-event.is-blocked { border-top-color: var(--status-blocked-fg); background: var(--status-blocked-bg); }
 .pro-calendar-team-event[aria-pressed='true'] { box-shadow: inset 0 0 0 1px var(--color-text); }
 .pro-calendar-team-event time, .pro-calendar-team-event strong, .pro-calendar-team-event span { display: block; }
 .pro-calendar-team-event time { font-size: 9px; }
@@ -476,9 +477,9 @@ tr.row-link:hover td { background: color-mix(in srgb, var(--color-text) 5%, tran
 
 .pro-calendar-detail { position: sticky; top: 24px; min-width: 0; background: var(--color-neutral-100); }
 .pro-calendar-detail-photo { position: relative; min-height: 168px; background-color: var(--color-neutral-300); background-repeat: no-repeat; background-blend-mode: luminosity; }
-.pro-calendar-detail-state { position: absolute; top: 0; left: 0; padding: 7px 10px; color: var(--color-bg); background: var(--color-text); font-size: 9px; letter-spacing: .08em; text-transform: uppercase; }
-.pro-calendar-detail-state.is-blocked { background: var(--color-accent); }
-.pro-calendar-detail-state.is-planned { background: var(--color-neutral-700); }
+.pro-calendar-detail-state { position: absolute; top: 0; left: 0; padding: 7px 10px; color: var(--color-bg); background: var(--status-ready-fg); font-size: 9px; letter-spacing: .08em; text-transform: uppercase; }
+.pro-calendar-detail-state.is-blocked { background: var(--status-blocked-fg); }
+.pro-calendar-detail-state.is-planned { background: var(--status-planned-fg); }
 .pro-calendar-detail-body { padding: 20px; border-top: 4px solid var(--color-accent); }
 .pro-calendar-detail-body > p { margin: 0 0 5px; color: var(--color-neutral-700); font-size: 11px; }
 .pro-calendar-detail-body h2 { margin: 0 0 12px; font-size: 19px; line-height: 1.35; }
@@ -503,9 +504,9 @@ tr.row-link:hover td { background: color-mix(in srgb, var(--color-text) 5%, tran
 .pro-calendar-month-date { display: inline-flex; min-width: 36px; min-height: 36px; align-items: center; justify-content: center; gap: 5px; padding: 5px; color: inherit; background: transparent; border: 0; cursor: pointer; font: inherit; }
 .pro-calendar-month-date span { font-family: var(--font-heading); font-size: 13px; }
 .pro-calendar-month-date small { color: var(--color-neutral-700); font-size: 10px; text-transform: uppercase; }
-.pro-calendar-month-event { display: block; width: 100%; margin-top: 6px; padding: 7px; color: inherit; background: var(--color-neutral-200); border: 0; border-top: 3px solid var(--color-neutral-600); cursor: pointer; text-align: left; font: inherit; }
-.pro-calendar-month-event.is-ready { border-top-color: var(--color-text); }
-.pro-calendar-month-event.is-blocked { border-top-color: var(--color-accent); background: var(--color-accent-100); }
+.pro-calendar-month-event { display: block; width: 100%; margin-top: 6px; padding: 7px; color: inherit; background: var(--color-neutral-200); border: 0; border-top: 3px solid var(--status-planned-fg); cursor: pointer; text-align: left; font: inherit; }
+.pro-calendar-month-event.is-ready { border-top-color: var(--status-ready-fg); background: var(--status-ready-bg); }
+.pro-calendar-month-event.is-blocked { border-top-color: var(--status-blocked-fg); background: var(--status-blocked-bg); }
 .pro-calendar-month-event[aria-pressed='true'] { box-shadow: inset 0 0 0 1px var(--color-text); }
 .pro-calendar-month-event time, .pro-calendar-month-event span { display: block; }
 .pro-calendar-month-event time { font-size: 10px; }

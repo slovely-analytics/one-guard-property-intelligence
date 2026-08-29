@@ -55,6 +55,23 @@
   --radius-sm: 0px;
   --radius-md: 0px;
   --radius-lg: 0px;
+  --radius-pill: 999px;
+
+  /* Semantic status colour families. Work state and access state are separate
+     tag families (filled vs. outlined) drawing on one palette; every pair is
+     ≥5.7:1 so the tags stay AA-safe at tag sizes. */
+  --status-ready-fg: #1f5d3a;
+  --status-ready-bg: #e8f2ec; /* 6.83:1 */
+  --status-progress-fg: #7a4a00;
+  --status-progress-bg: #fdf1de; /* 6.70:1 */
+  --status-review-fg: #3a3a8c;
+  --status-review-bg: #ececf7; /* 8.28:1 */
+  --status-blocked-fg: #ae1800;
+  --status-blocked-bg: #ffe0d9; /* 5.77:1 */
+  --status-published-fg: #444141;
+  --status-published-bg: #eae7e7; /* 8.22:1 */
+  --status-planned-fg: #605d5d;
+  --status-planned-bg: #f8f4f4; /* 5.97:1 */
 
   /* Elevation — derived from the ground: soft ink-tinted shadows on a
      light theme, a hairline edge + ambient darkness on a dark one. */
@@ -205,6 +222,21 @@ textarea.input { min-height: 90px; resize: vertical; }
 .tag-accent-2 { background: var(--color-accent-2-100); color: var(--color-accent-2-800); }
 .tag-neutral { background: var(--color-neutral-100); color: var(--color-neutral-800); }
 .tag-outline { border: 1px solid var(--color-accent); color: var(--color-accent); }
+
+/* Status tags — glyph + text, never colour alone. Two families: work state is
+   filled, access state is outlined, so the two questions never look alike. */
+.status-tag {
+  gap: 6px; border-radius: var(--radius-pill);
+  font-weight: 600; letter-spacing: 0.03em;
+}
+.status-tag .status-glyph { font-size: 8px; line-height: 1; }
+.status-ready { background: var(--status-ready-bg); color: var(--status-ready-fg); }
+.status-progress { background: var(--status-progress-bg); color: var(--status-progress-fg); }
+.status-review { background: var(--status-review-bg); color: var(--status-review-fg); }
+.status-blocked { background: var(--status-blocked-bg); color: var(--status-blocked-fg); }
+.status-published { background: var(--status-published-bg); color: var(--status-published-fg); }
+.status-planned { background: var(--status-planned-bg); color: var(--status-planned-fg); }
+.status-tag.is-access { background: transparent; border: 1px solid currentColor; }
 
 /* — navigation — */
 .nav {

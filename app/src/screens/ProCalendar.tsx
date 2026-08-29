@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react'
 import { ProLensSwitch } from '../components/ProControls'
+import { StatusTag } from '../components/StatusTag'
 import type { ProJob } from '../data'
-import { accessTagClass, proJobs } from '../data'
+import { accessLabel, accessStatusKind, proJobs } from '../data'
 import { portfolioThumbs } from '../photos'
 import { effectiveJobAccess, selectProJob, toast, useDemo } from '../store'
 import type { AccessGrantState } from '../store'
@@ -304,7 +305,7 @@ function JobCalendarDetail({ job, proLens, openWork, grants }: { job: ProJob; pr
           <div><dt>{proLens === 'TECHNICIAN' ? 'Know before arrival' : 'Decision on deck'}</dt><dd>{proLens === 'TECHNICIAN' ? job.ownerNote : job.managementDecision}</dd></div>
         </dl>
         {acc.access === 'PENDING' ? <button type="button" className="btn btn-primary" onClick={() => toast(`Reminder sent to the owner at ${job.addr}.`)}>Nudge owner</button> : <button type="button" className="btn btn-primary" onClick={() => openWork(job)}>Open work</button>}
-        <span className={`tag ${accessTagClass(acc.access)}`}>{acc.access === 'PENDING' ? 'ACCESS PENDING' : acc.access === 'GRANTED' ? 'JOB ACCESS' : 'STANDING ACCESS'}</span>
+        <StatusTag kind={accessStatusKind(acc.access)} family="access">{accessLabel(acc.access)}</StatusTag>
       </div>
     </aside>
   )

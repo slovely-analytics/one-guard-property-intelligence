@@ -547,8 +547,17 @@ export const proJobs: ProJob[] = [
   },
 ]
 
-export function accessTagClass(access: AccessState): TagClass {
-  if (access === 'GRANTED') return 'tag-accent'
-  if (access === 'PENDING') return 'tag-outline'
-  return 'tag-neutral'
+// Access-family status kinds (P0-1): standing access reads as settled/neutral,
+// a job-scoped grant as an active review-coloured window, a pending request as
+// the blocking condition it is.
+export function accessStatusKind(access: AccessState): 'published' | 'review' | 'blocked' {
+  if (access === 'GRANTED') return 'review'
+  if (access === 'PENDING') return 'blocked'
+  return 'published'
+}
+
+export function accessLabel(access: AccessState): string {
+  if (access === 'GRANTED') return 'JOB ACCESS'
+  if (access === 'PENDING') return 'ACCESS PENDING'
+  return 'STANDING ACCESS'
 }

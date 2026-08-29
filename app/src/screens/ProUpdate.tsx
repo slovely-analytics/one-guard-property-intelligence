@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { StatusTag } from '../components/StatusTag'
 import { proJobs } from '../data'
 import { setProLens, submitPassportUpdate, useDemo } from '../store'
 
@@ -49,7 +50,7 @@ export default function ProUpdate() {
     return (
       <main className="page-main pro-page">
         <section className="pro-submit-success" aria-live="polite">
-          <span className="tag tag-accent">READY FOR REVIEW</span>
+          <StatusTag kind="review">READY FOR REVIEW</StatusTag>
           <h1>The Passport update is with management</h1>
           <p>The job record remains in ServiceTitan. This submission contains the durable property evidence and next-step recommendation for One Guard.</p>
           <div>
@@ -66,7 +67,7 @@ export default function ProUpdate() {
       <div className="pro-crumbs"><a href="#/pro/job">Back to job workspace</a></div>
       <header className="pro-page-head pro-update-head">
         <div><h1>Update the Property Passport</h1><p>{job.addr} · {job.system.name} · submitted under {job.assignee}</p></div>
-        <span className="tag tag-neutral">ATTRIBUTED DRAFT</span>
+        <StatusTag kind="planned">ATTRIBUTED DRAFT</StatusTag>
       </header>
 
       {existing?.reviewNote && <section className="pro-review-note"><strong>Returned by {existing.reviewedBy}</strong><p>{existing.reviewNote}</p></section>}

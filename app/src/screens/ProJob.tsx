@@ -1,5 +1,6 @@
 import { ProLensSwitch } from '../components/ProControls'
-import { accessTagClass, proJobs } from '../data'
+import { StatusTag } from '../components/StatusTag'
+import { accessLabel, accessStatusKind, proJobs } from '../data'
 import { portfolioThumbs } from '../photos'
 import { effectiveJobAccess, toast, useDemo } from '../store'
 
@@ -23,8 +24,8 @@ export default function ProJob() {
           <strong>{job.addr} · {job.city}</strong>
         </div>
         <div className="pro-job-head-action">
-          <span className={`tag ${accessTagClass(acc.access)}`}>{acc.access === 'PENDING' ? 'ACCESS PENDING' : acc.access === 'GRANTED' ? 'JOB ACCESS' : 'STANDING ACCESS'}</span>
-          {update && <span className={`tag ${update.status === 'PUBLISHED' ? 'tag-neutral' : update.status === 'RETURNED' ? 'tag-outline' : 'tag-accent'}`}>{update.status.replace('_', ' ')}</span>}
+          <StatusTag kind={accessStatusKind(acc.access)} family="access">{accessLabel(acc.access)}</StatusTag>
+          {update && <StatusTag kind={update.status === 'PUBLISHED' ? 'published' : update.status === 'RETURNED' ? 'progress' : 'review'}>{update.status.replace('_', ' ')}</StatusTag>}
         </div>
       </header>
 
