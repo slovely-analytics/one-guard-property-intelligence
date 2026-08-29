@@ -104,7 +104,7 @@ export function Footer() {
   return (
     <footer
       className="text-muted footer"
-      style={{ borderTop: '2px solid var(--color-divider)', padding: '16px 32px', display: 'flex', gap: '10px 24px', fontSize: 12, marginTop: 'auto', flexWrap: 'wrap' }}
+      style={{ borderTop: '2px solid var(--color-divider)', padding: '4px 32px', display: 'flex', alignItems: 'center', gap: '0 24px', fontSize: 12, marginTop: 'auto', flexWrap: 'wrap' }}
     >
       <span>ONE GUARD Property Intelligence</span>
       <span>Demo — sample data</span>

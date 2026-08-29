@@ -136,6 +136,7 @@ figcaption {
   font-family: var(--font-heading); font-weight: var(--font-heading-weight);
   font-size: 14px; line-height: 1.2; color: var(--color-text); /* matches the .input's 14px —
      the pair sits side by side in sign-up rows */
+  min-height: 44px; /* touch target floor; 48px below 640px via the app layer */
   background: transparent; border: 1px solid transparent;
   padding: var(--space-2) calc(var(--space-3) * 1.2);
   border-radius: var(--radius-md);
@@ -151,7 +152,7 @@ figcaption {
 .btn-ghost { color: var(--color-accent-700); padding-inline: var(--space-1); }
 .btn-ghost:hover { background: color-mix(in srgb, var(--color-accent) 10%, transparent); }
 .btn-ghost:active { background: color-mix(in srgb, var(--color-accent) 18%, transparent); }
-.btn-icon { width: 36px; height: 36px; padding: 0; }
+.btn-icon { width: 44px; height: 44px; padding: 0; }
 .btn-block { width: 100%; margin-top: var(--space-2); justify-content: flex-start; text-align: left; }
 
 /* — forms — */
@@ -226,31 +227,39 @@ textarea.input { min-height: 90px; resize: vertical; }
 .tag-outline { border: 1px solid var(--color-accent-700); color: var(--color-accent-700); }
 
 /* Status tags — glyph + text, never colour alone. Two families: work state is
-   filled, access state is outlined, so the two questions never look alike. */
+   filled, access state is outlined, so the two questions never look alike.
+   Glyphs live in pseudo-content (with empty alt text where supported) so they
+   stay decorative: out of the accessible name and outside the type floor. */
 .status-tag {
   gap: 6px; border-radius: var(--radius-pill);
   font-weight: 600; letter-spacing: 0.03em;
 }
-.status-tag .status-glyph { font-size: 8px; line-height: 1; }
+.status-tag::before { font-size: 8px; line-height: 1; }
 .status-ready { background: var(--status-ready-bg); color: var(--status-ready-fg); }
+.status-ready::before { content: '●'; content: '●' / ''; }
 .status-progress { background: var(--status-progress-bg); color: var(--status-progress-fg); }
+.status-progress::before { content: '◐'; content: '◐' / ''; }
 .status-review { background: var(--status-review-bg); color: var(--status-review-fg); }
+.status-review::before { content: '◆'; content: '◆' / ''; }
 .status-blocked { background: var(--status-blocked-bg); color: var(--status-blocked-fg); }
+.status-blocked::before { content: '▲'; content: '▲' / ''; }
 .status-published { background: var(--status-published-bg); color: var(--status-published-fg); }
+.status-published::before { content: '✓'; content: '✓' / ''; }
 .status-planned { background: var(--status-planned-bg); color: var(--status-planned-fg); }
+.status-planned::before { content: '○'; content: '○' / ''; }
 .status-tag.is-access { background: transparent; border: 1px solid currentColor; }
 
 /* — navigation — */
 .nav {
   display: flex; align-items: center; gap: var(--space-4);
-  padding: var(--space-3) var(--space-4);
+  padding: var(--space-1) var(--space-4);
   border-bottom: 2px solid var(--color-divider);
 }
 .nav-brand {
   font-family: var(--font-heading); font-weight: var(--font-heading-weight);
   font-size: 18px; margin-right: auto;
 }
-.nav a { color: inherit; text-decoration: none; font-size: 14px; }
+.nav a { display: inline-flex; align-items: center; min-height: 44px; color: inherit; text-decoration: none; font-size: 14px; }
 .nav a:hover, .nav a[aria-current='page'] { color: var(--color-accent); }
 
 /* — tables — */
