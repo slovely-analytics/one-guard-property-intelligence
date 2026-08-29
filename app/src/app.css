@@ -713,6 +713,8 @@ tr.row-link:hover td { background: color-mix(in srgb, var(--color-text) 5%, tran
 .pro-handoff-preview h3 { margin: 8px 0; font-size: 18px; }
 .pro-handoff-preview p, .pro-handoff-preview strong { font-size: 13px; }
 .pro-review-actions { margin-top: 24px; padding-top: 22px; border-top: 2px solid var(--color-text); }
+.pro-return-reasons { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.pro-return-reasons > span { margin-right: 4px; font-size: 12px; color: var(--color-neutral-700); }
 .pro-review-actions textarea { min-height: 80px; }
 .pro-review-actions > div:last-child { display: flex; gap: 10px; margin-top: 12px; }
 .pro-readonly-note { margin: 24px 0 0; padding: 14px; background: var(--color-neutral-100); font-size: 13px; }

@@ -12,6 +12,14 @@ const updateStatusKind: Record<PassportUpdateStatus, StatusKind> = {
   PUBLISHED: 'published',
 }
 
+// Return reasons as chips (§10.5) — reportable, and each one names the
+// capture step the technician's flow reopens at.
+const RETURN_REASONS = [
+  { id: 'photo', label: 'Needs photo', flag: { step: 1, label: 'NEEDS PHOTO' } },
+  { id: 'reading', label: 'Reading unclear', flag: { step: 3, label: 'CHECK READINGS' } },
+  { id: 'wording', label: 'Wording for the owner', flag: { step: 6, label: 'REWORD FOR OWNER' } },
+] as const
+
 export default function ProReview({ updateId }: { updateId?: string }) {
   const { passportUpdates, proLens } = useDemo()
   const ordered = useMemo(() => [...passportUpdates].sort((a, b) => {
@@ -20,16 +28,18 @@ export default function ProReview({ updateId }: { updateId?: string }) {
   }), [passportUpdates])
   const [selectedId, setSelectedId] = useState(updateId ?? ordered[0]?.id ?? '')
   const [returnNote, setReturnNote] = useState('')
+  const [returnReason, setReturnReason] = useState<(typeof RETURN_REASONS)[number]['id']>('photo')
 
   // Deep link into a specific update: #/pro/review/:updateId selects it, and
   // selecting from the list writes the id back to the address (replace, so
   // browsing the queue doesn't pile up history entries).
   useEffect(() => {
-    if (updateId) { setSelectedId(updateId); setReturnNote('') }
+    if (updateId) { setSelectedId(updateId); setReturnNote(''); setReturnReason('photo') }
   }, [updateId])
   const choose = (id: string) => {
     setSelectedId(id)
     setReturnNote('')
+    setReturnReason('photo')
     history.replaceState(null, '', `#/pro/review/${id}`)
   }
 
@@ -83,8 +93,16 @@ export default function ProReview({ updateId }: { updateId?: string }) {
 
               {selected.status === 'IN_REVIEW' && proLens === 'MANAGEMENT' && (
                 <section className="pro-review-actions">
+                  <div className="pro-return-reasons" role="group" aria-label="Return reason">
+                    <span>Return reason</span>
+                    {RETURN_REASONS.map((reason) => (
+                      <button key={reason.id} type="button" className={`cap-chip ${returnReason === reason.id ? 'is-selected' : ''}`} aria-pressed={returnReason === reason.id} onClick={() => setReturnReason(reason.id)}>
+                        {reason.label}
+                      </button>
+                    ))}
+                  </div>
                   <div className="field"><label htmlFor="return-note">Return note (required only when returning)</label><textarea id="return-note" className="input" value={returnNote} onChange={(event) => setReturnNote(event.target.value)} placeholder="Name the missing evidence or wording that needs correction." /></div>
-                  <div><button className="btn btn-primary" onClick={() => approvePassportUpdate(selected.id)}>Approve and publish</button><button className="btn btn-secondary" disabled={!returnNote.trim()} onClick={() => returnPassportUpdate(selected.id, returnNote.trim())}>Return to technician</button></div>
+                  <div><button className="btn btn-primary" onClick={() => approvePassportUpdate(selected.id)}>Approve and publish</button><button className="btn btn-secondary" disabled={!returnNote.trim()} onClick={() => returnPassportUpdate(selected.id, returnNote.trim(), RETURN_REASONS.find((reason) => reason.id === returnReason)?.flag)}>Return to technician</button></div>
                 </section>
               )}
 

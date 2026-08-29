@@ -257,6 +257,30 @@ function seed(): DemoState {
     proLens: 'TECHNICIAN',
     selectedProJobId: 'wh-flush',
     passportUpdates: [
+      // A returned update in the seed so the demo opens with the full loop
+      // visible: Mine shows Returned · 1, and Fix & resubmit re-enters the
+      // capture flow at the flagged Evidence step. Field values match what
+      // the seeded furnace-tune capture draft below composes, so a resubmit
+      // reads as the same update with the photo added — not a rewrite.
+      {
+        id: 'update-boiler-returned',
+        jobId: 'furnace-tune',
+        propertyAddr: '30 Winter St #3',
+        systemName: 'Boiler — unit 3',
+        performed: 'We cleaned the burners and tested the low-water cutoff.',
+        observation: 'Combustion measured a healthy 9% CO₂. Unit 3 lit clean this time; no ignition delay on three restarts.',
+        materials: '',
+        recommendation: 'We recommend a separate diagnostic visit for unit 3.',
+        confidence: 'CONFIRMED',
+        evidence: ['Boiler front', 'Serial plate'],
+        submittedBy: 'Marcus Reyes',
+        submittedOn: 'Aug 21, 7:38 AM',
+        status: 'RETURNED',
+        reviewedBy: 'Elena Brooks',
+        reviewedOn: 'Aug 21, 9:14 AM',
+        reviewNote: 'Good readings — add a photo of the combustion readout so the record shows it.',
+        returnFlag: { step: 1, label: 'NEEDS PHOTO', shot: 'Combustion readout' },
+      },
       {
         id: 'update-toilet-demo',
         jobId: 'toilet',
@@ -273,7 +297,29 @@ function seed(): DemoState {
         status: 'IN_REVIEW',
       },
     ],
-    captureDrafts: {},
+    // The structured draft behind the returned boiler update — everything the
+    // technician entered is kept (spec: a return never discards work), so
+    // re-entry only needs the flagged photo. step 7 = submitted; opening the
+    // returned flow resets it to the flagged step.
+    captureDrafts: {
+      'furnace-tune': {
+        jobId: 'furnace-tune',
+        templateId: 'tuneup',
+        step: 7,
+        photoIds: ['front', 'plate'],
+        tasksDone: ['burners', 'cutoff'],
+        otherWork: '',
+        materials: [],
+        measurements: { co2: 9 },
+        voice: { transcript: 'Unit 3 lit clean this time; no ignition delay on three restarts.', status: 'kept' },
+        confidence: 'CONFIRMED',
+        nextChips: ['unit3-diag'],
+        nextText: '',
+        overrides: {},
+        startedAtMs: Date.now(),
+        capturedSeconds: 84,
+      },
+    },
     // Access to 42 Highland Ave, as the owner sees it. The Comfort
     // Professor grant is the one wired to the Service Pro door — revoking it
     // makes Marcus's water-heater job go dark over there.
@@ -624,11 +670,11 @@ export function unpublishPassportUpdate(id: string) {
   toast('Publish undone — the update is back in management review.')
 }
 
-export function returnPassportUpdate(id: string, reviewNote: string) {
+export function returnPassportUpdate(id: string, reviewNote: string, returnFlag?: PassportUpdateState['returnFlag']) {
   set({
     passportUpdates: state.passportUpdates.map((u) =>
       u.id === id
-        ? { ...u, status: 'RETURNED' as PassportUpdateStatus, reviewedBy: 'Elena Brooks', reviewedOn: 'Aug 21, 9:14 AM', reviewNote }
+        ? { ...u, status: 'RETURNED' as PassportUpdateStatus, reviewedBy: 'Elena Brooks', reviewedOn: 'Aug 21, 9:14 AM', reviewNote, returnFlag }
         : u,
     ),
   })

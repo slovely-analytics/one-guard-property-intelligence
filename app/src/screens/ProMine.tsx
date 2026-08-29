@@ -90,7 +90,7 @@ function ReturnedCard({ update }: { update: PassportUpdateState }) {
         <span>{timePart(update.reviewedOn)}</span>
       </div>
       <div>
-        <strong className="field-row-title">{job?.job ?? update.systemName}</strong>
+        <strong className="field-row-title">{update.systemName}</strong>
         <span className="field-row-sub">{update.propertyAddr}{job ? ` · ${job.city}` : ''}</span>
       </div>
       <p>“{update.reviewNote}” — {update.reviewedBy}</p>
