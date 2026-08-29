@@ -85,7 +85,7 @@ export default function ProJob({ jobId }: { jobId?: string }) {
               ) : update?.status === 'PUBLISHED' ? (
                 <><p>The approved update is now in the owner’s Passport.</p><a className="btn btn-secondary" href={`#/pro/review/${update.id}`}>View handoff</a></>
               ) : (
-                <><p>Record the property knowledge this visit creates. Ordinary job operations remain in ServiceTitan.</p><a className="btn btn-primary" href={`#/pro/job/${job.id}/update`}>Create Passport update</a></>
+                <><p>Record the property knowledge this visit creates. Ordinary job operations remain in ServiceTitan.</p><a className="btn btn-primary" href={`#/pro/job/${job.id}/capture`}>Start capture</a></>
               )}
               <a className="btn btn-secondary" href="#/pro">Back to work</a>
             </section>

@@ -89,7 +89,7 @@ export default function ProReview({ updateId }: { updateId?: string }) {
               )}
 
               {selected.status === 'IN_REVIEW' && proLens === 'TECHNICIAN' && <p className="pro-readonly-note">Management review is pending. The submitted evidence remains read-only until a decision is made.</p>}
-              {selected.status === 'RETURNED' && <p className="pro-readonly-note"><strong>Returned by {selected.reviewedBy}:</strong> {selected.reviewNote} <a href={`#/pro/job/${selected.jobId}/update`}>Revise update</a></p>}
+              {selected.status === 'RETURNED' && <p className="pro-readonly-note"><strong>Returned by {selected.reviewedBy}:</strong> {selected.reviewNote} <a href={`#/pro/job/${selected.jobId}/capture`}>Fix &amp; resubmit</a></p>}
               {selected.status === 'PUBLISHED' && (
                 <div className="pro-published-actions"><p><strong>Published by {selected.reviewedBy}</strong><span>{selected.reviewedOn} · visible in the property record</span></p>{selected.propertyAddr === '42 Highland Ave' && <button className="btn btn-primary" onClick={openAsOwner}>View the owner’s Passport</button>}</div>
               )}

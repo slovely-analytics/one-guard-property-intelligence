@@ -2,7 +2,8 @@
 // Persists to localStorage so the demo survives refresh; "Reset demo" in the footer clears it.
 import { useSyncExternalStore } from 'react'
 import type { StatusKind } from './components/StatusTag'
-import type { AccessState, ProJob, TagClass } from './data'
+import type { AccessState, CaptureTemplateId, ProJob, TagClass } from './data'
+import { captureEvidenceFor, captureKitFor, composeFinding, composeNext, composeWork, defaultTemplateFor } from './data'
 import type { Role } from './roles'
 
 export type TaskStatus = 'DUE SOON' | 'UPCOMING' | 'SCHEDULED' | 'REQUESTED' | 'DONE'
@@ -100,6 +101,43 @@ export interface PassportUpdateState {
   reviewedBy?: string
   reviewedOn?: string
   reviewNote?: string
+  /** Set when management returns the update: the capture step to reopen at,
+   *  a short reason label, and — for photo returns — the missing shot that
+   *  gates resubmission. */
+  returnFlag?: { step: number; label: string; shot?: string }
+}
+
+// Capture flow (brief §10.4). One draft per job; every input autosaves here on
+// change, so the flow survives reload/app-kill and resumes at the last step.
+// The DRAFT SAVED chip in the capture header is the visible contract.
+export interface CaptureVoiceNote {
+  transcript: string
+  /** 'review' until the tech confirms — a transcript is never included in the
+   *  update without an explicit Keep. */
+  status: 'review' | 'kept'
+}
+
+export interface CaptureDraft {
+  jobId: string
+  templateId: CaptureTemplateId
+  /** 1–7; the step to resume at. 7 = submitted receipt. */
+  step: number
+  photoIds: string[]
+  tasksDone: string[]
+  otherWork: string
+  materials: string[]
+  measurements: Record<string, number | string | null>
+  voice: CaptureVoiceNote | null
+  confidence: 'CONFIRMED' | 'PROVISIONAL'
+  nextChips: string[]
+  nextText: string
+  /** Inline "Edit a line" preview edits — once set, composition stops for
+   *  that line. */
+  overrides: { work?: string; finding?: string; next?: string }
+  /** For the capture-time readout on the receipt. Reset when a returned
+   *  update re-enters the flow, so the readout times the fix, not the gap. */
+  startedAtMs: number
+  capturedSeconds?: number
 }
 
 export type GrantStatus = 'ACTIVE' | 'PENDING' | 'REVOKED' | 'DECLINED'
@@ -151,6 +189,9 @@ export interface DemoState {
   proLens: ProLens
   selectedProJobId: string
   passportUpdates: PassportUpdateState[]
+  /** Capture drafts by job id — kept after submit, because they are the
+   *  structured record a RETURNED update re-opens. */
+  captureDrafts: Record<string, CaptureDraft>
   grants: AccessGrantState[]
   accessLog: AccessLogEntry[]
   /** Owner nudges sent from the Service Pro door, keyed by job id. */
@@ -232,6 +273,7 @@ function seed(): DemoState {
         status: 'IN_REVIEW',
       },
     ],
+    captureDrafts: {},
     // Access to 42 Highland Ave, as the owner sees it. The Comfort
     // Professor grant is the one wired to the Service Pro door — revoking it
     // makes Marcus's water-heater job go dark over there.
@@ -284,9 +326,9 @@ function seed(): DemoState {
 // ---------------------------------------------------------------------------
 // Store plumbing
 
-// v3: Greater Boston dataset (P0-12) — addresses, boilers, and the Mass Save
-// conversion replaced the Fort Worth seeds, so stale v2 state must not merge.
-const STORAGE_KEY = 'oneguard-demo-v3'
+// v4: Phase 1 capture flow — captureDrafts joined the persisted shape and the
+// Passport-update seeds changed, so stale v3 state must not merge.
+const STORAGE_KEY = 'oneguard-demo-v4'
 const EPHEMERAL: Array<keyof DemoState> = ['toasts', 'chatOpen', 'highlightProject']
 
 function load(): DemoState {
@@ -459,6 +501,84 @@ export function setProLens(proLens: ProLens) {
 
 export function selectProJob(id: string) {
   set({ selectedProJobId: id })
+}
+
+// ---------------------------------------------------------------------------
+// Capture flow (brief §10.4) — the way a Passport update is created.
+
+export function captureDraftFor(jobId: string, drafts: Record<string, CaptureDraft>): CaptureDraft | undefined {
+  return drafts[jobId]
+}
+
+function freshDraft(job: ProJob): CaptureDraft {
+  return {
+    jobId: job.id,
+    templateId: defaultTemplateFor(job),
+    step: 0,
+    photoIds: [],
+    tasksDone: [],
+    otherWork: '',
+    materials: [],
+    measurements: {},
+    voice: null,
+    confidence: 'CONFIRMED',
+    nextChips: [],
+    nextText: '',
+    overrides: {},
+    startedAtMs: Date.now(),
+  }
+}
+
+/** Any capture-screen input lands here — the autosave contract. Creates the
+ *  draft on first touch so a template pick alone already survives reload. */
+export function patchCaptureDraft(job: ProJob, patch: Partial<CaptureDraft>) {
+  const current = state.captureDrafts[job.id] ?? freshDraft(job)
+  set({ captureDrafts: { ...state.captureDrafts, [job.id]: { ...current, ...patch } } })
+}
+
+/** "Open camera & start" — step 0 (template pick) advances into the flow. */
+export function beginCapture(job: ProJob) {
+  const current = state.captureDrafts[job.id] ?? freshDraft(job)
+  set({ captureDrafts: { ...state.captureDrafts, [job.id]: { ...current, step: Math.max(1, current.step) } } })
+}
+
+/** A returned update re-enters the same flow at the flagged step; the timer
+ *  restarts so the receipt reads the fix, not the round-trip. */
+export function reopenReturnedCapture(job: ProJob, step: number) {
+  const current = state.captureDrafts[job.id] ?? freshDraft(job)
+  set({
+    captureDrafts: {
+      ...state.captureDrafts,
+      [job.id]: { ...current, step, startedAtMs: Date.now(), capturedSeconds: undefined },
+    },
+  })
+}
+
+/** Composes the structured draft into the owner-voice update and hands it to
+ *  the existing review loop. The draft is kept — it is what a RETURNED update
+ *  re-opens — and marked step 7 for the receipt screen. */
+export function submitCapture(job: ProJob) {
+  const draft = state.captureDrafts[job.id]
+  if (!draft) return
+  const kit = captureKitFor(job)
+  const voiceKept = draft.voice?.status === 'kept' ? draft.voice.transcript : null
+  const evidence = captureEvidenceFor(job)
+    .filter((option) => draft.photoIds.includes(option.id))
+    .map((option) => option.shot)
+  submitPassportUpdate({
+    jobId: job.id,
+    propertyAddr: job.addr,
+    systemName: job.system.name,
+    performed: draft.overrides.work ?? composeWork(kit, draft.tasksDone, draft.otherWork),
+    observation: draft.overrides.finding ?? composeFinding(job, draft.measurements, voiceKept),
+    materials: draft.materials.join(', '),
+    recommendation: draft.overrides.next ?? composeNext(kit, draft.nextChips, draft.nextText),
+    confidence: draft.confidence,
+    evidence,
+    submittedBy: job.assignee,
+  })
+  const capturedSeconds = Math.max(1, Math.round((Date.now() - draft.startedAtMs) / 1000))
+  set({ captureDrafts: { ...state.captureDrafts, [job.id]: { ...draft, step: 7, capturedSeconds } } })
 }
 
 export function submitPassportUpdate(fields: Omit<PassportUpdateState, 'id' | 'submittedOn' | 'status'>) {

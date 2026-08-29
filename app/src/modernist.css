@@ -56,6 +56,9 @@
   --radius-md: 0px;
   --radius-lg: 0px;
   --radius-pill: 999px;
+  /* Brief §11.4: tappable objects read as tappable. Touch controls (buttons,
+     inputs, steppers) take 4px; cards, panels, rules and photography stay 0. */
+  --radius-control: 4px;
 
   /* Semantic status colour families. Work state and access state are separate
      tag families (filled vs. outlined) drawing on one palette; every pair is

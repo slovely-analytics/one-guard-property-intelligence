@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { AdvisorChat, ToastHost } from './components/Overlays'
 import { Footer, Nav } from './components/Shell'
 import { proJobs } from './data'
@@ -17,10 +17,10 @@ import Onboarding from './screens/Onboarding'
 import Passport from './screens/Passport'
 import Portfolio from './screens/Portfolio'
 import ProCalendar from './screens/ProCalendar'
+import ProCapture from './screens/ProCapture'
 import ProJob from './screens/ProJob'
 import ProReview from './screens/ProReview'
 import ProToday from './screens/ProToday'
-import ProUpdate from './screens/ProUpdate'
 import Projects from './screens/Projects'
 import Warranties from './screens/Warranties'
 
@@ -43,15 +43,24 @@ const TITLES: Record<string, string> = {
 }
 
 function titleFor(shownPath: string, route: RouteMatch, updateName?: string): string {
-  if (shownPath === '/pro/job' || shownPath === '/pro/update') {
+  if (shownPath === '/pro/job' || shownPath === '/pro/capture') {
     const job = proJobs.find((j) => j.id === route.jobId)
     if (job) {
       const subject = `${job.addr} — ${job.system.name}`
-      return shownPath === '/pro/update' ? `Passport update: ${subject}` : subject
+      return shownPath === '/pro/capture' ? `Capture: ${subject}` : subject
     }
   }
   if (shownPath === '/pro/review' && updateName) return `Passport review — ${updateName}`
   return TITLES[shownPath] ?? 'Property Intelligence'
+}
+
+// The URL is authoritative on a cold load: a texted #/pro/job link opens the
+// Pro shell directly, whatever door was stored. Runs at module scope — before
+// the first render — so the stray-route guard never sees the stale role and
+// bounces the deep link away. The door-chooser is #/enter only.
+{
+  const boot = parseHash(window.location.hash)
+  if (boot.path !== '/404' && boot.path.startsWith('/pro')) setRole('pro')
 }
 
 /** The skip link's target is whatever <main> the current screen renders. */
@@ -68,15 +77,6 @@ export default function App() {
   const route = useHashRoute()
   const { role, passportUpdates } = useDemo()
 
-  // The URL is authoritative on a cold load: a texted #/pro/job link opens the
-  // Pro shell directly. The door-chooser is #/enter only. Runs once, before
-  // paint, against the boot-time hash.
-  useLayoutEffect(() => {
-    const boot = parseHash(window.location.hash)
-    if (boot.path !== '/404' && boot.path.startsWith('/pro')) setRole('pro')
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
   // A door only reaches its own screens. Landing anywhere else — usually '/',
   // the default hash — bounces to the role's home rather than showing another
   // role's product. Unknown routes are handled as a 404 before this guard.
@@ -87,7 +87,7 @@ export default function App() {
   }, [stray, role])
 
   // Stale or mistyped identifiers are a 404 too, not a silent fallback.
-  const jobMissing = (route.path === '/pro/job' || route.path === '/pro/update') && route.jobId !== undefined && !proJobs.some((j) => j.id === route.jobId)
+  const jobMissing = (route.path === '/pro/job' || route.path === '/pro/capture') && route.jobId !== undefined && !proJobs.some((j) => j.id === route.jobId)
   const updateMissing = route.path === '/pro/review' && route.updateId !== undefined && !passportUpdates.some((u) => u.id === route.updateId)
   const notFound = route.path === '/404' || jobMissing || updateMissing
 
@@ -118,6 +118,17 @@ export default function App() {
 
   const page = shown as Route // '/404' and '/enter' returned above
 
+  // Capture is a focused, full-screen task — the camera, not a portal page.
+  // No nav or footer; its own header carries back/close (§10.4).
+  if (page === '/pro/capture') {
+    return (
+      <>
+        <ProCapture jobId={route.jobId} />
+        <ToastHost />
+      </>
+    )
+  }
+
   return (
     <div className="app-root">
       <a className="skip-link" href="#main" onClick={skipToContent}>Skip to content</a>
@@ -133,7 +144,6 @@ export default function App() {
       {page === '/pro' && <ProToday />}
       {page === '/pro/calendar' && <ProCalendar />}
       {page === '/pro/job' && <ProJob jobId={route.jobId} />}
-      {page === '/pro/update' && <ProUpdate jobId={route.jobId} />}
       {page === '/pro/review' && <ProReview updateId={route.updateId} />}
       {page === '/mobile' && <Mobile />}
       {page === '/signup' && <Onboarding />}

@@ -548,6 +548,297 @@ export const proJobs: ProJob[] = [
   },
 ]
 
+// ---------------------------------------------------------------------------
+// Capture flow (brief §10.4) — templates, per-equipment measurement kits, and
+// the owner-voice composition that turns structured taps into Passport prose.
+//
+// Templates are work-type shells; the *content* (shot list, tasks, readings)
+// comes from the equipment's capture kit, so the A+ tune-up adapts per system.
+// Only the water heater ships fully specced; other equipment stays minimal
+// until ride-alongs validate the schemas (spec, open question 5).
+
+export type CaptureTemplateId = 'tuneup' | 'diagnostic' | 'install' | 'emergency'
+
+export interface CaptureTemplate {
+  id: CaptureTemplateId
+  name: string
+  sub: string
+}
+
+export const captureTemplates: CaptureTemplate[] = [
+  { id: 'tuneup', name: 'A+ Comfort Club · tune-up', sub: 'Shot list, tune-up tasks, and readings for this equipment' },
+  { id: 'diagnostic', name: 'Diagnostic visit', sub: 'Symptom evidence and findings first' },
+  { id: 'install', name: 'Replacement or install', sub: 'Before/after evidence and the new equipment record' },
+  { id: 'emergency', name: 'Emergency visit', sub: 'Everything optional except one photo' },
+]
+
+/** Template pre-selected from the job's work type — one tap through for the
+ *  common case, changeable when dispatch got it wrong. */
+export function defaultTemplateFor(job: ProJob): CaptureTemplateId {
+  const text = `${job.job} ${job.detail}`.toLowerCase()
+  if (text.includes('diagnostic') || text.includes('no hot water')) return 'diagnostic'
+  if (text.includes('replacement') || text.includes('install') || text.includes('conversion')) return 'install'
+  if (text.includes('emergency')) return 'emergency'
+  return 'tuneup'
+}
+
+export interface CaptureTask {
+  id: string
+  label: string
+  /** The same act in the owner's record — "flushed the tank". */
+  owner: string
+}
+
+export interface MeasurementField {
+  id: string
+  label: string
+  kind: 'stepper' | 'chips'
+  unit?: string
+  min?: number
+  max?: number
+  step?: number
+  /** First value a null stepper lands on. */
+  start?: number
+  /** Prior reading under the field — the cross-contractor record earning its
+   *  keep mid-capture. */
+  prior?: string
+  /** Position of this field's sentence in the composed owner finding, when it
+   *  differs from screen order (screen order follows the hands; prose order
+   *  follows how an owner would ask). Defaults to screen order. */
+  composeOrder?: number
+  options?: string[]
+  /** Owner-voice line per chip option. */
+  ownerLines?: Record<string, string>
+  /** Owner-voice line for a stepper value. */
+  ownerLine?: (value: number) => string
+}
+
+export interface NextStepChip {
+  id: string
+  label: string
+  /** Sentence fragment for the composed owner line — lowercase, no period. */
+  owner: string
+}
+
+export interface EquipmentCaptureKit {
+  shots: string[]
+  tasks: CaptureTask[]
+  materials: string[]
+  measurements: MeasurementField[]
+  nextSteps: NextStepChip[]
+  /** Canned transcript for the simulated hold-to-talk control. */
+  voiceDemo: string
+}
+
+const genericKit: EquipmentCaptureKit = {
+  shots: ['Before service', 'After service', 'Model & serial label'],
+  tasks: [
+    { id: 'work', label: 'Completed the scheduled work', owner: 'completed the scheduled work' },
+    { id: 'tested', label: 'Tested operation after service', owner: 'tested everything after the work' },
+  ],
+  materials: [],
+  measurements: [],
+  nextSteps: [
+    { id: 'follow-up', label: 'Schedule a follow-up visit', owner: 'we recommend scheduling a follow-up visit' },
+    { id: 'none', label: 'No action needed', owner: 'no action is needed before the next scheduled visit' },
+  ],
+  voiceDemo: 'Work went as planned; no surprises worth flagging for the record.',
+}
+
+// Keyed by ProJob.system.name.
+export const captureKits: Record<string, EquipmentCaptureKit> = {
+  'Water heater': {
+    shots: ['Unit after service', 'Model & serial label', 'Anode rod', 'Drain valve'],
+    tasks: [
+      { id: 'flush', label: 'Flushed tank & removed sediment', owner: 'flushed the tank' },
+      { id: 'anode', label: 'Inspected anode rod', owner: 'inspected the anode rod' },
+      { id: 'burner', label: 'Verified burner start-up', owner: 'confirmed the burner starts cleanly' },
+      { id: 'tp-valve', label: 'Checked T&P relief valve', owner: 'checked the safety relief valve' },
+      { id: 'drain', label: 'Tested drain valve & cap', owner: 'tested the drain valve' },
+    ],
+    materials: ['Drain-hose adapter', 'Drain-valve cap'],
+    measurements: [
+      {
+        id: 'anode-depletion', label: 'Anode depletion', kind: 'stepper',
+        unit: '%', min: 0, max: 100, step: 5, start: 40, composeOrder: 2,
+        prior: 'Sep 2025 reading: 40% · Comfort Air Mechanical',
+        ownerLine: (v) => `The anode rod — the part that protects the tank from rust — is about ${v}% worn.`,
+      },
+      {
+        id: 'sediment', label: 'Sediment removed', kind: 'chips', composeOrder: 1,
+        options: ['Light', 'Moderate', 'Heavy'],
+        ownerLines: {
+          Light: 'Only light sediment came out of the tank.',
+          Moderate: 'Moderate sediment was removed.',
+          Heavy: 'A heavy load of sediment was removed.',
+        },
+      },
+      {
+        id: 'temp-rise', label: 'Temperature rise', kind: 'stepper',
+        unit: '°F', min: 0, max: 140, step: 5, start: 70, composeOrder: 4,
+        ownerLine: (v) => `The tank heats incoming water by about ${v}°F.`,
+      },
+    ],
+    nextSteps: [
+      { id: 'move-plan', label: 'Move replacement planning to 2027 (currently 2028)', owner: 'plan for replacement in 2027 rather than 2028' },
+      { id: 'reinspect', label: 'Re-inspect anode at next annual visit', owner: 'we’ll check the anode again at next year’s visit' },
+      { id: 'quote-now', label: 'Quote replacement now', owner: 'we’ll prepare a replacement quote for you now' },
+      { id: 'none', label: 'No action needed', owner: 'no action is needed before your next annual visit' },
+    ],
+    voiceDemo: 'Moderate sediment came out; the knocking didn’t return after the flush.',
+  },
+  'Boilers 1–4': {
+    shots: ['Boiler front', 'Serial plate', 'Combustion readout'],
+    tasks: [
+      { id: 'burners', label: 'Cleaned burners & heat exchanger', owner: 'cleaned the burners' },
+      { id: 'cutoff', label: 'Tested low-water cutoff', owner: 'tested the low-water cutoff' },
+      { id: 'combustion', label: 'Checked combustion readings', owner: 'checked combustion performance' },
+    ],
+    materials: [],
+    measurements: [
+      {
+        id: 'co2', label: 'Combustion CO₂', kind: 'stepper',
+        unit: '%', min: 0, max: 14, step: 1, start: 9,
+        ownerLine: (v) => `Combustion measured a healthy ${v}% CO₂.`,
+      },
+    ],
+    nextSteps: [
+      { id: 'unit3-diag', label: 'Book a separate diagnostic for unit 3', owner: 'we recommend a separate diagnostic visit for unit 3' },
+      { id: 'none', label: 'No action needed', owner: 'no action is needed before next season' },
+    ],
+    voiceDemo: 'Unit 3 lit clean this time; no ignition delay on three restarts.',
+  },
+  'Second-floor toilet': {
+    shots: ['Installed fixture', 'Supply connection', 'Box label'],
+    tasks: [
+      { id: 'remove', label: 'Removed old fixture', owner: 'removed the old fixture' },
+      { id: 'set', label: 'Set & sealed the new fixture', owner: 'set and sealed the new fixture' },
+      { id: 'test', label: 'Tested supply & flush', owner: 'tested the supply line and flush' },
+    ],
+    materials: ['Reinforced wax ring', 'Stainless closet bolts'],
+    measurements: [],
+    nextSteps: [
+      { id: 'photo-model', label: 'Record the installed model from the box label', owner: 'we’ll add the installed model to your record from the box label' },
+      { id: 'none', label: 'No action needed', owner: 'no further work is needed' },
+    ],
+    voiceDemo: 'Flange was sound; the owner’s bidet seat fit the new fixture.',
+  },
+}
+
+export function captureKitFor(job: ProJob): EquipmentCaptureKit {
+  return captureKits[job.system.name] ?? genericKit
+}
+
+/** '8:00 AM' → minutes since midnight, for time-ordering the day's stops. */
+export function timeMinutes(time: string): number {
+  const m = time.match(/(\d+):(\d+)\s*(AM|PM)/i)
+  if (!m) return 0
+  const hours = (Number(m[1]) % 12) + (m[3].toUpperCase() === 'PM' ? 12 : 0)
+  return hours * 60 + Number(m[2])
+}
+
+// The owner's instruction becomes a one-tap chip row in Findings — answering
+// the customer is a tap, not a paragraph. Keyed by job id.
+export const captureQuestions: Record<string, MeasurementField> = {
+  'wh-flush': {
+    id: 'owner-noise', label: 'Start-up noise the owner asked about', kind: 'chips', composeOrder: 3,
+    options: ['Resolved', 'Persists', 'Not observed'],
+    ownerLines: {
+      Resolved: 'The start-up noise did not return.',
+      Persists: 'The start-up noise is still present — see the next step.',
+      'Not observed': 'We didn’t hear the start-up noise during this visit.',
+    },
+  },
+}
+
+/** Findings schema for a job: the equipment kit's fields with the owner's
+ *  question spliced in ahead of the tail readings, per the Findings artboard. */
+export function findingsSchemaFor(job: ProJob): MeasurementField[] {
+  const kit = captureKitFor(job)
+  const question = captureQuestions[job.id]
+  if (!question) return kit.measurements
+  const fields = [...kit.measurements]
+  fields.splice(Math.min(2, fields.length), 0, question)
+  return fields
+}
+
+export interface EvidenceOption {
+  id: string
+  /** Shot-list slot this photo satisfies (flips the chip green). */
+  shot: string
+  src: string
+}
+
+const photo = (name: string) => `${import.meta.env.BASE_URL}photos/${name}`
+
+// Simulated camera roll per job — the demo stand-in for getUserMedia. The
+// shutter attaches the next unattached option; the roll sheet lets you pick.
+const captureEvidence: Record<string, EvidenceOption[]> = {
+  'wh-flush': [
+    { id: 'unit', shot: 'Unit after service', src: photo('sys-water-heater.jpg') },
+    { id: 'label', shot: 'Model & serial label', src: photo('sys-wh-label.jpg') },
+  ],
+  'furnace-tune': [
+    { id: 'front', shot: 'Boiler front', src: photo('sys-furnace.jpg') },
+    { id: 'plate', shot: 'Serial plate', src: photo('sys-wh-label.jpg') },
+    { id: 'combustion', shot: 'Combustion readout', src: photo('sys-panel-open.jpg') },
+  ],
+  toilet: [
+    { id: 'fixture', shot: 'Installed fixture', src: photo('sys-dishwasher.jpg') },
+    { id: 'supply', shot: 'Supply connection', src: photo('sys-garage.jpg') },
+  ],
+}
+
+export function captureEvidenceFor(job: ProJob): EvidenceOption[] {
+  return captureEvidence[job.id] ?? [
+    { id: 'before', shot: 'Before service', src: photo('sys-furnace-filter.jpg') },
+    { id: 'after', shot: 'After service', src: photo('sys-condenser-service.jpg') },
+  ]
+}
+
+// --- Owner-voice composition -----------------------------------------------
+// Structured inputs compose the prose draft; the tech can edit any line in
+// the preview before submitting.
+
+function sentenceJoin(parts: string[]): string {
+  if (parts.length === 0) return ''
+  if (parts.length === 1) return parts[0]
+  return `${parts.slice(0, -1).join(', ')} and ${parts[parts.length - 1]}`
+}
+
+export function composeWork(kit: EquipmentCaptureKit, taskIds: string[], otherWork: string): string {
+  const phrases = kit.tasks.filter((t) => taskIds.includes(t.id)).map((t) => t.owner)
+  const base = phrases.length ? `We ${sentenceJoin(phrases)}.` : ''
+  const extra = otherWork.trim() ? ` Also: ${otherWork.trim().replace(/\.?$/, '.')}` : ''
+  return `${base}${extra}`.trim() || 'No work recorded for this visit.'
+}
+
+export function composeFinding(
+  job: ProJob,
+  measurements: Record<string, number | string | null>,
+  voiceKept: string | null,
+): string {
+  const lines: Array<{ order: number; text: string }> = []
+  findingsSchemaFor(job).forEach((field, index) => {
+    const value = measurements[field.id]
+    if (value === null || value === undefined || value === '') return
+    const order = field.composeOrder ?? index
+    if (field.kind === 'chips' && typeof value === 'string') lines.push({ order, text: field.ownerLines?.[value] ?? `${field.label}: ${value}.` })
+    if (field.kind === 'stepper' && typeof value === 'number') lines.push({ order, text: field.ownerLine?.(value) ?? `${field.label} measured ${value}${field.unit ?? ''}.` })
+  })
+  const ordered = lines.sort((a, b) => a.order - b.order).map((line) => line.text)
+  if (voiceKept) ordered.push(voiceKept.trim().replace(/\.?$/, '.'))
+  return ordered.join(' ') || 'Nothing unusual was found on this visit.'
+}
+
+export function composeNext(kit: EquipmentCaptureKit, chipIds: string[], freeText: string): string {
+  if (freeText.trim()) return freeText.trim()
+  const phrases = kit.nextSteps.filter((c) => chipIds.includes(c.id)).map((c) => c.owner)
+  if (!phrases.length) return 'No next step is needed.'
+  const joined = phrases.join('; ')
+  return `${joined.charAt(0).toUpperCase()}${joined.slice(1)}.`
+}
+
 // Access-family status kinds (P0-1): standing access reads as settled/neutral,
 // a job-scoped grant as an active review-coloured window, a pending request as
 // the blocking condition it is.

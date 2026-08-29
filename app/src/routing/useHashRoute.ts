@@ -13,7 +13,7 @@ export const routes = [
   '/pro',
   '/pro/calendar',
   '/pro/job',
-  '/pro/update',
+  '/pro/capture',
   '/pro/review',
   '/mobile',
   '/signup',
@@ -35,8 +35,10 @@ const knownPaths = new Set<string>(routes)
 export function parseHash(hash: string): RouteMatch {
   const path = hash.slice(1) || '/'
   if (knownPaths.has(path)) return { path: path as Route, attempted: path }
-  let m = path.match(/^\/pro\/job\/([\w-]+)\/update$/)
-  if (m) return { path: '/pro/update', jobId: m[1], attempted: path }
+  // /update is the legacy composer address — capture replaced it (§10.4), and
+  // old links should land in the flow, not on a 404.
+  let m = path.match(/^\/pro\/job\/([\w-]+)\/(capture|update)$/)
+  if (m) return { path: '/pro/capture', jobId: m[1], attempted: path }
   m = path.match(/^\/pro\/job\/([\w-]+)$/)
   if (m) return { path: '/pro/job', jobId: m[1], attempted: path }
   m = path.match(/^\/pro\/review\/([\w-]+)$/)
