@@ -1,3 +1,4 @@
 node_modules/
 dist/
 *.tsbuildinfo
+design/capture-flow/pro-capture-flow.html

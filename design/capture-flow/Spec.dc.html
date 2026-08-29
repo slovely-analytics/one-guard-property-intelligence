@@ -1,0 +1,100 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&amp;display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; font-family: 'Archivo', system-ui, sans-serif; color: #201e1d; }
+    a { color: #ae1800; } a:hover { color: #7c1405; }
+  </style>
+</helmet>
+<div style="display: flex; flex-direction: column; gap: 28px; width: 760px; background: #f3f2f2; padding: 48px 56px 64px 56px;">
+
+  <div style="display: flex; flex-direction: column; gap: 8px;">
+    <span style="font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #ae1800;">One Guard Pro · Phase 1 · Brief §10.4</span>
+    <h1 style="margin: 0; font-size: 34px; font-weight: 800; line-height: 1.12; letter-spacing: -0.015em;">Capture flow — design spec</h1>
+    <p style="margin: 0; font-size: 15px; line-height: 22px; color: rgba(32,30,29,0.65);">Drafted Aug 29, 2026 against the wh-flush demo job (42 Highland Ave, Somerville — A+ Comfort Club water-heater tune-up, Marcus Reyes). Screens are static mockups; behavior lives here. Design only — nothing here is built.</p>
+  </div>
+
+  <div style="height: 2px; background: rgba(32,30,29,0.4);"></div>
+
+  <div style="display: flex; flex-direction: column; gap: 10px;">
+    <h2 style="margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.015em;">Principles (from the brief — held to)</h2>
+    <p style="margin: 0; font-size: 15px; line-height: 24px;"><strong>Photo first, prose last.</strong> The flow opens the camera, not a keyboard. <strong>Templates by work type</strong> — the A+ Comfort Club tune-up ships first. <strong>Structured before unstructured</strong> — steppers and chips, not sentences. <strong>Voice is a first-class input</strong> — transcribe, then confirm. <strong>Draft is the default state</strong> — every change autosaves locally. <strong>Offline-first with an honest queue</strong> — never silently drop a capture. Target: under 90 seconds, one hand, gloves on, one bar of signal.</p>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 14px;">
+    <h2 style="margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.015em;">The flow, step by step</h2>
+
+    <div style="display: flex; flex-direction: column; gap: 4px;">
+      <h3 style="margin: 0; font-size: 16px; font-weight: 800;">0 · Start (from the job brief’s pinned “Start capture”)</h3>
+      <p style="margin: 0; font-size: 15px; line-height: 24px; color: rgba(32,30,29,0.85);">The template is pre-selected from the job’s work type — one tap through for the common case, changeable when dispatch got it wrong. The owner’s instruction is restated here because it is the tech’s brief for the visit; it also seeds a template question in step 3. Templates at launch: A+ tune-up (per equipment type), diagnostic, replacement/install, emergency. Emergency is the same flow with every field optional except one photo.</p>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 4px;">
+      <h3 style="margin: 0; font-size: 16px; font-weight: 800;">1 · Evidence — the camera is the landing screen</h3>
+      <p style="margin: 0; font-size: 15px; line-height: 24px; color: rgba(32,30,29,0.85);">Every shot auto-tags to the job’s equipment record (system + serial, shown in the viewfinder so the tech can trust it). The template suggests a shot list — suggestions, never a gate; chips flip to green as shots are matched. Photo-roll import for shots taken earlier; simple annotation (arrow, circle) on any thumbnail. Low-light is the norm: torch toggle lives in the viewfinder.</p>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 4px;">
+      <h3 style="margin: 0; font-size: 16px; font-weight: 800;">2 · Work done — tapping, not typing</h3>
+      <p style="margin: 0; font-size: 15px; line-height: 24px; color: rgba(32,30,29,0.85);">Template task rows, multi-select, plus an “Other work…” free-text escape. Materials are chips with an add affordance. Selected tasks are structured events — queryable later (“when was the T&amp;P valve last checked?”), which prose never is.</p>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 4px;">
+      <h3 style="margin: 0; font-size: 16px; font-weight: 800;">3 · Findings — measurements shaped to the equipment</h3>
+      <p style="margin: 0; font-size: 15px; line-height: 24px; color: rgba(32,30,29,0.85);">Each equipment type carries a measurement schema (water heater: anode %, sediment, temperature rise; boiler: combustion readings, pressures; softener: hardness — extendable per trade). Steppers for numbers, chips for enums; everything skippable. Prior readings render under each field (“Sep 2025: 40% — Comfort Air Mechanical”) — the cross-contractor record earning its keep mid-capture. The owner’s question becomes a chip row (“Start-up noise: Resolved / Persists / Not observed”) so answering the customer is one tap. Voice: hold-to-talk, on-device transcription, Keep / Edit / Discard — transcript is never included without confirmation.</p>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 4px;">
+      <h3 style="margin: 0; font-size: 16px; font-weight: 800;">4 · Confidence — kept exactly as-is</h3>
+      <p style="margin: 0; font-size: 15px; line-height: 24px; color: rgba(32,30,29,0.85);">Confirmed / Provisional, whole-update, with the existing copy. Per-finding confidence is deferred (open question below) — one more decision per screen is the enemy of the 90-second target.</p>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 4px;">
+      <h3 style="margin: 0; font-size: 16px; font-weight: 800;">5 · Next step — chips first, owner-voice text optional</h3>
+      <p style="margin: 0; font-size: 15px; line-height: 24px; color: rgba(32,30,29,0.85);">Suggestions derive from template + findings (anode ≥60% → “move replacement planning forward”). Chips make recommendations reportable; the free-text field carries a gentle ~150-char counter, never a hard limit. Multiple chips compose into the owner sentence.</p>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 4px;">
+      <h3 style="margin: 0; font-size: 16px; font-weight: 800;">6 · Owner preview — the quality mechanism</h3>
+      <p style="margin: 0; font-size: 15px; line-height: 24px; color: rgba(32,30,29,0.85);">Rendered exactly as the Passport will show it: warm voice, jargon translated (“the part that protects the tank from rust”), photos inline, confidence tag visible. Structured inputs compose the prose draft; the tech can edit any line inline before submitting. This is where soft validation fires: “No photo attached — owner records with photos are opened 3× more often. Add one?” with Add photo / Skip. Never a blocking modal.</p>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 4px;">
+      <h3 style="margin: 0; font-size: 16px; font-weight: 800;">7 · Submit — closure and momentum</h3>
+      <p style="margin: 0; font-size: 15px; line-height: 24px; color: rgba(32,30,29,0.85);">Online: IN REVIEW state, capture-time readout (the metric made visible to the person it measures), a summary receipt, and the next stop one tap away. Offline: the queue screen — per-item status, size-aware Wi-Fi deferral for photo-heavy items with a “Send now” override, and an explicit promise that nothing is dropped.</p>
+    </div>
+  </div>
+
+  <div style="height: 2px; background: rgba(32,30,29,0.4);"></div>
+
+  <div style="display: flex; flex-direction: column; gap: 10px;">
+    <h2 style="margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.015em;">Draft, interruption, and offline</h2>
+    <p style="margin: 0; font-size: 15px; line-height: 24px;">Every input autosaves to local storage on change; the DRAFT SAVED chip in the header is the visible contract. App kill, phone call, dead battery: reopening the job resumes at the last step. Back never loses input. Close (×) confirms and keeps the draft — a technician’s work is never discarded silently. A returned update re-enters this same flow with the manager’s return reason pinned at the top.</p>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 10px;">
+    <h2 style="margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.015em;">Ergonomics and system extensions</h2>
+    <p style="margin: 0; font-size: 15px; line-height: 24px;">Field controls ≥48px with ≥8px separation (44px minimum for header chrome); primary action pinned to the bottom safe area; type floor 16px body / 14px meta / 13px labels, with 11px reserved for small uppercase tags and kickers only. Two additions to the Modernist tokens, per brief §11.4: <strong>4px radius on touch controls</strong> (buttons, inputs, steppers) and the existing <strong>pill radius on chips and tags</strong> — cards, panels, and rules stay square. Status tags reuse the Phase-0 semantic pairs (QUEUED = progress, IN REVIEW = review, SENT = published). Raw #ec3013 appears nowhere; text-bearing accent surfaces are #ae1800.</p>
+    <p style="margin: 0; font-size: 15px; line-height: 24px;">New components this flow introduces: capture step shell (header + progress + pinned action), measurement stepper, template chip group, voice input control, shot-list chip, evidence thumbnail with annotate affordance, owner-preview panel, sync-queue row, offline banner.</p>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 10px;">
+    <h2 style="margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.015em;">How we’ll know it works</h2>
+    <p style="margin: 0; font-size: 15px; line-height: 24px;">From brief §16: median capture under 90 s · &gt;90% of captures with at least one photo · returned-update rate under 15% · capture completion &gt;80% of visits within 60 days. The brief’s validation step stands: five Comfort Professor ride-alongs and a paper prototype in a real basement before this is built.</p>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 10px; border: 1px solid rgba(32,30,29,0.4); padding: 16px 20px;">
+    <h2 style="margin: 0; font-size: 18px; font-weight: 800; letter-spacing: -0.015em;">Open questions before build</h2>
+    <p style="margin: 0; font-size: 15px; line-height: 24px;">1 · <strong>ServiceTitan overlap</strong> — if techs already write job notes in the FSM, which fields here can be pre-filled from the work order so nothing is typed twice? (Brief §17.1 — the biggest unresolved constraint.) 2 · <strong>Per-finding confidence</strong> — whole-update for v1; revisit if returned-update reasons show mixed-certainty submissions. 3 · <strong>Voice transcription</strong> — on-device vs. server decides the offline story for voice. 4 · <strong>Template ownership</strong> — who authors and maintains measurement schemas per equipment type (One Guard, or the contractor’s admin)? 5 · <strong>Shot-list depth per template</strong> — validate against ride-alongs, not intuition.</p>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>
