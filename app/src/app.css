@@ -506,15 +506,20 @@ tr.row-link:hover td { background: color-mix(in srgb, var(--color-text) 5%, tran
 .pro-calendar-team::-webkit-scrollbar, .pro-calendar-month::-webkit-scrollbar, .pro-calendar-days::-webkit-scrollbar { height: 4px; }
 .pro-calendar-team::-webkit-scrollbar-track, .pro-calendar-month::-webkit-scrollbar-track, .pro-calendar-days::-webkit-scrollbar-track { background: transparent; }
 .pro-calendar-team::-webkit-scrollbar-thumb, .pro-calendar-month::-webkit-scrollbar-thumb, .pro-calendar-days::-webkit-scrollbar-thumb { background: var(--color-neutral-400); }
-.pro-calendar-team-head, .pro-calendar-team-row { display: grid; min-width: 850px; grid-template-columns: 150px repeat(7, minmax(92px, 1fr)); }
-.pro-calendar-team-head { color: var(--color-neutral-700); border-bottom: 1px solid var(--color-divider); font-size: 10px; letter-spacing: .07em; text-transform: uppercase; }
+/* ≥640px projection only — below that both lenses render the agenda list
+   (P0-9). Sticky technician column, and nothing in the grid under 14px. */
+.pro-calendar-team-head, .pro-calendar-team-row { display: grid; min-width: 934px; grid-template-columns: 150px repeat(7, minmax(112px, 1fr)); }
+.pro-calendar-team-head { color: var(--color-neutral-700); border-bottom: 1px solid var(--color-divider); font-size: 14px; letter-spacing: .04em; text-transform: uppercase; }
 .pro-calendar-team-head span { padding: 12px 8px; border-right: 1px solid var(--color-divider); }
+.pro-calendar-team-head span:first-child, .pro-calendar-team-row > div:first-child {
+  position: sticky; left: 0; z-index: 1; background: var(--color-bg);
+}
 .pro-calendar-team-row { min-height: 148px; border-bottom: 1px solid var(--color-divider); }
 .pro-calendar-team-row > div { padding: 10px 8px; border-right: 1px solid var(--color-divider); }
 .pro-calendar-team-row > div:first-child { padding: 16px 12px 12px 0; }
 .pro-calendar-team-row > div:first-child strong, .pro-calendar-team-row > div:first-child span { display: block; }
-.pro-calendar-team-row > div:first-child strong { font-family: var(--font-heading); font-size: 13px; }
-.pro-calendar-team-row > div:first-child span { margin-top: 4px; color: var(--color-neutral-700); font-size: 10px; }
+.pro-calendar-team-row > div:first-child strong { font-family: var(--font-heading); font-size: 14px; }
+.pro-calendar-team-row > div:first-child span { margin-top: 4px; color: var(--color-neutral-700); font-size: 14px; }
 .pro-calendar-team-row > .is-selected-day { background: var(--color-neutral-100); }
 .pro-calendar-team-event { display: block; width: 100%; min-height: 44px; padding: 9px; color: inherit; background: var(--color-neutral-200); border: 0; border-top: 3px solid var(--status-planned-fg); cursor: pointer; text-align: left; font: inherit; }
 .pro-calendar-team-event + .pro-calendar-team-event { margin-top: 7px; }
@@ -525,9 +530,9 @@ tr.row-link:hover td { background: color-mix(in srgb, var(--color-text) 5%, tran
 .pro-calendar-team-event.is-progress { border-top-color: var(--status-progress-fg); background: var(--status-progress-bg); }
 .pro-calendar-team-event[aria-pressed='true'] { box-shadow: inset 0 0 0 1px var(--color-text); }
 .pro-calendar-team-event time, .pro-calendar-team-event strong, .pro-calendar-team-event span { display: block; }
-.pro-calendar-team-event time { font-size: 9px; }
-.pro-calendar-team-event strong { margin-top: 4px; font-family: var(--font-heading); font-size: 11px; line-height: 1.3; }
-.pro-calendar-team-event span { margin-top: 7px; color: var(--color-neutral-700); font-size: 10px; letter-spacing: .05em; text-transform: uppercase; }
+.pro-calendar-team-event time { font-size: 14px; }
+.pro-calendar-team-event strong { margin-top: 4px; font-family: var(--font-heading); font-size: 14px; line-height: 1.3; }
+.pro-calendar-team-event span { margin-top: 7px; color: var(--color-neutral-700); font-size: 14px; letter-spacing: .03em; text-transform: uppercase; }
 
 .pro-calendar-detail { position: sticky; top: 24px; min-width: 0; background: var(--color-neutral-100); }
 .pro-calendar-detail-photo { position: relative; min-height: 168px; background-color: var(--color-neutral-300); background-repeat: no-repeat; background-blend-mode: luminosity; }

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { ProLensSwitch } from '../components/ProControls'
 import { StatusTag } from '../components/StatusTag'
 import type { ProJob } from '../data'
@@ -51,6 +51,27 @@ function monthRange(start: Date) {
 // Status comes from the shared jobWorkState selector (P0-8) — the calendar
 // must never disagree with the work ledger. Chips render `is-<kind>`.
 
+// Below 640px the team × day grid is unreadable (P0-9): both lenses get the
+// agenda list instead, and the grid stays a ≥640px projection.
+const FIELD_QUERY = '(max-width: 640px)'
+
+function useIsField() {
+  const [isField, setIsField] = useState(() => window.matchMedia(FIELD_QUERY).matches)
+  useEffect(() => {
+    const mq = window.matchMedia(FIELD_QUERY)
+    const onChange = () => setIsField(mq.matches)
+    mq.addEventListener('change', onChange)
+    // Some embedded/emulated viewports resize without a media-query change
+    // event; re-reading on resize is idempotent and keeps the two views honest.
+    window.addEventListener('resize', onChange)
+    return () => {
+      mq.removeEventListener('change', onChange)
+      window.removeEventListener('resize', onChange)
+    }
+  }, [])
+  return isField
+}
+
 function DirectionIcon({ direction }: { direction: 'previous' | 'next' }) {
   const points = direction === 'previous' ? '14 5 7 12 14 19' : '10 5 17 12 10 19'
   return (
@@ -67,6 +88,7 @@ function jobsForDate(date: Date, jobs: ProJob[]) {
 
 export default function ProCalendar() {
   const { proLens, passportUpdates, grants } = useDemo()
+  const isField = useIsField()
   const [mode, setMode] = useState<CalendarMode>('WEEK')
   const [weekOffset, setWeekOffset] = useState(0)
   const [monthOffset, setMonthOffset] = useState(0)
@@ -198,20 +220,20 @@ export default function ProCalendar() {
               })}
             </div>
 
-            {proLens === 'TECHNICIAN' ? (
+            {proLens === 'TECHNICIAN' || isField ? (
               <div className="pro-calendar-agenda">
-                <header><h2>{selectedDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</h2><span>{selectedDayJobs.length ? `${selectedDayJobs.length} scheduled stops` : 'No assigned work'}</span></header>
+                <header><h2>{selectedDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</h2><span>{selectedDayJobs.length ? `${selectedDayJobs.length} scheduled ${proLens === 'TECHNICIAN' ? 'stops' : 'team stops'}` : proLens === 'TECHNICIAN' ? 'No assigned work' : 'No team work'}</span></header>
                 {selectedDayJobs.length ? selectedDayJobs.map((job) => {
                   const state = jobWorkState(job, passportUpdates, grants)
                   const acc = effectiveJobAccess(job, grants)
                   return (
                     <button key={job.id} type="button" className={`pro-calendar-agenda-event is-${state.kind}`} aria-pressed={selectedJob?.id === job.id} onClick={() => chooseJob(job)}>
                       <time>{job.time}</time>
-                      <span><strong>{job.job}</strong><small>{job.addr} · {job.trade}</small></span>
+                      <span><strong>{job.job}</strong><small>{proLens === 'MANAGEMENT' ? `${job.assignee} · ` : ''}{job.addr} · {job.trade}</small></span>
                       <span><small>{acc.access === 'PENDING' ? acc.scope : job.onFile}</small><em>{state.label}</em></span>
                     </button>
                   )
-                }) : <div className="pro-calendar-open-day"><strong>Route space is open</strong><p>No work is assigned to Marcus on this day. Move through the week to inspect upcoming stops.</p></div>}
+                }) : <div className="pro-calendar-open-day"><strong>Route space is open</strong><p>{proLens === 'TECHNICIAN' ? 'No work is assigned to Marcus on this day. Move through the week to inspect upcoming stops.' : 'No team work is scheduled on this day. Move through the week to inspect upcoming stops.'}</p></div>}
               </div>
             ) : (
               <div className="pro-calendar-team">
