@@ -58,6 +58,7 @@ export default function ProToday() {
         <ProLensSwitch />
       </header>
 
+      <h2 className="vh">Work ledger</h2>
       <div className="pro-ledger-toolbar">
         <div className="pro-horizon" aria-label="Work horizon">
           {horizons.map((option) => (
@@ -105,7 +106,7 @@ export default function ProToday() {
         })}
       </div>
 
-      {visible.length === 0 && <div className="pro-empty"><h3>No work in this view</h3><p>Change the time horizon or switch to management to see team work.</p></div>}
+      {visible.length === 0 && <div className="pro-empty"><h3 className="pro-empty-title">No work in this view</h3><p>Change the time horizon or switch to management to see team work.</p></div>}
     </main>
   )
 }

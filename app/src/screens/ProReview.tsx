@@ -52,7 +52,7 @@ export default function ProReview({ updateId }: { updateId?: string }) {
       </header>
 
       {ordered.length === 0 ? (
-        <div className="pro-empty"><h3>No Passport updates yet</h3><p>Complete a job and submit durable property evidence to start the review loop.</p><a className="btn btn-primary" href="#/pro">Open work</a></div>
+        <div className="pro-empty"><h2 className="pro-empty-title">No Passport updates yet</h2><p>Complete a job and submit durable property evidence to start the review loop.</p><a className="btn btn-primary" href="#/pro">Open work</a></div>
       ) : (
         <div className="pro-review-layout">
           <div className="pro-review-list" role="list" aria-label="Passport updates">
