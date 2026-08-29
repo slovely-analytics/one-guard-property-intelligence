@@ -1,11 +1,10 @@
 import { useState } from 'react'
 import { ProLensSwitch } from '../components/ProControls'
 import { StatusTag } from '../components/StatusTag'
-import type { StatusKind } from '../components/StatusTag'
-import type { AccessState, ProJob } from '../data'
+import type { ProJob } from '../data'
 import { accessLabel, accessStatusKind, proJobs } from '../data'
 import { portfolioThumbs } from '../photos'
-import { effectiveJobAccess, selectProJob, toast, useDemo } from '../store'
+import { effectiveJobAccess, jobWorkState, selectProJob, toast, useDemo } from '../store'
 import type { PassportUpdateState } from '../store'
 
 type Horizon = 'TODAY' | 'WEEK' | 'MONTH'
@@ -24,16 +23,6 @@ function isInHorizon(job: ProJob, horizon: Horizon) {
 
 function latestUpdate(jobId: string, updates: PassportUpdateState[]) {
   return updates.find((update) => update.jobId === jobId)
-}
-
-function workState(job: ProJob, updates: PassportUpdateState[], access: AccessState): { label: string; kind: StatusKind } {
-  const update = latestUpdate(job.id, updates)
-  if (update?.status === 'PUBLISHED') return { label: 'PASSPORT UPDATED', kind: 'published' }
-  if (update?.status === 'IN_REVIEW') return { label: 'IN REVIEW', kind: 'review' }
-  if (update?.status === 'RETURNED') return { label: 'ACTION NEEDED', kind: 'progress' }
-  if (access === 'PENDING') return { label: 'ACCESS BLOCKED', kind: 'blocked' }
-  if (job.stage === 'PLANNED') return { label: 'PLANNED', kind: 'planned' }
-  return { label: 'READY', kind: 'ready' }
 }
 
 export default function ProToday() {
@@ -76,7 +65,7 @@ export default function ProToday() {
         </div>
         {visible.map((job) => {
           const acc = effectiveJobAccess(job, grants)
-          const state = workState(job, passportUpdates, acc.access)
+          const state = jobWorkState(job, passportUpdates, grants)
           const photo = portfolioThumbs[job.thumbKey]
           return (
             <article className="pro-ledger-row" key={job.id} role="listitem">

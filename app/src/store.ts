@@ -1,6 +1,7 @@
 // Reactive demo store — single source of truth shared by every screen.
 // Persists to localStorage so the demo survives refresh; "Reset demo" in the footer clears it.
 import { useSyncExternalStore } from 'react'
+import type { StatusKind } from './components/StatusTag'
 import type { AccessState, ProJob, TagClass } from './data'
 import type { Role } from './roles'
 
@@ -392,6 +393,24 @@ export function effectiveJobAccess(
 
 // ---------------------------------------------------------------------------
 // Service Pro work and Passport review
+
+export interface JobWorkState {
+  label: string
+  kind: StatusKind
+}
+
+/** The one selector every surface derives a job's work state from (P0-8).
+ *  The ledger, the calendar, and any future surface must agree — no view
+ *  computes status independently. */
+export function jobWorkState(job: ProJob, updates: PassportUpdateState[], grants: AccessGrantState[]): JobWorkState {
+  const update = updates.find((u) => u.jobId === job.id)
+  if (update?.status === 'PUBLISHED') return { label: 'PASSPORT UPDATED', kind: 'published' }
+  if (update?.status === 'IN_REVIEW') return { label: 'IN REVIEW', kind: 'review' }
+  if (update?.status === 'RETURNED') return { label: 'ACTION NEEDED', kind: 'progress' }
+  if (effectiveJobAccess(job, grants).access === 'PENDING') return { label: 'ACCESS BLOCKED', kind: 'blocked' }
+  if (job.stage === 'PLANNED') return { label: 'PLANNED', kind: 'planned' }
+  return { label: 'READY', kind: 'ready' }
+}
 
 export function setProLens(proLens: ProLens) {
   set({ proLens })

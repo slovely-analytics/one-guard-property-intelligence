@@ -4,8 +4,8 @@ import { StatusTag } from '../components/StatusTag'
 import type { ProJob } from '../data'
 import { accessLabel, accessStatusKind, proJobs } from '../data'
 import { portfolioThumbs } from '../photos'
-import { effectiveJobAccess, selectProJob, toast, useDemo } from '../store'
-import type { AccessGrantState } from '../store'
+import { effectiveJobAccess, jobWorkState, selectProJob, toast, useDemo } from '../store'
+import type { AccessGrantState, PassportUpdateState } from '../store'
 
 type CalendarMode = 'WEEK' | 'MONTH'
 
@@ -48,11 +48,8 @@ function monthRange(start: Date) {
   return `${start.toLocaleDateString('en-US', { month: 'long' })}–${end.toLocaleDateString('en-US', { month: 'long' })}`
 }
 
-function eventState(job: ProJob, grants: AccessGrantState[]) {
-  if (effectiveJobAccess(job, grants).access === 'PENDING') return { label: 'Access blocked', className: 'is-blocked' }
-  if (job.stage === 'PLANNED') return { label: 'Planned', className: 'is-planned' }
-  return { label: 'Ready', className: 'is-ready' }
-}
+// Status comes from the shared jobWorkState selector (P0-8) — the calendar
+// must never disagree with the work ledger. Chips render `is-<kind>`.
 
 function DirectionIcon({ direction }: { direction: 'previous' | 'next' }) {
   const points = direction === 'previous' ? '14 5 7 12 14 19' : '10 5 17 12 10 19'
@@ -205,10 +202,10 @@ export default function ProCalendar() {
               <div className="pro-calendar-agenda">
                 <header><h2>{selectedDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</h2><span>{selectedDayJobs.length ? `${selectedDayJobs.length} scheduled stops` : 'No assigned work'}</span></header>
                 {selectedDayJobs.length ? selectedDayJobs.map((job) => {
-                  const state = eventState(job, grants)
+                  const state = jobWorkState(job, passportUpdates, grants)
                   const acc = effectiveJobAccess(job, grants)
                   return (
-                    <button key={job.id} type="button" className={`pro-calendar-agenda-event ${state.className}`} aria-pressed={selectedJob?.id === job.id} onClick={() => chooseJob(job)}>
+                    <button key={job.id} type="button" className={`pro-calendar-agenda-event is-${state.kind}`} aria-pressed={selectedJob?.id === job.id} onClick={() => chooseJob(job)}>
                       <time>{job.time}</time>
                       <span><strong>{job.job}</strong><small>{job.addr} · {job.trade}</small></span>
                       <span><small>{acc.access === 'PENDING' ? acc.scope : job.onFile}</small><em>{state.label}</em></span>
@@ -227,8 +224,8 @@ export default function ProCalendar() {
                       return (
                         <div key={isoDate(day)} className={isoDate(day) === isoDate(selectedDate) ? 'is-selected-day' : ''}>
                           {jobs.map((job) => {
-                            const state = eventState(job, grants)
-                            return <button key={job.id} type="button" className={`pro-calendar-team-event ${state.className}`} aria-pressed={selectedJob?.id === job.id} onClick={() => chooseJob(job)}><time>{job.time}</time><strong>{job.addr.replace(/ Lane| Ln| Street| St| Road| Rd| Court| Ct| Drive| Dr/g, '')}</strong><span>{state.label}</span></button>
+                            const state = jobWorkState(job, passportUpdates, grants)
+                            return <button key={job.id} type="button" className={`pro-calendar-team-event is-${state.kind}`} aria-pressed={selectedJob?.id === job.id} onClick={() => chooseJob(job)}><time>{job.time}</time><strong>{job.addr.replace(/ Lane| Ln| Street| St| Road| Rd| Court| Ct| Drive| Dr/g, '')}</strong><span>{state.label}</span></button>
                           })}
                         </div>
                       )
@@ -239,7 +236,7 @@ export default function ProCalendar() {
             )}
           </section>
 
-          {selectedJob ? <JobCalendarDetail job={selectedJob} proLens={proLens} openWork={openWork} grants={grants} /> : <CalendarEmptyDetail selectedDate={selectedDate} />}
+          {selectedJob ? <JobCalendarDetail job={selectedJob} proLens={proLens} openWork={openWork} grants={grants} updates={passportUpdates} /> : <CalendarEmptyDetail selectedDate={selectedDate} />}
         </div>
       ) : (
         <div className="pro-calendar-workspace is-month">
@@ -255,15 +252,15 @@ export default function ProCalendar() {
                       <span>{day.getDate()}</span>{day.getDate() === 1 && <small>{day.toLocaleDateString('en-US', { month: 'short' })}</small>}
                     </button>
                     {jobs.map((job) => {
-                      const state = eventState(job, grants)
-                      return <button key={job.id} type="button" className={`pro-calendar-month-event ${state.className}`} aria-pressed={selectedJob?.id === job.id} onClick={() => chooseJob(job)}><time>{job.time}</time><span>{job.addr}</span></button>
+                      const state = jobWorkState(job, passportUpdates, grants)
+                      return <button key={job.id} type="button" className={`pro-calendar-month-event is-${state.kind}`} aria-pressed={selectedJob?.id === job.id} onClick={() => chooseJob(job)}><time>{job.time}</time><span>{job.addr}</span></button>
                     })}
                   </div>
                 )
               })}
             </div>
           </section>
-          {selectedJob ? <JobCalendarDetail job={selectedJob} proLens={proLens} openWork={openWork} grants={grants} /> : <CalendarEmptyDetail selectedDate={selectedDate} />}
+          {selectedJob ? <JobCalendarDetail job={selectedJob} proLens={proLens} openWork={openWork} grants={grants} updates={passportUpdates} /> : <CalendarEmptyDetail selectedDate={selectedDate} />}
         </div>
       )}
 
@@ -285,14 +282,14 @@ function CalendarEmptyDetail({ selectedDate }: { selectedDate: Date }) {
   )
 }
 
-function JobCalendarDetail({ job, proLens, openWork, grants }: { job: ProJob; proLens: 'TECHNICIAN' | 'MANAGEMENT'; openWork: (job: ProJob) => void; grants: AccessGrantState[] }) {
+function JobCalendarDetail({ job, proLens, openWork, grants, updates }: { job: ProJob; proLens: 'TECHNICIAN' | 'MANAGEMENT'; openWork: (job: ProJob) => void; grants: AccessGrantState[]; updates: PassportUpdateState[] }) {
   const photo = portfolioThumbs[job.thumbKey]
   const acc = effectiveJobAccess(job, grants)
-  const state = eventState(job, grants)
+  const state = jobWorkState(job, updates, grants)
   return (
     <aside className="pro-calendar-detail" aria-label="Selected calendar work">
       <div className="pro-calendar-detail-photo" role="img" aria-label={`${job.addr} exterior`} style={{ backgroundImage: `url(${photo.src})`, backgroundPosition: photo.focus, backgroundSize: photo.zoom }}>
-        <span className={`pro-calendar-detail-state ${state.className}`}>{state.label}</span>
+        <span className={`pro-calendar-detail-state is-${state.kind}`}>{state.label}</span>
       </div>
       <div className="pro-calendar-detail-body">
         <p>{job.time} · {job.assignee}</p>
