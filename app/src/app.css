@@ -671,6 +671,13 @@ tr.row-link:hover td { background: color-mix(in srgb, var(--color-text) 5%, tran
 .pro-published-actions p strong, .pro-published-actions p span { display: block; }
 .pro-published-actions p span { margin-top: 2px; color: var(--color-neutral-700); font-size: 11px; }
 
+/* 404 — unknown routes and stale ids. */
+.notfound { padding-top: 88px; max-width: 640px; }
+.notfound-code { margin: 0 0 10px; font-family: var(--font-heading); font-weight: 800; font-size: 14px; letter-spacing: 0.1em; color: var(--color-accent-700); }
+.notfound p { color: var(--color-neutral-700); max-width: 56ch; }
+.notfound code { font-size: 14px; background: var(--color-neutral-200); padding: 2px 6px; }
+.notfound-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+
 .passport-service-receipt { margin: 0 0 18px; padding: 18px 0; border-top: 4px solid var(--color-accent); border-bottom: 1px solid var(--color-divider); }
 .passport-service-receipt > div:first-child { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .passport-service-receipt > div:first-child > span:last-child { color: var(--color-neutral-700); font-size: 11px; }

@@ -21,24 +21,41 @@ export const routes = [
 
 export type Route = (typeof routes)[number]
 
-const knownPaths = new Set<string>(routes)
-
-function readPath(): Route {
-  const hashPath = window.location.hash.slice(1) || '/'
-  return knownPaths.has(hashPath) ? (hashPath as Route) : '/'
+/** A parsed location: a known path plus any identifier it carries, or the
+ *  404 sentinel. `attempted` keeps the raw path for the not-found view. */
+export interface RouteMatch {
+  path: Route | '/404'
+  jobId?: string
+  updateId?: string
+  attempted: string
 }
 
-export function useHashRoute() {
-  const [currentPath, setCurrentPath] = useState<Route>(readPath)
+const knownPaths = new Set<string>(routes)
+
+export function parseHash(hash: string): RouteMatch {
+  const path = hash.slice(1) || '/'
+  if (knownPaths.has(path)) return { path: path as Route, attempted: path }
+  let m = path.match(/^\/pro\/job\/([\w-]+)\/update$/)
+  if (m) return { path: '/pro/update', jobId: m[1], attempted: path }
+  m = path.match(/^\/pro\/job\/([\w-]+)$/)
+  if (m) return { path: '/pro/job', jobId: m[1], attempted: path }
+  m = path.match(/^\/pro\/review\/([\w-]+)$/)
+  if (m) return { path: '/pro/review', updateId: m[1], attempted: path }
+  // A real 404, never a silent fallback to the landing.
+  return { path: '/404', attempted: path }
+}
+
+export function useHashRoute(): RouteMatch {
+  const [current, setCurrent] = useState<RouteMatch>(() => parseHash(window.location.hash))
 
   useEffect(() => {
     const handleHashChange = () => {
-      setCurrentPath(readPath())
+      setCurrent(parseHash(window.location.hash))
       window.scrollTo({ top: 0, behavior: 'auto' })
     }
     window.addEventListener('hashchange', handleHashChange)
     return () => window.removeEventListener('hashchange', handleHashChange)
   }, [])
 
-  return currentPath
+  return current
 }

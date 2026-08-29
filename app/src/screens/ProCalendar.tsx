@@ -149,7 +149,7 @@ export default function ProCalendar() {
 
   const openWork = (job: ProJob) => {
     selectProJob(job.id)
-    window.location.hash = '#/pro/job'
+    window.location.hash = `#/pro/job/${job.id}`
   }
 
   const dateRange = mode === 'WEEK' ? weekRange(weekStart) : monthRange(monthStart)

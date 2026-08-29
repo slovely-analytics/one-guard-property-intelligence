@@ -1,12 +1,19 @@
+import { useEffect } from 'react'
 import { ProLensSwitch } from '../components/ProControls'
 import { StatusTag } from '../components/StatusTag'
 import { accessLabel, accessStatusKind, proJobs } from '../data'
 import { portfolioThumbs } from '../photos'
 import { effectiveJobAccess, toast, useDemo } from '../store'
 
-export default function ProJob() {
+export default function ProJob({ jobId }: { jobId?: string }) {
   const { selectedProJobId, passportUpdates, proLens, grants } = useDemo()
-  const job = proJobs.find((item) => item.id === selectedProJobId) ?? proJobs[0]
+  const job = proJobs.find((item) => item.id === (jobId ?? selectedProJobId)) ?? proJobs[0]
+
+  // Legacy bare #/pro/job: canonicalise to the job's own URL so a reload (or
+  // a copied address) lands on the same job. replace() keeps history clean.
+  useEffect(() => {
+    if (!jobId) window.location.replace(`#/pro/job/${job.id}`)
+  }, [jobId, job.id])
   const update = passportUpdates.find((item) => item.jobId === job.id)
   const photo = portfolioThumbs[job.thumbKey]
   const acc = effectiveJobAccess(job, grants)
@@ -71,11 +78,11 @@ export default function ProJob() {
             <section><h2>{proLens === 'MANAGEMENT' ? 'Management decision' : 'Likely follow-through'}</h2><p>{job.managementDecision}</p></section>
             <section className="pro-job-actions">
               {update?.status === 'IN_REVIEW' ? (
-                <><p>This visit already has an update waiting for management.</p><a className="btn btn-primary" href="#/pro/review">Open review</a></>
+                <><p>This visit already has an update waiting for management.</p><a className="btn btn-primary" href={`#/pro/review/${update.id}`}>Open review</a></>
               ) : update?.status === 'PUBLISHED' ? (
-                <><p>The approved update is now in the owner’s Passport.</p><a className="btn btn-secondary" href="#/pro/review">View handoff</a></>
+                <><p>The approved update is now in the owner’s Passport.</p><a className="btn btn-secondary" href={`#/pro/review/${update.id}`}>View handoff</a></>
               ) : (
-                <><p>Record the property knowledge this visit creates. Ordinary job operations remain in ServiceTitan.</p><a className="btn btn-primary" href="#/pro/update">Create Passport update</a></>
+                <><p>Record the property knowledge this visit creates. Ordinary job operations remain in ServiceTitan.</p><a className="btn btn-primary" href={`#/pro/job/${job.id}/update`}>Create Passport update</a></>
               )}
               <a className="btn btn-secondary" href="#/pro">Back to work</a>
             </section>

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { StatusTag } from '../components/StatusTag'
 import { proJobs } from '../data'
 import { setProLens, submitPassportUpdate, useDemo } from '../store'
@@ -9,9 +9,9 @@ const evidenceOptions = [
   { id: 'label', label: 'Model and serial label', src: P('sys-wh-label.jpg') },
 ]
 
-export default function ProUpdate() {
+export default function ProUpdate({ jobId }: { jobId?: string }) {
   const { selectedProJobId, passportUpdates } = useDemo()
-  const job = proJobs.find((item) => item.id === selectedProJobId) ?? proJobs[0]
+  const job = proJobs.find((item) => item.id === (jobId ?? selectedProJobId)) ?? proJobs[0]
   const existing = passportUpdates.find((item) => item.jobId === job.id && item.status === 'RETURNED')
   const [form, setForm] = useState({
     performed: existing?.performed ?? 'Flushed the tank and verified burner start-up after service.',
@@ -22,6 +22,12 @@ export default function ProUpdate() {
     evidenceIds: ['unit', 'label'],
   })
   const [submitted, setSubmitted] = useState(false)
+
+  // Legacy bare #/pro/update: canonicalise to the job-scoped composer URL so
+  // a reload returns to the same draft context.
+  useEffect(() => {
+    if (!jobId) window.location.replace(`#/pro/job/${job.id}/update`)
+  }, [jobId, job.id])
 
   const toggleEvidence = (id: string) => setForm((current) => ({
     ...current,
@@ -47,6 +53,8 @@ export default function ProUpdate() {
   const valid = Boolean(form.performed.trim() && form.observation.trim() && form.recommendation.trim() && form.evidenceIds.length > 0)
 
   if (submitted) {
+    const submittedUpdate = passportUpdates.find((item) => item.jobId === job.id && item.status === 'IN_REVIEW')
+    const reviewHash = submittedUpdate ? `#/pro/review/${submittedUpdate.id}` : '#/pro/review'
     return (
       <main className="page-main pro-page">
         <section className="pro-submit-success" aria-live="polite">
@@ -54,7 +62,7 @@ export default function ProUpdate() {
           <h1>The Passport update is with management</h1>
           <p>The job record remains in ServiceTitan. This submission contains the durable property evidence and next-step recommendation for One Guard.</p>
           <div>
-            <button className="btn btn-primary" onClick={() => { setProLens('MANAGEMENT'); window.location.hash = '#/pro/review' }}>Continue as management</button>
+            <button className="btn btn-primary" onClick={() => { setProLens('MANAGEMENT'); window.location.hash = reviewHash }}>Continue as management</button>
             <a className="btn btn-secondary" href="#/pro">Back to work</a>
           </div>
         </section>
@@ -64,7 +72,7 @@ export default function ProUpdate() {
 
   return (
     <main className="page-main pro-page">
-      <div className="pro-crumbs"><a href="#/pro/job">Back to job workspace</a></div>
+      <div className="pro-crumbs"><a href={`#/pro/job/${job.id}`}>Back to job workspace</a></div>
       <header className="pro-page-head pro-update-head">
         <div><h1>Update the Property Passport</h1><p>{job.addr} · {job.system.name} · submitted under {job.assignee}</p></div>
         <StatusTag kind="planned">ATTRIBUTED DRAFT</StatusTag>
@@ -106,7 +114,7 @@ export default function ProUpdate() {
             </fieldset>
           </section>
 
-          <div className="pro-form-actions"><button className="btn btn-primary" type="submit" disabled={!valid}>Send for management review</button><a className="btn btn-secondary" href="#/pro/job">Cancel</a></div>
+          <div className="pro-form-actions"><button className="btn btn-primary" type="submit" disabled={!valid}>Send for management review</button><a className="btn btn-secondary" href={`#/pro/job/${job.id}`}>Cancel</a></div>
         </form>
 
         <aside className="pro-update-preview">

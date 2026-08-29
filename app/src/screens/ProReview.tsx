@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { ProLensSwitch } from '../components/ProControls'
 import { StatusTag } from '../components/StatusTag'
 import type { StatusKind } from '../components/StatusTag'
@@ -12,14 +12,27 @@ const updateStatusKind: Record<PassportUpdateStatus, StatusKind> = {
   PUBLISHED: 'published',
 }
 
-export default function ProReview() {
+export default function ProReview({ updateId }: { updateId?: string }) {
   const { passportUpdates, proLens } = useDemo()
   const ordered = useMemo(() => [...passportUpdates].sort((a, b) => {
     const order = { IN_REVIEW: 0, RETURNED: 1, PUBLISHED: 2 }
     return order[a.status] - order[b.status]
   }), [passportUpdates])
-  const [selectedId, setSelectedId] = useState(ordered[0]?.id ?? '')
+  const [selectedId, setSelectedId] = useState(updateId ?? ordered[0]?.id ?? '')
   const [returnNote, setReturnNote] = useState('')
+
+  // Deep link into a specific update: #/pro/review/:updateId selects it, and
+  // selecting from the list writes the id back to the address (replace, so
+  // browsing the queue doesn't pile up history entries).
+  useEffect(() => {
+    if (updateId) { setSelectedId(updateId); setReturnNote('') }
+  }, [updateId])
+  const choose = (id: string) => {
+    setSelectedId(id)
+    setReturnNote('')
+    history.replaceState(null, '', `#/pro/review/${id}`)
+  }
+
   const selected = ordered.find((item) => item.id === selectedId) ?? ordered[0]
   const job = selected ? proJobs.find((item) => item.id === selected.jobId) : undefined
   const pending = passportUpdates.filter((item) => item.status === 'IN_REVIEW').length
@@ -44,7 +57,7 @@ export default function ProReview() {
         <div className="pro-review-layout">
           <div className="pro-review-list" role="list" aria-label="Passport updates">
             {ordered.map((update) => (
-              <button key={update.id} type="button" className="pro-review-list-item" aria-pressed={selected?.id === update.id} onClick={() => { setSelectedId(update.id); setReturnNote('') }}>
+              <button key={update.id} type="button" className="pro-review-list-item" aria-pressed={selected?.id === update.id} onClick={() => choose(update.id)}>
                 <StatusTag kind={updateStatusKind[update.status]}>{update.status.replace('_', ' ')}</StatusTag>
                 <strong>{update.systemName}</strong><span>{update.propertyAddr}</span><small>{update.submittedBy} · {update.submittedOn}</small>
               </button>
@@ -76,7 +89,7 @@ export default function ProReview() {
               )}
 
               {selected.status === 'IN_REVIEW' && proLens === 'TECHNICIAN' && <p className="pro-readonly-note">Management review is pending. The submitted evidence remains read-only until a decision is made.</p>}
-              {selected.status === 'RETURNED' && <p className="pro-readonly-note"><strong>Returned by {selected.reviewedBy}:</strong> {selected.reviewNote} <a href="#/pro/update">Revise update</a></p>}
+              {selected.status === 'RETURNED' && <p className="pro-readonly-note"><strong>Returned by {selected.reviewedBy}:</strong> {selected.reviewNote} <a href={`#/pro/job/${selected.jobId}/update`}>Revise update</a></p>}
               {selected.status === 'PUBLISHED' && (
                 <div className="pro-published-actions"><p><strong>Published by {selected.reviewedBy}</strong><span>{selected.reviewedOn} · visible in the property record</span></p>{selected.propertyAddr === '1847 Maple Grove Ln' && <button className="btn btn-primary" onClick={openAsOwner}>View the owner’s Passport</button>}</div>
               )}

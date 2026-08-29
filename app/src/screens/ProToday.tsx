@@ -45,7 +45,7 @@ export default function ProToday() {
 
   const openJob = (job: ProJob) => {
     selectProJob(job.id)
-    window.location.hash = '#/pro/job'
+    window.location.hash = `#/pro/job/${job.id}`
   }
 
   return (
