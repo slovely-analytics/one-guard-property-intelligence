@@ -28,7 +28,7 @@ export default function Portfolio() {
     if (r.addr.startsWith('1847 Maple')) {
       window.location.hash = '#/passport'
     } else {
-      toast(`Demo data covers 1847 Maple Grove Ln only — ${r.addr} is illustrative.`)
+      toast(`Demo data covers 42 Highland Ave only — ${r.addr} is illustrative.`)
     }
   }
 

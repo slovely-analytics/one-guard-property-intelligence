@@ -57,7 +57,7 @@ export const gallery: Slide[] = [
     src: P('living-dining.jpg'),
     kicker: 'Interior',
     title: 'Living & dining',
-    note: '2,340 sq ft · built 1998 · under One Guard management since 2024.',
+    note: '2,340 sq ft · built 1912 · under One Guard management since 2024.',
   },
   {
     src: P('kitchen.jpg'),
@@ -103,9 +103,11 @@ export const systemPhotos: Record<string, SystemPhoto[]> = {
     { src: P('sys-condenser.jpg'), cap: 'Condenser — east side pad', focus: '45% 66%', credit: CC('jeffcovey', 'CC BY-SA 2.0', 'https://www.flickr.com/photos/jeffcovey/6209852108') },
     { src: P('sys-condenser-service.jpg'), cap: 'Coil rinse — Jun 2026 tune-up', credit: CC('Phyxter Home Services', 'CC BY 2.0', 'https://www.flickr.com/photos/193557723@N06/51327327962') },
   ],
-  'HVAC — furnace': [
-    { src: P('sys-furnace.jpg'), cap: 'Air handler — attic platform', credit: CC('engelcox', 'CC BY 2.0', 'https://www.flickr.com/photos/engelcox/457257238') },
-    { src: P('sys-furnace-filter.jpg'), cap: 'Filter service — Nov 2025 visit', credit: CC('Phyxter Home Services', 'CC BY 2.0', 'https://www.flickr.com/photos/193557723@N06/52109848092') },
+  // The boiler has no honest photo in the freely-licensed set (the furnace
+  // shots read as forced-air) — placeholder tiles beat a mislabeled image.
+  'Heating — steam boiler': [
+    { cap: 'Boiler & near-boiler piping' },
+    { cap: 'Radiator vents — 2nd floor' },
   ],
   'Water heater': [
     { src: P('sys-water-heater.jpg'), cap: 'Tank & supply lines', credit: FAMARTIN },
@@ -156,10 +158,10 @@ export interface Thumb {
 }
 
 export const portfolioThumbs: Record<string, Thumb> = {
-  '1847 Maple Grove Ln': { src: P('exterior-front.jpg'), focus: '52% 46%', zoom: '150%' },
-  '220 Birchwood Ct #A–D': { src: P('prop-birchwood.jpg'), focus: '65% 47%', zoom: '300%' },
-  '918 Calloway Dr': { src: P('prop-calloway.jpg'), focus: '100% 32%', zoom: '500%' },
+  '42 Highland Ave': { src: P('exterior-front.jpg'), focus: '52% 46%', zoom: '150%' },
+  '30 Winter St #1–4': { src: P('prop-birchwood.jpg'), focus: '65% 47%', zoom: '300%' },
+  '7 Grove Ln': { src: P('prop-calloway.jpg'), focus: '100% 32%', zoom: '500%' },
   '45 Fenwick Row': { src: P('prop-fenwick.jpg'), focus: '21% 36%', zoom: '275%' },
-  '1302 Alder St': { src: P('prop-alder.jpg'), focus: '13% 42%', zoom: '250%' },
-  '77 Quarry Ridge Rd': { src: P('prop-quarry.jpg'), focus: '69% 40%', zoom: '270%' },
+  '88 Chestnut St': { src: P('prop-alder.jpg'), focus: '13% 42%', zoom: '250%' },
+  '215 Broadway #4': { src: P('prop-quarry.jpg'), focus: '69% 40%', zoom: '270%' },
 }

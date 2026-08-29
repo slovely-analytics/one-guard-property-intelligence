@@ -90,7 +90,7 @@ export default function Access() {
 
       <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 16, marginTop: 40 }}>
         <h4 style={{ margin: 0 }}>Current grants</h4>
-        <span className="text-muted" style={{ fontSize: 12 }}>1847 Maple Grove Lane</span>
+        <span className="text-muted" style={{ fontSize: 12 }}>42 Highland Ave</span>
       </div>
       <Rule style={{ margin: '12px 0 0' }} />
       {decided.map((g) => {

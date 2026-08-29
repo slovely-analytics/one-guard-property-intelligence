@@ -17,7 +17,7 @@ function exportPdf() {
 export default function Passport() {
   const { tasks, passportUpdates } = useDemo()
   const completed = tasks.filter((t) => t.status === 'DONE')
-  const proUpdates = passportUpdates.filter((update) => update.status === 'PUBLISHED' && update.propertyAddr.startsWith('1847 Maple Grove'))
+  const proUpdates = passportUpdates.filter((update) => update.status === 'PUBLISHED' && update.propertyAddr.startsWith('42 Highland'))
   const [selected, setSelected] = useState<SystemRecord | null>(null)
   const detail = selected ? systemDetails[selected.name] : undefined
   return (

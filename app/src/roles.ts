@@ -42,7 +42,7 @@ export const roles: RoleDef[] = [
       { path: '/projects', label: 'Projects' },
       { path: '/warranties', label: 'Warranties' },
     ],
-    persona: { name: '1847 Maple Grove Ln', sub: 'Guard plan · member since 2024' },
+    persona: { name: '42 Highland Ave', sub: 'Guard plan · member since 2024' },
   },
   {
     id: 'pm',

@@ -169,7 +169,7 @@ function seed(): DemoState {
       { id: 'roof-visit', date: 'Aug 21', season: 'Summer', what: 'Roof inspection & gutter repair', detail: 'Summit Roofing Co. — confirmed 9:30 AM', who: 'Summit Roofing Co.', diy: false, status: 'SCHEDULED' },
       { id: 'gutters', date: 'Oct 01', season: 'Fall', what: 'Gutter cleaning', detail: 'Before leaf drop; includes downspout check', who: 'Needs vendor', diy: false, status: 'UPCOMING' },
       { id: 'assessment', date: 'Oct 14', season: 'Fall', what: 'Annual Home Health Assessment', detail: '74-point inspection with M. Torres', who: 'One Guard', diy: false, status: 'SCHEDULED' },
-      { id: 'furnace', date: 'Nov 10', season: 'Fall', what: 'Furnace tune-up', detail: 'Pre-season inspection & filter service', who: 'Comfort Air Mechanical', diy: false, status: 'UPCOMING' },
+      { id: 'furnace', date: 'Nov 10', season: 'Fall', what: 'Boiler tune-up', detail: 'Pre-season burner service & low-water cutoff test', who: 'Comfort Air Mechanical', diy: false, status: 'UPCOMING' },
     ],
     projects: [
       { id: 'roof', title: 'Roof inspection & gutter repair', vendor: 'Summit Roofing Co. · Coordinator: Dana W.', status: 'SCHEDULED', cost: 'Est. $480',
@@ -180,7 +180,7 @@ function seed(): DemoState {
         stepsDone: 1, stepLabels: ['Requested', 'Quotes (2/3)', 'Approved', 'Scheduled', 'Verified'],
         quotes: [
           { vendor: 'Comfort Air Mechanical', price: '$6,450', timeline: 'Install week of Sep 8', note: '16 SEER2 Carrier unit · 10-yr parts warranty · your existing service provider' },
-          { vendor: 'Apex Climate Systems', price: '$7,100', timeline: 'Install week of Aug 25', note: '17 SEER2 Trane unit · 12-yr parts & labor warranty · faster slot' },
+          { vendor: 'Apex Climate Systems', price: '$7,100', timeline: 'Install week of Aug 25', note: 'Mitsubishi cold-climate heat pump · Mass Save rebate eligible · faster slot' },
         ] },
       { id: 'regrade', title: 'NE corner regrading', vendor: 'Awaiting your approval', status: 'ACTION NEEDED', cost: '$1,150',
         note: 'GreenScape Landworks quote recommended by Dana. Approve to schedule.',
@@ -194,16 +194,16 @@ function seed(): DemoState {
       { id: 'dishwasher', item: 'Dishwasher — Bosch 300', provider: 'Bosch', coverage: 'Parts & labor', expires: 'Jun 2027', status: 'EXPIRING', docs: ['Bosch-300-warranty-terms.pdf'] },
       { id: 'roof-w', item: 'Roof — 30-yr shingle', provider: 'GAF (manufacturer)', coverage: 'Materials', expires: '2044', status: 'ACTIVE', docs: ['GAF-materials-warranty.pdf', 'Install-certification-2014.pdf'] },
       { id: 'laundry', item: 'Washer/dryer — LG', provider: 'LG + extended plan', coverage: 'Full replacement', expires: 'Sep 2026', status: 'EXPIRING', docs: ['LG-extended-plan.pdf'] },
-      { id: 'furnace-w', item: 'HVAC furnace — Carrier', provider: 'Carrier', coverage: 'Heat exchanger', expires: '2036', status: 'ACTIVE', docs: ['Carrier-heat-exchanger-warranty.pdf'] },
+      { id: 'furnace-w', item: 'Steam boiler — Weil-McLain', provider: 'Weil-McLain', coverage: 'Heat exchanger', expires: '2036', status: 'ACTIVE', docs: ['WeilMcLain-heat-exchanger-warranty.pdf'] },
       { id: 'wh-w', item: 'Water heater — Rheem', provider: 'Rheem', coverage: '—', expires: 'Expired 2021', status: 'EXPIRED', docs: ['Rheem-warranty-expired-2021.pdf'] },
     ],
     portfolio: [
-      { addr: '1847 Maple Grove Ln', type: 'Single-family', score: 82, tasks: null, next: 'Oct 14', flag: 'HVAC AGING', tagClass: 'tag-outline' },
-      { addr: '220 Birchwood Ct #A–D', type: '4-plex', score: 74, tasks: 7, next: 'Sep 02', flag: 'ROOF DUE', tagClass: 'tag-outline' },
-      { addr: '918 Calloway Dr', type: 'Single-family', score: 88, tasks: 1, next: 'Nov 20', flag: 'ON TRACK', tagClass: 'tag-neutral' },
+      { addr: '42 Highland Ave', type: 'Two-family', score: 82, tasks: null, next: 'Oct 14', flag: 'HVAC AGING', tagClass: 'tag-outline' },
+      { addr: '30 Winter St #1–4', type: '4-plex', score: 74, tasks: 7, next: 'Sep 02', flag: 'ROOF DUE', tagClass: 'tag-outline' },
+      { addr: '7 Grove Ln', type: 'Single-family', score: 88, tasks: 1, next: 'Nov 20', flag: 'ON TRACK', tagClass: 'tag-neutral' },
       { addr: '45 Fenwick Row', type: 'Townhome', score: 91, tasks: 0, next: 'Jan 08', flag: 'ON TRACK', tagClass: 'tag-neutral' },
-      { addr: '1302 Alder St', type: 'Duplex', score: 68, tasks: 6, next: 'Aug 28', flag: 'PLUMBING', tagClass: 'tag-accent' },
-      { addr: '77 Quarry Ridge Rd', type: 'Single-family', score: 79, tasks: 5, next: 'Oct 30', flag: 'WATER HEATER', tagClass: 'tag-accent' },
+      { addr: '88 Chestnut St', type: 'Single-family', score: 68, tasks: 6, next: 'Aug 28', flag: 'PLUMBING', tagClass: 'tag-accent' },
+      { addr: '215 Broadway #4', type: 'Condo', score: 79, tasks: 5, next: 'Oct 30', flag: 'WATER HEATER', tagClass: 'tag-accent' },
     ],
     messages: [
       { from: 'dana', text: "Hi, I'm Dana — your property advisor. Ask me about any task, project or warranty and I'll take it from there.", time: '' },
@@ -219,7 +219,7 @@ function seed(): DemoState {
       {
         id: 'update-toilet-demo',
         jobId: 'toilet',
-        propertyAddr: '1302 Alder St',
+        propertyAddr: '88 Chestnut St',
         systemName: 'Second-floor toilet',
         performed: 'Removed the failed fixture and prepared the flange for the owner-supplied replacement.',
         observation: 'The flange sits slightly below the finished floor but is sound. No visible subfloor moisture.',
@@ -232,7 +232,7 @@ function seed(): DemoState {
         status: 'IN_REVIEW',
       },
     ],
-    // Access to 1847 Maple Grove Ln, as the owner sees it. The Comfort
+    // Access to 42 Highland Ave, as the owner sees it. The Comfort
     // Professor grant is the one wired to the Service Pro door — revoking it
     // makes Marcus's water-heater job go dark over there.
     grants: [
@@ -284,8 +284,9 @@ function seed(): DemoState {
 // ---------------------------------------------------------------------------
 // Store plumbing
 
-// v2: seeds gained access grants and the reconciled Aug 21 visit schedule.
-const STORAGE_KEY = 'oneguard-demo-v2'
+// v3: Greater Boston dataset (P0-12) — addresses, boilers, and the Mass Save
+// conversion replaced the Fort Worth seeds, so stale v2 state must not merge.
+const STORAGE_KEY = 'oneguard-demo-v3'
 const EPHEMERAL: Array<keyof DemoState> = ['toasts', 'chatOpen', 'highlightProject']
 
 function load(): DemoState {

@@ -76,9 +76,9 @@ export default function Onboarding() {
           </p>
           <div className="mobile-grid-1" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, alignItems: 'start' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-              <div className="field"><label>Property address</label><input className="input" defaultValue="1847 Maple Grove Lane, Fort Worth, TX 76107" /></div>
+              <div className="field"><label>Property address</label><input className="input" defaultValue="42 Highland Ave, Somerville, MA 02144" /></div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-                <div className="field"><label>Year built</label><input className="input" defaultValue="1998" /></div>
+                <div className="field"><label>Year built</label><input className="input" defaultValue="1912" /></div>
                 <div className="field"><label>Square feet</label><input className="input" defaultValue="2,340" /></div>
               </div>
               <div className="field">
@@ -101,9 +101,9 @@ export default function Onboarding() {
             </div>
             <div className="card">
               <span className="card-kicker">From public records</span>
-              <span className="card-title">1847 Maple Grove Lane</span>
+              <span className="card-title">42 Highland Ave</span>
               <p className="card-body" style={{ fontSize: 13 }}>
-                Built 1998 · 2,340 sq ft · 4 bed / 2.5 bath · Last sold 2019. We'll verify systems at your first assessment.
+                Built 1912 · 2,340 sq ft · two-family · Last sold 2019. We'll verify systems at your first assessment.
               </p>
               <div className="card-meta"><span className="tag tag-neutral">TARRANT COUNTY</span><span>Parcel 04-118-2207</span></div>
             </div>
@@ -186,7 +186,7 @@ export default function Onboarding() {
               <span className="card-title">{plan.name} plan — {plan.price}/mo</span>
               <table className="table" style={{ fontSize: 13 }}>
                 <tbody>
-                  <tr><td className="text-muted">Property</td><td>1847 Maple Grove Lane</td></tr>
+                  <tr><td className="text-muted">Property</td><td>42 Highland Ave</td></tr>
                   <tr><td className="text-muted">Annual assessment</td><td>Included</td></tr>
                   <tr><td className="text-muted">Advisor</td><td>Dana Whitfield</td></tr>
                   <tr><td className="text-muted">Systems on file</td><td>5 of ~14</td></tr>

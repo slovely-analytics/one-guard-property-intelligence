@@ -32,10 +32,10 @@ function MobileHome() {
         <span className="tag tag-accent">MEMBER</span>
       </div>
       <figure className="phone-hero">
-        <img src={gallery[0].src} alt="1847 Maple Grove Lane — southeast elevation" loading="lazy" decoding="async" />
+        <img src={gallery[0].src} alt="42 Highland Ave — southeast elevation" loading="lazy" decoding="async" />
         <figcaption>
-          <span className="phone-hero-addr">1847 Maple Grove Lane</span>
-          <span className="phone-hero-sub">Single-family · Built 1998</span>
+          <span className="phone-hero-addr">42 Highland Ave</span>
+          <span className="phone-hero-sub">Two-family · Built 1912</span>
         </figcaption>
       </figure>
       <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginTop: 16 }}>

@@ -247,7 +247,7 @@ export default function ProCalendar() {
                         <div key={isoDate(day)} className={isoDate(day) === isoDate(selectedDate) ? 'is-selected-day' : ''}>
                           {jobs.map((job) => {
                             const state = jobWorkState(job, passportUpdates, grants)
-                            return <button key={job.id} type="button" className={`pro-calendar-team-event is-${state.kind}`} aria-pressed={selectedJob?.id === job.id} onClick={() => chooseJob(job)}><time>{job.time}</time><strong>{job.addr.replace(/ Lane| Ln| Street| St| Road| Rd| Court| Ct| Drive| Dr/g, '')}</strong><span>{state.label}</span></button>
+                            return <button key={job.id} type="button" className={`pro-calendar-team-event is-${state.kind}`} aria-pressed={selectedJob?.id === job.id} onClick={() => chooseJob(job)}><time>{job.time}</time><strong>{job.addr.replace(/ Lane| Ln| Street| St| Road| Rd| Court| Ct| Drive| Dr| Avenue| Ave/g, '')}</strong><span>{state.label}</span></button>
                           })}
                         </div>
                       )
