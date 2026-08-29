@@ -1,15 +1,22 @@
 {
+  "pages": [
+    { "id": "page-flow", "name": "Capture flow" },
+    { "id": "page-shell", "name": "Shell & returned" }
+  ],
   "artboards": [
-    { "file": "Start.dc.html", "title": "0 · Start capture", "x": 0, "y": 0, "w": 390, "h": 844 },
-    { "file": "Main.dc.html", "title": "1 · Evidence", "x": 490, "y": 0, "w": 390, "h": 844 },
-    { "file": "WorkDone.dc.html", "title": "2 · Work done", "x": 980, "y": 0, "w": 390, "h": 844 },
-    { "file": "Findings.dc.html", "title": "3 · Findings", "x": 1470, "y": 0, "w": 390, "h": 844 },
-    { "file": "Confidence.dc.html", "title": "4 · Confidence", "x": 0, "y": 1010, "w": 390, "h": 844 },
-    { "file": "NextStep.dc.html", "title": "5 · Next step", "x": 490, "y": 1010, "w": 390, "h": 844 },
-    { "file": "Preview.dc.html", "title": "6 · Owner preview", "x": 980, "y": 1010, "w": 390, "h": 844 },
-    { "file": "Submitted.dc.html", "title": "7 · Submitted", "x": 1470, "y": 1010, "w": 390, "h": 844 },
-    { "file": "OfflineQueue.dc.html", "title": "7b · Offline queue", "x": 0, "y": 2020, "w": 390, "h": 844 },
-    { "file": "Spec.dc.html", "title": "Design spec", "x": 490, "y": 2020, "w": 760, "h": 2500, "print": "flow" }
+    { "file": "Start.dc.html", "title": "0 · Start capture", "x": 0, "y": 0, "w": 390, "h": 844, "page": "page-flow" },
+    { "file": "Main.dc.html", "title": "1 · Evidence", "x": 490, "y": 0, "w": 390, "h": 844, "page": "page-flow" },
+    { "file": "WorkDone.dc.html", "title": "2 · Work done", "x": 980, "y": 0, "w": 390, "h": 844, "page": "page-flow" },
+    { "file": "Findings.dc.html", "title": "3 · Findings", "x": 1470, "y": 0, "w": 390, "h": 844, "page": "page-flow" },
+    { "file": "Confidence.dc.html", "title": "4 · Confidence", "x": 0, "y": 1010, "w": 390, "h": 844, "page": "page-flow" },
+    { "file": "NextStep.dc.html", "title": "5 · Next step", "x": 490, "y": 1010, "w": 390, "h": 844, "page": "page-flow" },
+    { "file": "Preview.dc.html", "title": "6 · Owner preview", "x": 980, "y": 1010, "w": 390, "h": 844, "page": "page-flow" },
+    { "file": "Submitted.dc.html", "title": "7 · Submitted", "x": 1470, "y": 1010, "w": 390, "h": 844, "page": "page-flow" },
+    { "file": "OfflineQueue.dc.html", "title": "7b · Offline queue", "x": 0, "y": 2020, "w": 390, "h": 844, "page": "page-flow" },
+    { "file": "Spec.dc.html", "title": "Design spec", "x": 490, "y": 2020, "w": 760, "h": 2500, "print": "flow", "page": "page-flow" },
+    { "file": "Today.dc.html", "title": "Shell · Today", "x": 0, "y": 0, "w": 390, "h": 844, "page": "page-shell" },
+    { "file": "Mine.dc.html", "title": "Shell · Mine", "x": 490, "y": 0, "w": 390, "h": 844, "page": "page-shell" },
+    { "file": "Returned.dc.html", "title": "Returned — re-entry", "x": 980, "y": 0, "w": 390, "h": 844, "page": "page-shell" }
   ],
   "annotations": [
     {
@@ -17,8 +24,17 @@
       "x": -560,
       "y": 0,
       "w": 470,
+      "page": "page-flow",
       "text": "Phase 1 capture flow (brief §10.4), drafted on the real demo job: the A+ Comfort Club water-heater tune-up at 42 Highland Ave, Somerville.\n\nTop row: Start → Evidence → Work done → Findings. Second row: Confidence → Next step → Owner preview → Submitted. Bottom row: the same submit moment offline (7b), and the Design spec beside it.\n\nStatic mockups in the Modernist system (Archivo, #ae1800 on text surfaces, square panels, pill chips). All behavior — autosave, offline queue, soft validation, voice rules, open questions — is written up in the Design spec artboard."
+    },
+    {
+      "id": "shell-intro",
+      "x": -560,
+      "y": 0,
+      "w": 470,
+      "page": "page-shell",
+      "text": "The field shell the capture flow lives inside (brief §10.1–10.2), plus the returned-update re-entry (§12).\n\nToday — route in time order with a now marker; access-blocked stops are pinned above the list as an exception band with a working Request access action, never a normal row. Rows are one full-width tap target (≥96px); swipe right starts capture, swipe left navigates. Bottom tab bar: Today · Search · Mine · Account — the whole field app.\n\nMine — the tech's own updates by state. A returned update leads the list with the manager's note and one action; the tab badge counts items needing the tech's attention. The review-latency line keeps management honest about §16's four-hour target.\n\nReturned — re-enters the capture shell at the step the return reason points to (Needs photo → Evidence), the note pinned, everything already entered kept, resubmit enabled once the flagged item is fixed."
     }
   ],
-  "launch": { "view": "canvas" }
+  "launch": { "view": "canvas", "page": "page-shell" }
 }
