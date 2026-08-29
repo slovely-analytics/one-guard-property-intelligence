@@ -176,11 +176,20 @@ main:focus, h1:focus { outline: none; }
   z-index: 80; display: flex; flex-direction: column; gap: 8px; align-items: center;
 }
 .toast {
+  display: flex; align-items: center; gap: 18px;
   background: var(--color-text); color: var(--color-bg);
   border-top: 3px solid var(--color-accent);
-  padding: 12px 20px; font-size: 13px; max-width: 560px;
+  padding: 8px 20px; font-size: 13px; max-width: 560px; min-height: 48px;
   animation: toast-in 160ms ease-out;
 }
+.toast-action {
+  flex: none; display: inline-flex; align-items: center; min-height: 44px;
+  padding: 2px 14px; cursor: pointer;
+  font: inherit; font-family: var(--font-heading); font-weight: 800;
+  color: var(--color-bg); background: transparent;
+  border: 1px solid color-mix(in srgb, var(--color-bg) 45%, transparent);
+}
+.toast-action:hover { background: color-mix(in srgb, var(--color-bg) 16%, transparent); }
 @keyframes toast-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 
 /* Advisor chat drawer */

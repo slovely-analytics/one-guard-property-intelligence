@@ -70,7 +70,7 @@ export default function ProReview({ updateId }: { updateId?: string }) {
 
               <div className="pro-review-compare">
                 <section><span>Record before this visit</span><h3>{job.onFile}</h3><p>{job.priorVisits[0]?.note ?? 'No prior service evidence in scope.'}</p><small>{job.priorVisits[0]?.source ?? 'No source available'}</small></section>
-                <section><span>Proposed Passport addition</span><h3>{selected.performed}</h3><p>{selected.observation}</p><small>{selected.submittedBy} · {selected.submittedOn}</small></section>
+                <section><span>{selected.status === 'PUBLISHED' ? 'Published Passport entry' : 'Proposed Passport addition'}</span><h3>{selected.performed}</h3><p>{selected.observation}</p><small>{selected.submittedBy} · {selected.submittedOn}</small></section>
               </div>
 
               <section className="pro-review-facts">

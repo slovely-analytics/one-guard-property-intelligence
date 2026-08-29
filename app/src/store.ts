@@ -69,6 +69,9 @@ export interface PortfolioRow {
 export interface ToastItem {
   id: number
   text: string
+  /** Optional action (e.g. a 10s undo). Toasts are ephemeral — never persisted. */
+  actionLabel?: string
+  onAction?: () => void
 }
 
 export interface NotifPrefs {
@@ -444,7 +447,23 @@ export function approvePassportUpdate(id: string) {
         : u,
     ),
   })
-  toast('Approved — the update is now part of the Property Passport.')
+  toast('Published — the update is now part of the Property Passport.', {
+    actionLabel: 'Undo',
+    onAction: () => unpublishPassportUpdate(id),
+    durationMs: 10000,
+  })
+}
+
+/** The undo window on a publish: back to review, decision fields cleared. */
+export function unpublishPassportUpdate(id: string) {
+  set({
+    passportUpdates: state.passportUpdates.map((u) => {
+      if (u.id !== id) return u
+      const { reviewedBy: _by, reviewedOn: _on, reviewNote: _note, ...rest } = u
+      return { ...rest, status: 'IN_REVIEW' as PassportUpdateStatus }
+    }),
+  })
+  toast('Publish undone — the update is back in management review.')
 }
 
 export function returnPassportUpdate(id: string, reviewNote: string) {
@@ -462,10 +481,14 @@ export function returnPassportUpdate(id: string, reviewNote: string) {
 // Toasts
 
 let toastId = 0
-export function toast(text: string) {
+export function toast(text: string, opts?: { actionLabel: string; onAction: () => void; durationMs?: number }) {
   const id = ++toastId
-  set({ toasts: [...state.toasts, { id, text }] })
-  setTimeout(() => set({ toasts: state.toasts.filter((t) => t.id !== id) }), 4000)
+  set({ toasts: [...state.toasts, { id, text, actionLabel: opts?.actionLabel, onAction: opts?.onAction }] })
+  setTimeout(() => set({ toasts: state.toasts.filter((t) => t.id !== id) }), opts?.durationMs ?? 4000)
+}
+
+export function dismissToast(id: number) {
+  set({ toasts: state.toasts.filter((t) => t.id !== id) })
 }
 
 // ---------------------------------------------------------------------------

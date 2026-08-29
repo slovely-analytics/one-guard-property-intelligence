@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
 import {
   closeChat,
+  dismissToast,
   requestService,
   sendChat,
   useDemo,
@@ -83,7 +84,20 @@ export function ToastHost() {
   return (
     <div className="toast-host">
       {toasts.map((t) => (
-        <div key={t.id} className="toast">{t.text}</div>
+        <div key={t.id} className="toast">
+          <span>{t.text}</span>
+          {t.actionLabel && t.onAction && (
+            <button
+              className="toast-action"
+              onClick={() => {
+                t.onAction!()
+                dismissToast(t.id)
+              }}
+            >
+              {t.actionLabel}
+            </button>
+          )}
+        </div>
       ))}
     </div>
   )
