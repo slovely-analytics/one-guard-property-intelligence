@@ -19,6 +19,7 @@ import Portfolio from './screens/Portfolio'
 import ProCalendar from './screens/ProCalendar'
 import ProCapture from './screens/ProCapture'
 import ProJob from './screens/ProJob'
+import ProMine from './screens/ProMine'
 import ProReview from './screens/ProReview'
 import ProToday from './screens/ProToday'
 import Projects from './screens/Projects'
@@ -36,6 +37,7 @@ const TITLES: Record<string, string> = {
   '/portfolio': 'Portfolio',
   '/pro': 'Service work',
   '/pro/calendar': 'Service calendar',
+  '/pro/mine': 'Mine — Passport updates',
   '/pro/review': 'Passport review',
   '/mobile': 'Mobile app',
   '/signup': 'Sign up',
@@ -143,6 +145,7 @@ export default function App() {
       {page === '/portfolio' && <Portfolio />}
       {page === '/pro' && <ProToday />}
       {page === '/pro/calendar' && <ProCalendar />}
+      {page === '/pro/mine' && <ProMine />}
       {page === '/pro/job' && <ProJob jobId={route.jobId} />}
       {page === '/pro/review' && <ProReview updateId={route.updateId} />}
       {page === '/mobile' && <Mobile />}

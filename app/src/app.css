@@ -1054,6 +1054,88 @@ tr.row-link:hover td { background: color-mix(in srgb, var(--color-text) 5%, tran
 .cap-roll-row span:not(.cap-option-check) { flex: 1; font-size: 14px; font-weight: 600; }
 
 /* ---------------------------------------------------------------------------
+   Field shell (brief §10.1/10.2) — the ≤640px projection of the pro door.
+   Today and Mine render these lists with the 4-item bottom tab bar; desktop
+   keeps the ledger and review surfaces. Field type floor holds: 16 body /
+   14 meta / 13 labels, 11px only on small uppercase pills. */
+.field-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; padding: 8px 0; }
+.field-head h1 { margin: 0; font-size: 28px; line-height: 32px; letter-spacing: -0.015em; }
+.field-head > div > span { font-size: 14px; line-height: 20px; color: color-mix(in srgb, var(--color-text) 65%, transparent); }
+.field-sync { max-width: 140px; padding-bottom: 3px; font-size: 14px; line-height: 18px; text-align: right; color: color-mix(in srgb, var(--color-text) 50%, transparent); }
+.field-rule { height: 2px; background: var(--color-divider); }
+.field-filters { display: flex; gap: 8px; padding: 8px 0 12px; }
+
+.field-list { display: flex; flex-direction: column; gap: 12px; padding: 12px 0; }
+
+.field-exception { display: flex; flex-direction: column; gap: 10px; background: var(--status-blocked-bg); padding: 12px 14px; }
+.field-exception-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.field-exception-top > strong { font-size: 14px; font-weight: 600; color: var(--status-blocked-fg); }
+.field-exception-cta { min-height: 48px; font-size: 16px; }
+
+.field-row {
+  display: flex; align-items: center; gap: 14px; width: 100%; min-height: 96px;
+  background: var(--color-surface); border: 0; padding: 12px 14px;
+  cursor: pointer; text-align: left; font: inherit; color: inherit; text-decoration: none;
+}
+.field-row.is-current { border: 2px solid var(--color-text); padding: 10px 12px; }
+.field-row-plain { background: var(--color-surface); }
+.field-row-thumb { width: 64px; height: 64px; flex: none; background-repeat: no-repeat; border: 1px solid var(--color-divider); }
+.field-row-body { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+.field-row-title { display: block; font-family: var(--font-heading); font-weight: 800; font-size: 16px; line-height: 22px; letter-spacing: -0.015em; }
+.field-row-sub { display: block; font-size: 14px; line-height: 20px; color: color-mix(in srgb, var(--color-text) 70%, transparent); }
+.field-row-meta { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 14px; line-height: 18px; color: color-mix(in srgb, var(--color-text) 50%, transparent); }
+.field-row .status-tag { flex: none; }
+
+.field-now { display: flex; align-items: center; gap: 10px; }
+.field-now span { flex: none; font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-accent-700); }
+.field-now i { flex: 1; height: 2px; background: var(--color-accent-700); }
+.field-day { display: flex; align-items: baseline; gap: 10px; margin-top: 4px; }
+.field-day span { flex: none; font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 55%, transparent); }
+.field-day i { flex: 1; height: 1px; background: var(--color-divider); }
+
+.field-return-card { display: flex; flex-direction: column; gap: 8px; background: var(--color-surface); border: 2px solid var(--status-progress-fg); padding: 14px; }
+.field-return-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.field-return-top > span { font-size: 14px; color: color-mix(in srgb, var(--color-text) 50%, transparent); }
+.field-return-card p { margin: 0; font-size: 14px; line-height: 20px; }
+.field-return-cta { min-height: 48px; font-size: 16px; }
+
+.field-empty { margin: 0; padding: 24px 0; font-size: 14px; color: color-mix(in srgb, var(--color-text) 60%, transparent); }
+
+/* Row pills keep the small-tag size the artboards draw — 11px is reserved
+   for exactly these uppercase chips, and the 640px tag floor would crowd
+   the 64px-thumb rows otherwise. */
+.field-row .status-tag, .field-exception .status-tag, .field-return-card .status-tag { font-size: 11px; padding: 4px 12px; }
+
+.field-tabbar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+  display: flex; align-items: stretch;
+  border-top: 2px solid var(--color-divider); background: var(--color-bg);
+  padding: 6px 0 calc(10px + env(safe-area-inset-bottom, 4px));
+}
+.field-tabbar > a, .field-tabbar > button {
+  position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+  flex: 1; min-height: 56px; padding: 0; cursor: pointer;
+  background: transparent; border: 0; text-decoration: none;
+  font: inherit; font-size: 13px; font-weight: 600;
+  color: color-mix(in srgb, var(--color-text) 60%, transparent);
+}
+.field-tabbar > .is-active { color: var(--color-accent-700); }
+.field-tab-badge {
+  position: absolute; top: 0; right: calc(50% - 32px);
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 20px; height: 20px; padding: 0 5px;
+  background: var(--color-accent-700); color: var(--color-bg);
+  border-radius: var(--radius-pill); font-size: 13px; font-weight: 600;
+}
+/* The shell is the mobile projection — desktop keeps the ledger, so the bar
+   only exists at field widths. */
+@media (min-width: 641px) { .field-tabbar { display: none; } }
+@media (max-width: 640px) {
+  /* Room for the fixed tab bar under the scrolling list. */
+  .field-main { padding-bottom: 112px !important; }
+}
+
+/* ---------------------------------------------------------------------------
    Narrow screens. The rest of this demo is a fixed desktop layout; these rules
    only make the photo surfaces usable when the viewport gets small, rather
    than preserving the desktop composition. Kept last so they win over the

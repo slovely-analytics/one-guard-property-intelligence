@@ -80,7 +80,7 @@ export function roleDef(id: Role): RoleDef {
 
 /** Routes any role can reach — demo extras that hang off the top bar. */
 export const sharedRoutes: Route[] = ['/enter', '/mobile', '/signup']
-const proWorkflowRoutes: Route[] = ['/pro/job', '/pro/capture']
+const proWorkflowRoutes: Route[] = ['/pro/job', '/pro/capture', '/pro/mine']
 
 export function canVisit(id: Role, route: Route): boolean {
   return sharedRoutes.includes(route) || roleDef(id).nav.some((l) => l.path === route) || (id === 'pro' && proWorkflowRoutes.includes(route))

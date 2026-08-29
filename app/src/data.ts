@@ -486,7 +486,9 @@ export const proJobs: ProJob[] = [
     city: 'Cambridge, MA',
     job: 'No hot water — diagnostic',
     detail: 'New customer, referred by the Chestnut St owner.',
-    assignee: 'Priya Shah',
+    // Marcus's stop (not Priya's) so the field Today shows the access-blocked
+    // exception band on the technician's own day, per the shell artboards.
+    assignee: 'Marcus Reyes',
     trade: 'Plumbing',
     stage: 'BLOCKED',
     access: 'PENDING',

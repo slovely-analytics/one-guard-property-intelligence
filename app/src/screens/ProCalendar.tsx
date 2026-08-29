@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { ProLensSwitch } from '../components/ProControls'
 import { StatusTag } from '../components/StatusTag'
+import { useIsField } from '../components/useIsField'
 import type { ProJob } from '../data'
 import { accessLabel, accessStatusKind, proJobs } from '../data'
 import { portfolioThumbs } from '../photos'
@@ -50,27 +51,8 @@ function monthRange(start: Date) {
 
 // Status comes from the shared jobWorkState selector (P0-8) — the calendar
 // must never disagree with the work ledger. Chips render `is-<kind>`.
-
 // Below 640px the team × day grid is unreadable (P0-9): both lenses get the
 // agenda list instead, and the grid stays a ≥640px projection.
-const FIELD_QUERY = '(max-width: 640px)'
-
-function useIsField() {
-  const [isField, setIsField] = useState(() => window.matchMedia(FIELD_QUERY).matches)
-  useEffect(() => {
-    const mq = window.matchMedia(FIELD_QUERY)
-    const onChange = () => setIsField(mq.matches)
-    mq.addEventListener('change', onChange)
-    // Some embedded/emulated viewports resize without a media-query change
-    // event; re-reading on resize is idempotent and keeps the two views honest.
-    window.addEventListener('resize', onChange)
-    return () => {
-      mq.removeEventListener('change', onChange)
-      window.removeEventListener('resize', onChange)
-    }
-  }, [])
-  return isField
-}
 
 function DirectionIcon({ direction }: { direction: 'previous' | 'next' }) {
   const points = direction === 'previous' ? '14 5 7 12 14 19' : '10 5 17 12 10 19'

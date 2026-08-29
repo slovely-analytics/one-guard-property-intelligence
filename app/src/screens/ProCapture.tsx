@@ -16,7 +16,7 @@ import {
 } from '../store'
 import type { CaptureDraft, PassportUpdateState } from '../store'
 
-const STEP_NAMES = ['Evidence', 'Work done', 'Findings', 'Confidence', 'Next step', 'Owner preview', 'Submitted']
+export const STEP_NAMES = ['Evidence', 'Work done', 'Findings', 'Confidence', 'Next step', 'Owner preview', 'Submitted']
 
 const TEMPLATE_SHORT: Record<CaptureTemplateId, string> = {
   tuneup: 'A+ tune-up',

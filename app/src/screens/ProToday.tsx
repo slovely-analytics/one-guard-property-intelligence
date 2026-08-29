@@ -1,11 +1,13 @@
 import { useState } from 'react'
+import { FieldTabBar } from '../components/FieldTabBar'
 import { ProLensSwitch } from '../components/ProControls'
 import { StatusTag } from '../components/StatusTag'
+import { useIsField } from '../components/useIsField'
 import type { ProJob } from '../data'
-import { accessLabel, accessStatusKind, proJobs } from '../data'
+import { accessLabel, accessStatusKind, proJobs, timeMinutes } from '../data'
 import { portfolioThumbs } from '../photos'
 import { activeNudge, effectiveJobAccess, jobWorkState, nudgeOwner, selectProJob, useDemo } from '../store'
-import type { PassportUpdateState } from '../store'
+import type { AccessGrantState, NudgeState, PassportUpdateState } from '../store'
 
 type Horizon = 'TODAY' | 'WEEK' | 'MONTH'
 
@@ -27,8 +29,11 @@ function latestUpdate(jobId: string, updates: PassportUpdateState[]) {
 
 export default function ProToday() {
   const { proLens, passportUpdates, grants, nudges } = useDemo()
+  const isField = useIsField()
   const [horizon, setHorizon] = useState<Horizon>('TODAY')
   const visible = proJobs.filter((job) => isInHorizon(job, horizon) && (proLens === 'MANAGEMENT' || job.assignee === 'Marcus Reyes'))
+
+  if (isField) return <FieldToday proLens={proLens} updates={passportUpdates} grants={grants} nudges={nudges} />
   const blocked = visible.filter((job) => effectiveJobAccess(job, grants).access === 'PENDING').length
   const review = visible.filter((job) => latestUpdate(job.id, passportUpdates)?.status === 'IN_REVIEW').length
 
@@ -100,5 +105,140 @@ export default function ProToday() {
 
       {visible.length === 0 && <div className="pro-empty"><h3 className="pro-empty-title">No work in this view</h3><p>Change the time horizon or switch to management to see team work.</p></div>}
     </main>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Field projection (≤640px, brief §10.2): the same jobs and the same
+// jobWorkState selector, laid out as the technician's day — time-ordered
+// rows grouped by day, access-blocked stops pinned as an exception band,
+// and a "now" marker. The demo day is frozen at Thu Aug 21, so "now" is the
+// scripted 9:20 AM between the captured 8:00 stop and the 10:30 next stop.
+
+const FIELD_NOW = { label: '9:20 AM', minutes: timeMinutes('9:20 AM') }
+
+interface FieldTodayProps {
+  proLens: 'TECHNICIAN' | 'MANAGEMENT'
+  updates: PassportUpdateState[]
+  grants: AccessGrantState[]
+  nudges: Record<string, NudgeState>
+}
+
+function timePart(stamp?: string): string {
+  return stamp?.split(', ')[1] ?? stamp ?? ''
+}
+
+function FieldToday({ proLens, updates, grants, nudges }: FieldTodayProps) {
+  const mine = proJobs.filter((job) => proLens === 'MANAGEMENT' || job.assignee === 'Marcus Reyes')
+  const blocked = mine.filter((job) => effectiveJobAccess(job, grants).access === 'PENDING')
+  const scheduled = mine.filter((job) => !blocked.includes(job))
+
+  // Group by day in fixture order; sort each day's stops by clock time.
+  const days: Array<{ label: string; isToday: boolean; jobs: ProJob[] }> = []
+  for (const job of scheduled) {
+    const existing = days.find((day) => day.label === job.dateLabel)
+    if (existing) existing.jobs.push(job)
+    else days.push({ label: job.dateLabel, isToday: job.horizon === 'TODAY', jobs: [job] })
+  }
+  days.forEach((day) => day.jobs.sort((a, b) => timeMinutes(a.time) - timeMinutes(b.time)))
+  const todayCount = mine.filter((job) => job.horizon === 'TODAY').length
+
+  return (
+    <main className="pro-page field-main">
+      <header className="field-head">
+        <div>
+          <h1>Today</h1>
+          <span>Thu, Aug 21 · {todayCount} stop{todayCount === 1 ? '' : 's'} · {proLens === 'MANAGEMENT' ? 'full team' : 'Marcus Reyes'}</span>
+        </div>
+        <span className="field-sync">Synced from ServiceTitan 6:02 AM</span>
+      </header>
+      <div className="field-rule" />
+
+      <div className="field-list">
+        {blocked.map((job) => <FieldException key={job.id} job={job} nudges={nudges} />)}
+
+        {days.map((day) => {
+          const rows = day.jobs.map((job) => (
+            <FieldRow key={job.id} job={job} updates={updates} grants={grants}
+              isCurrent={day.isToday && timeMinutes(job.time) > FIELD_NOW.minutes && job === day.jobs.find((j) => timeMinutes(j.time) > FIELD_NOW.minutes)} />
+          ))
+          if (day.isToday) {
+            // The now marker slots between the stops that are behind and ahead.
+            const ahead = day.jobs.findIndex((job) => timeMinutes(job.time) > FIELD_NOW.minutes)
+            const at = ahead === -1 ? rows.length : ahead
+            rows.splice(at, 0, (
+              <div key="now" className="field-now" aria-label={`Now, ${FIELD_NOW.label}`}>
+                <span>Now · {FIELD_NOW.label}</span>
+                <i />
+              </div>
+            ))
+            return rows
+          }
+          return [
+            <div key={day.label} className="field-day">
+              <span>{day.label}</span>
+              <i />
+            </div>,
+            ...rows,
+          ]
+        })}
+      </div>
+
+      <FieldTabBar active="today" />
+    </main>
+  )
+}
+
+function FieldException({ job, nudges }: { job: ProJob; nudges: Record<string, NudgeState> }) {
+  const nudge = activeNudge(job.id, nudges)
+  return (
+    <section className="field-exception">
+      <div className="field-exception-top">
+        <StatusTag kind="blocked" family="access">ACCESS BLOCKED</StatusTag>
+        <strong>{job.time}</strong>
+      </div>
+      <div>
+        <strong className="field-row-title">{job.job}</strong>
+        <span className="field-row-sub">{job.addr} · {job.city} — the owner hasn’t granted access yet.</span>
+      </div>
+      <button type="button" className="cap-cta field-exception-cta" disabled={!!nudge} onClick={() => nudgeOwner(job.id, job.addr)}>
+        {nudge ? `Reminder sent · ${nudge.sentAt}` : 'Request access'}
+      </button>
+    </section>
+  )
+}
+
+function FieldRow({ job, updates, grants, isCurrent }: {
+  job: ProJob
+  updates: PassportUpdateState[]
+  grants: AccessGrantState[]
+  isCurrent: boolean
+}) {
+  const state = jobWorkState(job, updates, grants)
+  const update = updates.find((item) => item.jobId === job.id)
+  const photo = portfolioThumbs[job.thumbKey]
+  const meta = update?.status === 'IN_REVIEW'
+    ? `${job.time} · captured ${timePart(update.submittedOn)}`
+    : update?.status === 'PUBLISHED'
+      ? `${job.time} · in the owner’s Passport`
+      : update?.status === 'RETURNED'
+        ? `${job.time} · returned — fix & resubmit`
+        : `${job.time} · ${job.detail}`
+
+  const open = () => {
+    selectProJob(job.id)
+    window.location.hash = `#/pro/job/${job.id}`
+  }
+
+  return (
+    <button type="button" className={`field-row ${isCurrent ? 'is-current' : ''}`} onClick={open}>
+      <span className="field-row-thumb" role="img" aria-label={`${job.addr} exterior`} style={{ backgroundImage: `url(${photo.src})`, backgroundPosition: photo.focus, backgroundSize: photo.zoom }} />
+      <span className="field-row-body">
+        <strong className="field-row-title">{job.job}</strong>
+        <span className="field-row-sub">{job.addr} · {job.city}</span>
+        <span className="field-row-meta">{meta}</span>
+      </span>
+      <StatusTag kind={state.kind}>{state.label}</StatusTag>
+    </button>
   )
 }

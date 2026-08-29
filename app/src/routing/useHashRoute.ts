@@ -12,6 +12,7 @@ export const routes = [
   '/portfolio',
   '/pro',
   '/pro/calendar',
+  '/pro/mine',
   '/pro/job',
   '/pro/capture',
   '/pro/review',
