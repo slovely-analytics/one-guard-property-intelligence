@@ -26,7 +26,8 @@ a:hover { color: var(--color-accent-900); }
 }
 .door {
   position: relative; overflow: hidden; min-height: 46vh;
-  display: block; padding: 0; border: 0; margin: 0;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 0; border: 0; margin: 0;
   background: var(--color-neutral-900); color: var(--color-bg);
   font: inherit; text-align: left; cursor: pointer;
 }
@@ -40,14 +41,16 @@ a:hover { color: var(--color-accent-900); }
 .door:hover .door-img, .door:focus-visible .door-img {
   filter: grayscale(0.1) contrast(1.04); transform: scale(1.045);
 }
+/* A light full-card wash for depth; the contrast guarantee lives on the
+   text panel itself (.door-body), which travels with the copy at any
+   viewport instead of hoping a full-height gradient lines up with it. */
 .door-scrim {
   position: absolute; inset: 0; pointer-events: none;
   background: linear-gradient(
     to top,
-    color-mix(in srgb, var(--color-neutral-900) 92%, transparent) 0%,
-    color-mix(in srgb, var(--color-neutral-900) 74%, transparent) 34%,
-    color-mix(in srgb, var(--color-neutral-900) 40%, transparent) 62%,
-    color-mix(in srgb, var(--color-neutral-900) 22%, transparent) 100%
+    color-mix(in srgb, var(--color-neutral-900) 55%, transparent) 0%,
+    color-mix(in srgb, var(--color-neutral-900) 30%, transparent) 46%,
+    color-mix(in srgb, var(--color-neutral-900) 16%, transparent) 100%
   );
 }
 .door-bar {
@@ -58,9 +61,17 @@ a:hover { color: var(--color-accent-900); }
 }
 .door:hover .door-bar, .door:focus-visible .door-bar { transform: none; }
 .door-body {
-  position: relative; height: 100%;
+  --door-fade: 72px;
+  position: relative;
   display: flex; flex-direction: column; justify-content: flex-end; gap: 7px;
-  padding: 28px;
+  padding: calc(var(--door-fade) + 20px) 28px 28px;
+  /* ≥94% ink behind every line of copy — 4.5:1 holds over any photo pixel. */
+  background: linear-gradient(
+    to bottom,
+    transparent 0,
+    color-mix(in srgb, var(--color-neutral-900) 94%, transparent) var(--door-fade),
+    color-mix(in srgb, var(--color-neutral-900) 94%, transparent) 100%
+  );
 }
 .door-num {
   font-family: var(--font-heading); font-weight: 800; font-size: 12px;
@@ -70,7 +81,7 @@ a:hover { color: var(--color-accent-900); }
 .door-tagline { font-size: 13px; color: color-mix(in srgb, var(--color-bg) 86%, transparent); }
 .door-blurb {
   margin: 2px 0 0; font-size: 13px; line-height: 1.5; max-width: 34ch;
-  color: color-mix(in srgb, var(--color-bg) 66%, transparent);
+  color: color-mix(in srgb, var(--color-bg) 84%, transparent);
 }
 .door-enter {
   margin-top: 8px; display: inline-flex; align-items: center; gap: 8px;
@@ -712,6 +723,7 @@ tr.row-link:hover td { background: color-mix(in srgb, var(--color-text) 5%, tran
 @media (max-width: 880px) {
   .doors { grid-template-columns: 1fr; }
   .door { min-height: 240px; }
+  .door-body { --door-fade: 48px; }
   .entry-hero { padding: 32px 20px 24px; }
   .door-label { font-size: 24px; }
   .pro-page-head { align-items: flex-start; flex-direction: column; }

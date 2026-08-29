@@ -32,7 +32,7 @@ export default function Entry() {
 
       <div className="doors">
         {roles.map((r, i) => (
-          <button key={r.id} className="door" onClick={() => enter(r)}>
+          <button key={r.id} className="door" aria-label={`Enter as ${r.label}`} onClick={() => enter(r)}>
             <img className="door-img" src={r.photo} alt="" loading="eager" decoding="async" />
             <span className="door-scrim" aria-hidden />
             <span className="door-bar" aria-hidden />
