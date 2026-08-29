@@ -4,7 +4,7 @@ import { StatusTag } from '../components/StatusTag'
 import type { ProJob } from '../data'
 import { accessLabel, accessStatusKind, proJobs } from '../data'
 import { portfolioThumbs } from '../photos'
-import { effectiveJobAccess, jobWorkState, selectProJob, toast, useDemo } from '../store'
+import { activeNudge, effectiveJobAccess, jobWorkState, nudgeOwner, selectProJob, useDemo } from '../store'
 import type { AccessGrantState, PassportUpdateState } from '../store'
 
 type CalendarMode = 'WEEK' | 'MONTH'
@@ -283,9 +283,11 @@ function CalendarEmptyDetail({ selectedDate }: { selectedDate: Date }) {
 }
 
 function JobCalendarDetail({ job, proLens, openWork, grants, updates }: { job: ProJob; proLens: 'TECHNICIAN' | 'MANAGEMENT'; openWork: (job: ProJob) => void; grants: AccessGrantState[]; updates: PassportUpdateState[] }) {
+  const { nudges } = useDemo()
   const photo = portfolioThumbs[job.thumbKey]
   const acc = effectiveJobAccess(job, grants)
   const state = jobWorkState(job, updates, grants)
+  const nudge = acc.access === 'PENDING' ? activeNudge(job.id, nudges) : undefined
   return (
     <aside className="pro-calendar-detail" aria-label="Selected calendar work">
       <div className="pro-calendar-detail-photo" role="img" aria-label={`${job.addr} exterior`} style={{ backgroundImage: `url(${photo.src})`, backgroundPosition: photo.focus, backgroundSize: photo.zoom }}>
@@ -301,7 +303,13 @@ function JobCalendarDetail({ job, proLens, openWork, grants, updates }: { job: P
           <div><dt>Access</dt><dd>{acc.note}</dd></div>
           <div><dt>{proLens === 'TECHNICIAN' ? 'Know before arrival' : 'Decision on deck'}</dt><dd>{proLens === 'TECHNICIAN' ? job.ownerNote : job.managementDecision}</dd></div>
         </dl>
-        {acc.access === 'PENDING' ? <button type="button" className="btn btn-primary" onClick={() => toast(`Reminder sent to the owner at ${job.addr}.`)}>Nudge owner</button> : <button type="button" className="btn btn-primary" onClick={() => openWork(job)}>Open work</button>}
+        {acc.access === 'PENDING' ? (
+          <button type="button" className="btn btn-primary" disabled={!!nudge} onClick={() => nudgeOwner(job.id, job.addr)}>
+            {nudge ? `Nudge sent · ${nudge.sentAt}` : 'Nudge owner'}
+          </button>
+        ) : (
+          <button type="button" className="btn btn-primary" onClick={() => openWork(job)}>Open work</button>
+        )}
         <StatusTag kind={accessStatusKind(acc.access)} family="access">{accessLabel(acc.access)}</StatusTag>
       </div>
     </aside>

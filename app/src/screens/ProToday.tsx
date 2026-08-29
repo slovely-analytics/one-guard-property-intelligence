@@ -4,7 +4,7 @@ import { StatusTag } from '../components/StatusTag'
 import type { ProJob } from '../data'
 import { accessLabel, accessStatusKind, proJobs } from '../data'
 import { portfolioThumbs } from '../photos'
-import { effectiveJobAccess, jobWorkState, selectProJob, toast, useDemo } from '../store'
+import { activeNudge, effectiveJobAccess, jobWorkState, nudgeOwner, selectProJob, useDemo } from '../store'
 import type { PassportUpdateState } from '../store'
 
 type Horizon = 'TODAY' | 'WEEK' | 'MONTH'
@@ -26,7 +26,7 @@ function latestUpdate(jobId: string, updates: PassportUpdateState[]) {
 }
 
 export default function ProToday() {
-  const { proLens, passportUpdates, grants } = useDemo()
+  const { proLens, passportUpdates, grants, nudges } = useDemo()
   const [horizon, setHorizon] = useState<Horizon>('TODAY')
   const visible = proJobs.filter((job) => isInHorizon(job, horizon) && (proLens === 'MANAGEMENT' || job.assignee === 'Marcus Reyes'))
   const blocked = visible.filter((job) => effectiveJobAccess(job, grants).access === 'PENDING').length
@@ -66,6 +66,7 @@ export default function ProToday() {
         {visible.map((job) => {
           const acc = effectiveJobAccess(job, grants)
           const state = jobWorkState(job, passportUpdates, grants)
+          const nudge = acc.access === 'PENDING' ? activeNudge(job.id, nudges) : undefined
           const photo = portfolioThumbs[job.thumbKey]
           return (
             <article className="pro-ledger-row" key={job.id} role="listitem">
@@ -85,7 +86,9 @@ export default function ProToday() {
               <div className="pro-ledger-action">
                 <StatusTag kind={state.kind}>{state.label}</StatusTag>
                 {acc.access === 'PENDING' ? (
-                  <button className="btn btn-secondary" onClick={() => toast(`Reminder sent to the owner at ${job.addr}.`)}>Nudge owner</button>
+                  <button className="btn btn-secondary" disabled={!!nudge} onClick={() => nudgeOwner(job.id, job.addr)}>
+                    {nudge ? `Nudge sent · ${nudge.sentAt}` : 'Nudge owner'}
+                  </button>
                 ) : (
                   <button className="btn btn-primary" onClick={() => openJob(job)}>Open work</button>
                 )}

@@ -3,10 +3,10 @@ import { ProLensSwitch } from '../components/ProControls'
 import { StatusTag } from '../components/StatusTag'
 import { accessLabel, accessStatusKind, proJobs } from '../data'
 import { portfolioThumbs } from '../photos'
-import { effectiveJobAccess, toast, useDemo } from '../store'
+import { activeNudge, effectiveJobAccess, nudgeOwner, useDemo } from '../store'
 
 export default function ProJob({ jobId }: { jobId?: string }) {
-  const { selectedProJobId, passportUpdates, proLens, grants } = useDemo()
+  const { selectedProJobId, passportUpdates, proLens, grants, nudges } = useDemo()
   const job = proJobs.find((item) => item.id === (jobId ?? selectedProJobId)) ?? proJobs[0]
 
   // Legacy bare #/pro/job: canonicalise to the job's own URL so a reload (or
@@ -18,6 +18,7 @@ export default function ProJob({ jobId }: { jobId?: string }) {
   const photo = portfolioThumbs[job.thumbKey]
   const acc = effectiveJobAccess(job, grants)
   const withheld = acc.access === 'PENDING'
+  const nudge = withheld ? activeNudge(job.id, nudges) : undefined
 
   return (
     <main className="page-main pro-page">
@@ -44,7 +45,9 @@ export default function ProJob({ jobId }: { jobId?: string }) {
       {withheld ? (
         <section className="pro-withheld">
           <div><h2>The property record is not available</h2><p>Equipment identity, prior work, and owner instructions stay hidden until the owner grants access.</p></div>
-          <button className="btn btn-primary" onClick={() => toast(`Access reminder sent for ${job.addr}.`)}>Send access reminder</button>
+          <button className="btn btn-primary" disabled={!!nudge} onClick={() => nudgeOwner(job.id, job.addr)}>
+            {nudge ? `Reminder sent · ${nudge.sentAt}` : 'Send access reminder'}
+          </button>
         </section>
       ) : (
         <div className="pro-workbench">

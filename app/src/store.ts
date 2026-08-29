@@ -128,6 +128,13 @@ export interface AccessLogEntry {
   what: string
 }
 
+export interface NudgeState {
+  /** Display time — "2:14 PM". */
+  sentAt: string
+  /** Epoch ms, for the cooldown window. */
+  sentAtMs: number
+}
+
 export interface DemoState {
   /** Which door we came through. null = show the entry screen. */
   role: Role | null
@@ -146,6 +153,8 @@ export interface DemoState {
   passportUpdates: PassportUpdateState[]
   grants: AccessGrantState[]
   accessLog: AccessLogEntry[]
+  /** Owner nudges sent from the Service Pro door, keyed by job id. */
+  nudges: Record<string, NudgeState>
   toasts: ToastItem[]
 }
 
@@ -267,6 +276,7 @@ function seed(): DemoState {
       { on: 'Aug 19, 2:26 PM', who: 'Summit Roofing Co.', what: 'Viewed the roof record ahead of the Aug 21 visit' },
       { on: 'Mar 2024', who: 'You', what: 'Granted Comfort Professor standing access' },
     ],
+    nudges: {},
     toasts: [],
   }
 }
@@ -392,6 +402,33 @@ export function effectiveJobAccess(
     note: `Access revoked by the owner${grant.decidedOn ? ` ${grant.decidedOn}` : ''} — ask for a new grant`,
     scope: 'Record withheld until the owner restores access',
   }
+}
+
+// A nudge is a real event (P0-6): it lands in persisted state — so it can
+// surface on an access timeline later — cools down before it can repeat, and
+// can be withdrawn inside the toast's 10s undo window.
+const NUDGE_COOLDOWN_MS = 10 * 60 * 1000
+
+export function activeNudge(jobId: string, nudges: Record<string, NudgeState>): NudgeState | undefined {
+  const nudge = nudges[jobId]
+  if (!nudge) return undefined
+  return Date.now() - nudge.sentAtMs < NUDGE_COOLDOWN_MS ? nudge : undefined
+}
+
+export function nudgeOwner(jobId: string, addr: string) {
+  if (activeNudge(jobId, state.nudges)) return
+  set({ nudges: { ...state.nudges, [jobId]: { sentAt: nowTime(), sentAtMs: Date.now() } } })
+  toast(`Reminder sent to the owner at ${addr}.`, {
+    actionLabel: 'Undo',
+    onAction: () => undoNudge(jobId),
+    durationMs: 10000,
+  })
+}
+
+export function undoNudge(jobId: string) {
+  const { [jobId]: _drop, ...rest } = state.nudges
+  set({ nudges: rest })
+  toast('Nudge withdrawn — the owner was not notified.')
 }
 
 // ---------------------------------------------------------------------------
