@@ -30,8 +30,14 @@ export function Nav({ current }: { current: Route }) {
       ))}
 
       <span className="nav-right">
-        <a href="#/mobile" aria-current={current === '/mobile' ? 'page' : undefined}>Mobile app</a>
-        <a href="#/signup" aria-current={current === '/signup' ? 'page' : undefined}>Sign up</a>
+        {/* Marketing routes stay out of the work IA (P0-10): a tech on shift
+            never sees "Sign up" — the pro door reaches these from the footer. */}
+        {role !== 'pro' && (
+          <>
+            <a href="#/mobile" aria-current={current === '/mobile' ? 'page' : undefined}>Mobile app</a>
+            <a href="#/signup" aria-current={current === '/signup' ? 'page' : undefined}>Sign up</a>
+          </>
+        )}
         <RoleSwitcher current={role} />
       </span>
     </nav>
@@ -101,6 +107,7 @@ function RoleSwitcher({ current }: { current: Role }) {
 }
 
 export function Footer() {
+  const { role } = useDemo()
   return (
     <footer
       className="text-muted footer"
@@ -109,6 +116,12 @@ export function Footer() {
       <span>ONE GUARD Property Intelligence</span>
       <span>Demo — sample data</span>
       <a href="#" onClick={(e) => { e.preventDefault(); resetDemo() }}>Reset demo data</a>
+      {role === 'pro' && (
+        <>
+          <a href="#/mobile">Mobile app</a>
+          <a href="#/signup">Sign up</a>
+        </>
+      )}
       <span>
         Photos:{' '}
         <a href={PHOTO_CREDIT.sourceUrl} target="_blank" rel="noreferrer">{PHOTO_CREDIT.author}</a>,{' '}
